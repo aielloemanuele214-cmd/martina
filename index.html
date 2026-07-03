@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Sofia's Anniversary Adventure - Gioco Pixel Art Retro</title>
+    <meta name="description" content="Una romantica avventura grafica 2D in pixel art ispirata allo stile Pokémon, creata per festeggiare il nostro anniversario. Esplora la stanza dei ricordi!">
+    <meta name="theme-color" content="#ff4d6d">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Sofia's Adventure">
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="assets/icon-192.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="assets/icon-192.png">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Floating heart background decoration -->
+    <div class="bg-heart" style="left: 10%; animation-delay: 0s; animation-duration: 6s;">❤️</div>
+    <div class="bg-heart" style="left: 25%; animation-delay: 2s; animation-duration: 8s;">❤️</div>
+    <div class="bg-heart" style="left: 45%; animation-delay: 1s; animation-duration: 7s;">❤️</div>
+    <div class="bg-heart" style="left: 65%; animation-delay: 4s; animation-duration: 9s;">❤️</div>
+    <div class="bg-heart" style="left: 80%; animation-delay: 0.5s; animation-duration: 6s;">❤️</div>
+    <div class="bg-heart" style="left: 90%; animation-delay: 3s; animation-duration: 8s;">❤️</div>
+
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loading-content">
+            <div class="loading-heart">❤️</div>
+            <div class="loading-text">Caricamento...</div>
+            <div class="loading-bar-track">
+                <div class="loading-bar-fill" id="loadingBar"></div>
+            </div>
+        </div>
+    </div>
+
+    <main class="console-wrapper">
+        <header style="text-align: center; margin-bottom: 15px;">
+            <h1 style="color: #ffccd5; font-size: 11px; text-shadow: 2px 2px 0px #ff4d6d; letter-spacing: 1px; font-family: 'Press Start 2P', sans-serif;">
+                SOFIA'S ANNIVERSARY
+            </h1>
+        </header>
+
+        <!-- Handheld Console Case -->
+        <article class="console-body" id="virtualConsole">
+            
+            <!-- Bezel around the game screen -->
+            <section class="screen-bezel" id="screenBezel">
+                <div class="power-led" id="powerLed"></div>
+                
+                <!-- Main game display -->
+                <div class="screen-container" id="screenContainer">
+                    <div class="scanlines" id="screenScanlines"></div>
+
+                    <!-- Fullscreen toggle -->
+                    <button class="fullscreen-toggle" id="fullscreenBtn" title="Schermo Intero">⛶</button>
+
+                    <!-- Audio toggle -->
+                    <button class="audio-mute-toggle" id="audioToggle" title="Attiva/Disattiva Audio">
+                        <span id="soundIcon">🔊</span>
+                    </button>
+
+                    <!-- Game Canvas: Native resolution 256x256 scaled via CSS -->
+                    <canvas id="gameCanvas" width="256" height="256"></canvas>
+
+                    <!-- Overlay 1: Classic Pokemon-style Dialogue Box -->
+                    <div class="dialogue-overlay" id="dialogueBox">
+                        <div class="dialogue-text" id="dialogueText">
+                            Benvenuto nell'avventura di Sofia!
+                        </div>
+                        <div class="dialogue-arrow" id="dialogueArrow"></div>
+                    </div>
+
+                    <!-- Overlay 2: Custom Themed Memory Frame Modal (TV, Dresser, Bed, Plant) -->
+                    <div class="polaroid-modal" id="polaroidModal">
+                        <div class="memory-card" id="polaroidCard">
+                            <h2 class="polaroid-title" id="polaroidTitle">Ricordo</h2>
+                            <div class="polaroid-image-container">
+                                <canvas class="polaroid-canvas-art" id="polaroidCanvasArt" width="100" height="90"></canvas>
+                            </div>
+                            <div class="polaroid-text" id="polaroidText">
+                                Questo è il testo del ricordo...
+                            </div>
+                            <div class="polaroid-footer" id="polaroidFooter">Premi B per chiudere</div>
+                        </div>
+                    </div>
+
+                    <!-- Overlay 3: Final Love Letter -->
+                    <div class="letter-overlay" id="letterOverlay">
+                        <div class="love-letter" id="loveLetter">
+                            <h2 class="letter-title" id="letterTitle">BUON ANNIVERSARIO SOFIA! ❤️</h2>
+                            <img class="letter-portrait" src="assets/couple_portrait.jpg" alt="Noi due in pixel art" id="couplePortrait">
+                            <div class="letter-body" id="letterBody">
+                                Cara Sofia,<br><br>
+                                Questo piccolo gioco è per ricordarti quanto sei importante per me e quanto ogni singolo istante passato al tuo fianco sia prezioso. Abbiamo condiviso risate, sogni, sfide e piccoli gesti quotidiani che rendono la nostra storia unica.<br><br>
+                                Grazie per il tuo amore, la tua dolcezza e per essere la mia compagna in questa fantastica avventura.<br><br>
+                                Buon Anniversario!<br>
+                                Con tutto il mio amore ❤️
+                            </div>
+                            <div class="letter-footer">
+                                Per sempre tuo.
+                            </div>
+                            <button class="btn-restart" id="btnRestart">Gioca Ancora</button>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- Memory Hearts Tracker -->
+            <div class="memory-tracker" id="memoryTracker">
+                <span class="tracker-heart" id="trackHeart1">♡</span>
+                <span class="tracker-heart" id="trackHeart2">♡</span>
+                <span class="tracker-heart" id="trackHeart3">♡</span>
+                <span class="tracker-heart" id="trackHeart4">♡</span>
+            </div>
+
+            <!-- Console Inputs (D-Pad and Action Buttons) -->
+            <section class="controls" id="consoleControls">
+                <!-- D-Pad -->
+                <div class="d-pad" id="dpadContainer">
+                    <div class="d-pad-center"></div>
+                    <button class="d-pad-btn d-pad-up" id="pad-up" aria-label="Muovi Su"></button>
+                    <button class="d-pad-btn d-pad-down" id="pad-down" aria-label="Muovi Giù"></button>
+                    <button class="d-pad-btn d-pad-left" id="pad-left" aria-label="Muovi a Sinistra"></button>
+                    <button class="d-pad-btn d-pad-right" id="pad-right" aria-label="Muovi a Destra"></button>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="action-buttons" id="actionButtonsContainer">
+                    <div class="btn-a-b-container">
+                        <button class="btn-round" id="btn-b">B</button>
+                        <span class="btn-label">CHIUDI</span>
+                    </div>
+                    <div class="btn-a-b-container">
+                        <button class="btn-round" id="btn-a">A</button>
+                        <span class="btn-label">AZIONE</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Select & Start Buttons -->
+            <section class="system-buttons" id="systemButtonsContainer">
+                <div class="btn-sys-container">
+                    <button class="btn-pill" id="btn-select" aria-label="Select"></button>
+                    <span class="sys-label">SELECT</span>
+                </div>
+                <div class="btn-sys-container">
+                    <button class="btn-pill" id="btn-start" aria-label="Start"></button>
+                    <span class="sys-label">START</span>
+                </div>
+            </section>
+
+            <!-- Speaker Grille Decals -->
+            <div class="speaker-grille">
+                <div class="speaker-line"></div>
+                <div class="speaker-line"></div>
+                <div class="speaker-line"></div>
+                <div class="speaker-line"></div>
+            </div>
+
+        </article>
+
+        <footer class="instructions-bubble" id="instructions">
+            Usa le <strong>frecce direzionali / WASD</strong> e <strong>Spazio / Invio</strong> per giocare su PC.<br>
+            Fai clic sui <strong>punti dorati luccicanti</strong> per far camminare Sofia in automatico!<br>
+            <small>Tocca ⛶ per lo schermo intero su mobile.</small>
+        </footer>
+    </main>
+
+    <!-- Load retro game scripts -->
+    <script src="audio.js"></script>
+    <script src="game.js"></script>
+
+    <!-- PWA Service Worker Registration -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(reg => console.log('SW registrato:', reg.scope))
+                    .catch(err => console.log('SW errore:', err));
+            });
+        }
+    </script>
+</body>
+</html>

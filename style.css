@@ -1,0 +1,887 @@
+/* style.css - Retro Console and Custom Memory Frames UI */
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap');
+
+:root {
+    --console-color: #ffccd5;
+    --console-dark: #ff4d6d;
+    --console-screen-border: #4a4e69;
+    --console-screen-bg: #22252a;
+    --polaroid-shadow: rgba(0, 0, 0, 0.4);
+    --heart-color: #ff4d6d;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+body {
+    background: linear-gradient(135deg, #1f1224 0%, #0d0614 100%);
+    color: #fff;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 10px;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    position: relative;
+}
+
+/* Floating heart background decoration */
+.bg-heart {
+    position: absolute;
+    color: rgba(255, 77, 109, 0.08);
+    font-size: 24px;
+    pointer-events: none;
+    z-index: 0;
+    animation: floatUp 8s linear infinite;
+}
+
+@keyframes floatUp {
+    0% {
+        transform: translateY(110vh) rotate(0deg) scale(0.8);
+        opacity: 0;
+    }
+    10% {
+        opacity: 1;
+    }
+    90% {
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(-10vh) rotate(360deg) scale(1.2);
+        opacity: 0;
+    }
+}
+
+/* Main Console Container */
+.console-wrapper {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 440px;
+    padding: 10px;
+}
+
+.console-body {
+    background-color: var(--console-color);
+    border-radius: 20px 20px 60px 20px;
+    border: 8px solid #ffb3c1;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5), 
+                inset 0 -15px 0 var(--console-dark),
+                inset 0 10px 0 #fff;
+    width: 100%;
+    padding: 25px 25px 40px 25px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Speaker Grille Decals */
+.speaker-grille {
+    align-self: flex-end;
+    margin-right: 20px;
+    margin-top: 10px;
+    display: flex;
+    gap: 8px;
+    transform: rotate(-28deg);
+}
+
+.speaker-line {
+    width: 6px;
+    height: 35px;
+    background-color: rgba(0, 0, 0, 0.15);
+    border-radius: 3px;
+    box-shadow: inset 2px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+/* Screen Bezel */
+.screen-bezel {
+    background-color: var(--console-screen-border);
+    border-radius: 8px 8px 8px 8px;
+    border-bottom: 25px solid var(--console-screen-border);
+    width: 100%;
+    aspect-ratio: 1.05;
+    padding: 20px;
+    position: relative;
+    box-shadow: inset 0 -4px 0 rgba(0, 0, 0, 0.3),
+                inset 0 4px 0 rgba(255, 255, 255, 0.1),
+                0 4px 10px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.screen-bezel::before {
+    content: "LOVE BOY COLOR";
+    position: absolute;
+    bottom: -18px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: #ffccd5;
+    font-size: 8px;
+    letter-spacing: 2px;
+    text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.5);
+    font-family: 'Press Start 2P', sans-serif;
+}
+
+/* Power Indicator Light */
+.power-led {
+    position: absolute;
+    left: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #8b0000;
+    box-shadow: inset 1px 1px 2px rgba(0,0,0,0.5);
+    transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+.power-led.on {
+    background-color: #ff3333;
+    box-shadow: 0 0 8px #ff3333, inset 1px 1px 2px rgba(255,255,255,0.5);
+}
+
+/* Screen Container */
+.screen-container {
+    background-color: var(--console-screen-bg);
+    width: 100%;
+    height: 100%;
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: inset 0 6px 6px rgba(0,0,0,0.6);
+    border: 3px solid #1a1a1c;
+}
+
+canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: -webkit-crisp-edges;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+}
+
+/* CRT Overlay */
+.scanlines {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        rgba(18, 16, 16, 0) 50%, 
+        rgba(0, 0, 0, 0.12) 50%
+    ), linear-gradient(
+        90deg,
+        rgba(255, 0, 0, 0.04),
+        rgba(0, 255, 0, 0.02),
+        rgba(0, 0, 255, 0.04)
+    );
+    background-size: 100% 4px, 6px 100%;
+    pointer-events: none;
+    z-index: 5;
+}
+
+/* Console Buttons Section */
+.controls {
+    width: 100%;
+    margin-top: 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    padding: 0 10px;
+}
+
+/* D-Pad */
+.d-pad {
+    position: relative;
+    width: 100px;
+    height: 100px;
+}
+
+.d-pad-btn {
+    position: absolute;
+    background-color: #2b2b2b;
+    border: 3px solid #1a1a1a;
+    box-shadow: 0 4px 0 rgba(0, 0, 0, 0.4),
+                inset 1px 1px 0 rgba(255, 255, 255, 0.1);
+    cursor: pointer;
+    transition: transform 0.05s, box-shadow 0.05s;
+}
+
+.d-pad-btn:active {
+    transform: translateY(2px);
+    box-shadow: 0 2px 0 rgba(0, 0, 0, 0.4);
+}
+
+.d-pad-center {
+    position: absolute;
+    left: 33px;
+    top: 33px;
+    width: 34px;
+    height: 34px;
+    background-color: #2b2b2b;
+    z-index: 2;
+    border-radius: 2px;
+}
+
+.d-pad-up {
+    left: 33px;
+    top: 0;
+    width: 34px;
+    height: 36px;
+    border-radius: 6px 6px 0 0;
+    border-bottom: none;
+}
+
+.d-pad-down {
+    left: 33px;
+    bottom: 0;
+    width: 34px;
+    height: 36px;
+    border-radius: 0 0 6px 6px;
+    border-top: none;
+}
+
+.d-pad-left {
+    left: 0;
+    top: 33px;
+    width: 36px;
+    height: 34px;
+    border-radius: 6px 0 0 6px;
+    border-right: none;
+}
+
+.d-pad-right {
+    right: 0;
+    top: 33px;
+    width: 36px;
+    height: 34px;
+    border-radius: 0 6px 6px 0;
+    border-left: none;
+}
+
+/* Action Buttons (A / B) */
+.action-buttons {
+    display: flex;
+    gap: 15px;
+    transform: rotate(-15deg);
+    background-color: rgba(0, 0, 0, 0.08);
+    padding: 8px 12px;
+    border-radius: 30px;
+    box-shadow: inset 1px 1px 4px rgba(0,0,0,0.1);
+}
+
+.btn-a-b-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+}
+
+.btn-round {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background-color: var(--console-dark);
+    border: 3px solid #9d0208;
+    box-shadow: 0 4px 0 #6a040f,
+                inset 1px 1px 2px rgba(255,255,255,0.25);
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+    font-family: 'Press Start 2P', sans-serif;
+    font-size: 14px;
+    text-shadow: 1px 1px 0 rgba(0,0,0,0.3);
+    transition: transform 0.05s, box-shadow 0.05s;
+}
+
+.btn-round:active {
+    transform: translateY(3px);
+    box-shadow: 0 1px 0 #6a040f;
+}
+
+.btn-label {
+    color: rgba(0, 0, 0, 0.4);
+    font-size: 8px;
+    font-weight: bold;
+}
+
+/* Select & Start */
+.system-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 25px;
+    width: 100%;
+    margin-top: 25px;
+}
+
+.btn-sys-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+}
+
+.btn-pill {
+    width: 45px;
+    height: 12px;
+    background-color: #7b7f8c;
+    border: 2px solid #4a4e69;
+    border-radius: 10px;
+    transform: rotate(-18deg);
+    cursor: pointer;
+    box-shadow: 0 3px 0 rgba(0,0,0,0.3);
+    transition: transform 0.05s, box-shadow 0.05s;
+}
+
+.btn-pill:active {
+    transform: rotate(-18deg) translateY(2px);
+    box-shadow: 0 1px 0 rgba(0,0,0,0.3);
+}
+
+.sys-label {
+    color: rgba(0, 0, 0, 0.4);
+    font-size: 7px;
+    letter-spacing: 1px;
+}
+
+/* Audio toggle */
+.audio-mute-toggle {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: rgba(255, 255, 255, 0.2);
+    border: 2px solid var(--console-dark);
+    padding: 6px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 8px;
+    color: var(--console-dark);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    z-index: 100;
+    transition: background 0.2s;
+}
+
+.audio-mute-toggle:hover {
+    background: rgba(255, 255, 255, 0.4);
+}
+
+/* Dialogue Box (Classic Pokémon Style) */
+.dialogue-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: #f8f8f8;
+    border: 4px solid #000;
+    border-top: 6px double #000;
+    border-radius: 4px;
+    padding: 10px 14px;
+    z-index: 40;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 7px;
+    line-height: 1.5;
+    color: #000;
+    display: none;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 30%;
+}
+
+.dialogue-text {
+    flex-grow: 1;
+    overflow-y: hidden;
+    word-break: break-word;
+}
+
+.dialogue-arrow {
+    align-self: flex-end;
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 7px solid #000;
+    animation: blink 0.6s step-end infinite;
+    display: none;
+}
+
+@keyframes blink {
+    50% { opacity: 0; }
+}
+
+/* Memory Modals & Themes (Dinamici) */
+.polaroid-modal {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.85);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 50;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    padding: 12px;
+}
+
+.polaroid-modal.show {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* Base style for the memory display card */
+.memory-card {
+    padding: 12px;
+    width: 92%;
+    max-width: 240px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.6);
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.polaroid-modal.show .memory-card {
+    transform: scale(1) rotate(0deg);
+}
+
+.polaroid-image-container {
+    width: 100%;
+    aspect-ratio: 1.2;
+    background-color: #1a1a1c;
+    overflow: hidden;
+    position: relative;
+    border: 3px solid #ddd;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 2px;
+}
+
+.polaroid-canvas-art {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.polaroid-text {
+    width: 100%;
+    margin-top: 12px;
+    font-family: 'VT323', monospace;
+    font-size: 14px;
+    line-height: 1.35;
+    text-align: center;
+    word-wrap: break-word;
+    max-height: 85px; /* Limit height inside GBC screen */
+    overflow-y: auto;  /* Enable vertical scroll */
+    padding: 0 4px;
+}
+
+.polaroid-text::-webkit-scrollbar {
+    width: 4px;
+}
+
+.polaroid-text::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.polaroid-text::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 2px;
+}
+
+.polaroid-footer {
+    margin-top: 8px;
+    font-size: 6px;
+    color: #999;
+    text-transform: uppercase;
+    font-family: 'Press Start 2P', monospace;
+}
+
+/* --- THEME 1: TV CARD FRAME (Old CRT TV look) --- */
+.card-tv {
+    background-color: #8b5e3c; /* Wood frame cabinet */
+    border: 6px solid #5a3d25;
+    border-right: 32px solid #5a3d25; /* TV control panel on the right */
+    border-radius: 8px;
+    position: relative;
+    transform: scale(0.8) rotate(-1deg);
+}
+
+/* TV knobs on the control panel border */
+.card-tv::after {
+    content: "";
+    position: absolute;
+    right: -24px;
+    top: 25%;
+    width: 14px;
+    height: 14px;
+    background: radial-gradient(circle, #ccc 30%, #444 80%);
+    border: 2px solid #222;
+    border-radius: 50%;
+    box-shadow: 0 16px 0 -8px #222, 
+                0 30px 0 -8px #222, 
+                0 30px 0 -6px radial-gradient(circle, #ccc 30%, #444 80%),
+                0 50px 0 -22px #444; /* Knobs & buttons */
+}
+
+.card-tv .polaroid-image-container {
+    border: 4px solid #1a1a1c;
+    border-radius: 12px;
+    box-shadow: inset 0 0 10px #000;
+    background-color: #11141a;
+}
+
+.card-tv .polaroid-text {
+    color: #98f5e1; /* Glowing cyan green CRT screen text */
+    text-shadow: 0 0 4px rgba(152, 245, 225, 0.6);
+    background: #0d0f14;
+    padding: 8px;
+    border-radius: 4px;
+    border: 2px solid #1c212d;
+}
+
+.card-tv .polaroid-title {
+    color: #ffd166;
+}
+
+/* --- THEME 2: DRESSER CARD FRAME (Wooden Drawer look) --- */
+.card-dresser {
+    background-color: #eed6c4; /* Light wood */
+    border: 8px solid #8b5e3c; /* Dark wood trim */
+    border-radius: 4px;
+    position: relative;
+    transform: scale(0.8) rotate(2deg);
+}
+
+/* Gold drawer handles at the bottom */
+.card-dresser::after {
+    content: "";
+    position: absolute;
+    bottom: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 8px;
+    background-color: #d4a373; /* Gold handle */
+    border: 2px solid #8b5e3c;
+    border-radius: 2px;
+    box-shadow: 0 2px 0 rgba(0,0,0,0.15);
+}
+
+.card-dresser .polaroid-image-container {
+    border: 4px solid #8b5e3c;
+}
+
+.card-dresser .polaroid-text {
+    color: #4a2c11;
+    font-weight: bold;
+}
+
+.card-dresser .polaroid-title {
+    color: #8b5e3c;
+}
+
+/* --- THEME 3: BED CARD FRAME (Cloud Dream look) --- */
+.card-bed {
+    background-color: #fff0f3;
+    border: 6px double #ffb3c1;
+    border-radius: 40px 40px 25px 25px; /* Fluffy cloud shape */
+    box-shadow: 0 0 20px #ffccd5;
+    transform: scale(0.8) rotate(-2deg);
+}
+
+.card-bed .polaroid-image-container {
+    border: 3px solid #ffccd5;
+    border-radius: 8px;
+}
+
+.card-bed .polaroid-text {
+    color: #c9184a;
+}
+
+.card-bed .polaroid-title {
+    color: #ff4d6d;
+}
+
+/* --- THEME 4: PLANT CARD FRAME (Floral Vine look) --- */
+.card-plant {
+    background-color: #f4f9f4;
+    border: 8px solid #52b788; /* Leaf green border */
+    border-radius: 12px;
+    position: relative;
+    transform: scale(0.8) rotate(1deg);
+}
+
+/* Leaf icons decorations on top corners */
+.card-plant::before {
+    content: "🌿       🌿";
+    position: absolute;
+    top: -15px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-size: 16px;
+}
+
+.card-plant .polaroid-image-container {
+    border: 4px solid #52b788;
+}
+
+.card-plant .polaroid-text {
+    color: #1b4332;
+}
+
+.card-plant .polaroid-title {
+    color: #2d6a4f;
+}
+
+/* Final Love Letter */
+.letter-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(22, 10, 20, 0.95);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 60;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.6s ease;
+    padding: 16px;
+}
+
+.letter-overlay.show {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.love-letter {
+    background-color: #fff9eb;
+    border: 5px solid #d4a373;
+    border-radius: 8px;
+    box-shadow: inset 0 0 20px rgba(139, 90, 43, 0.15), 0 10px 30px rgba(0,0,0,0.6);
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+    padding: 20px 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+}
+
+.love-letter::-webkit-scrollbar {
+    width: 6px;
+}
+.love-letter::-webkit-scrollbar-track {
+    background: #fff3db;
+}
+.love-letter::-webkit-scrollbar-thumb {
+    background: #d4a373;
+    border-radius: 3px;
+}
+
+.letter-title {
+    color: #9d0208;
+    font-size: 10px;
+    text-align: center;
+    margin-bottom: 12px;
+    line-height: 1.4;
+    text-shadow: 1px 1px 0 rgba(0,0,0,0.05);
+}
+
+.letter-portrait {
+    width: 130px;
+    height: 130px;
+    border: 4px solid #d4a373;
+    border-radius: 4px;
+    margin-bottom: 15px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    object-fit: cover;
+}
+
+.letter-body {
+    color: #3f2a1d;
+    font-family: 'VT323', monospace;
+    font-size: 15px;
+    line-height: 1.4;
+    text-align: justify;
+    width: 100%;
+    padding: 0 5px;
+    margin-bottom: 20px;
+}
+
+.letter-footer {
+    width: 100%;
+    text-align: right;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 7px;
+    color: #9d0208;
+    margin-top: auto;
+}
+
+.btn-restart {
+    margin-top: 15px;
+    background-color: var(--console-dark);
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 7px;
+    cursor: pointer;
+    border-radius: 4px;
+    box-shadow: 0 4px 0 #6a040f;
+    transition: transform 0.1s, box-shadow 0.1s;
+}
+
+.btn-restart:active {
+    transform: translateY(2px);
+    box-shadow: 0 2px 0 #6a040f;
+}
+
+.instructions-bubble {
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 7px;
+    margin-top: 15px;
+    text-align: center;
+    line-height: 1.4;
+}
+
+/* Fullscreen Toggle Button */
+.fullscreen-toggle {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    background: rgba(255, 255, 255, 0.2);
+    border: 2px solid var(--console-dark);
+    padding: 6px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 12px;
+    color: var(--console-dark);
+    z-index: 100;
+    transition: background 0.2s;
+    line-height: 1;
+}
+
+.fullscreen-toggle:hover {
+    background: rgba(255, 255, 255, 0.4);
+}
+
+/* Memory Tracker Hearts */
+.memory-tracker {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    padding: 8px 0;
+    width: 100%;
+}
+
+.tracker-heart {
+    font-size: 14px;
+    color: #666;
+    transition: color 0.3s, text-shadow 0.3s, transform 0.3s;
+    display: inline-block;
+}
+
+.tracker-heart.found {
+    color: #ff4d6d;
+    text-shadow: 0 0 6px rgba(255, 77, 109, 0.6);
+    animation: heartPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes heartPop {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.6); }
+    100% { transform: scale(1); }
+}
+
+/* Loading Screen */
+.loading-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #1f1224 0%, #0d0614 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    transition: opacity 0.6s ease;
+}
+
+.loading-screen.loaded {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.loading-content {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+}
+
+.loading-heart {
+    font-size: 40px;
+    animation: loadingPulse 1s ease-in-out infinite;
+}
+
+@keyframes loadingPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+}
+
+.loading-text {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 10px;
+    color: #ffccd5;
+    letter-spacing: 2px;
+}
+
+.loading-bar-track {
+    width: 160px;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    border: 1px solid #ff4d6d;
+    overflow: hidden;
+}
+
+.loading-bar-fill {
+    width: 0%;
+    height: 100%;
+    background: linear-gradient(90deg, #ff4d6d, #ffccd5);
+    border-radius: 4px;
+    transition: width 0.3s ease;
+}

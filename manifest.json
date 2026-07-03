@@ -1,0 +1,24 @@
+{
+  "name": "Sofia's Anniversary Adventure",
+  "short_name": "Sofia's Adventure",
+  "description": "Una romantica avventura pixel art per il nostro anniversario ❤️",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#1f1224",
+  "theme_color": "#ff4d6d",
+  "icons": [
+    {
+      "src": "assets/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "assets/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
