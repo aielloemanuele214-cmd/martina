@@ -1,6 +1,11 @@
 # Sempreaddue · "Una stanza tutta per voi" — Roadmap verso la Gold
 
-## Stato attuale: v0.9.0 (Release Candidate) — ~85% verso la 1.0
+## Stato attuale: v1.0.0-rc1 — ~95% verso la 1.0
+
+Decisioni prese: splash d'ingresso ✅ · musica nuova pronta (default off,
+si accende dal CONFIG per il tier Plus) ✅ · demo pubblica nel repo ✅ ·
+fallback Safari ✅. **Per la Gold mancano solo: QA su iPhone reale
+(CHECKLIST-QA.md) + un ordine pilota end-to-end.**
 
 | Area | Stato | Note |
 |---|---|---|
@@ -16,7 +21,10 @@
 - **0.7** — cache pre-scalate (60fps), scena ballo, dialoghi con ritratto
 - **0.8** — scena fuochi, lettera animata, contatore giorni, builder
 - **0.9** — hitbox definitive (corpo ellittico + BFS), camminata frontale,
-  gatto magico con sorpresa segreta ← **siamo qui**
+  gatto magico con sorpresa segreta
+- **1.0.0-rc1** — splash "tocca per entrare" (unlock audio iOS), nuovo loop
+  musicale caldo (84bpm, default off), fallback visualViewport per Safari,
+  demo pubblica (`clienti/demo.json`), checklist QA ← **siamo qui**
 
 ## Verso la 1.0 Gold — lavori ordinati per rischio
 
@@ -45,9 +53,9 @@
 - Messaggi multipli del gatto (frase diversa a ogni carezza)
 - Mini-form web per la raccolta dati clienti (sostituisce il JSON manuale)
 
-## Decisioni aperte (bloccano il congelamento della 1.0)
+## Per chiudere la 1.0 Gold
 
-- [ ] La splash screen entra nella Gold? *(consigliato: sì)*
-- [ ] Musica nuova nella Gold o post-1.0? Default on o solo Plus?
-- [ ] Demo pubblica nella Gold o subito dopo?
-- [ ] Device disponibili per il QA (iPhone? iPad?) e data obiettivo di lancio
+- [ ] Eseguire `CHECKLIST-QA.md` su un iPhone reale (e sull'Android di casa)
+- [ ] Pubblicare la demo: `python3 build.py clienti/demo.json` → Netlify Drop → link in bio
+- [ ] Ordine pilota completo: JSON → build → verifica → QR (obiettivo < 30 min)
+- [ ] Feature congelate: ogni novità va nel backlog post-1.0

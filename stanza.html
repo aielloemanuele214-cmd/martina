@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Sempreaddue · Una stanza tutta per voi · motore v0.9.0 -->
+<!-- Sempreaddue · Una stanza tutta per voi · motore v1.0.0-rc1 -->
 <html lang="it">
 <head>
 <meta charset="UTF-8">
@@ -128,13 +128,25 @@
   @keyframes capIn{from{opacity:0;transform:translateX(-50%) translateY(12px)}
     to{opacity:1;transform:translateX(-50%) translateY(0)}}
 
-  /* ---------- Caricamento ---------- */
-  #load{position:fixed;inset:0;z-index:100;background:#0a0708;display:flex;flex-direction:column;
-    align-items:center;justify-content:center;gap:18px;transition:opacity .8s}
-  #load.hide{opacity:0;pointer-events:none}
-  #load .cuore{font-size:44px;animation:beat 1s infinite}
-  @keyframes beat{0%,100%{transform:scale(1)}25%{transform:scale(1.25)}45%{transform:scale(1)}}
-  #load .t{font-family:'Press Start 2P',monospace;font-size:11px;color:var(--pesca);letter-spacing:2px}
+  /* ---------- Splash d'ingresso (fa anche da schermata di caricamento) ---------- */
+  #splash{position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;
+    background:radial-gradient(ellipse at 50% 38%, #2a1420 0%, #180b12 55%, #0a0708 100%);
+    transition:opacity .9s;cursor:pointer;-webkit-tap-highlight-color:transparent}
+  #splash.via{opacity:0;pointer-events:none}
+  #splash .inner{text-align:center;padding:20px;animation:spIn 1s ease-out}
+  @keyframes spIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+  #splash .brand{font-family:'Press Start 2P',monospace;font-size:10px;color:var(--rosa);
+    letter-spacing:3px;margin-bottom:18px}
+  #splash h1{font-family:'Baloo 2',cursive;font-weight:800;font-size:clamp(26px,7vw,42px);
+    color:var(--crema);line-height:1.2;margin-bottom:10px;
+    text-shadow:0 3px 14px rgba(232,137,107,.35)}
+  #splash .nomi{font-size:17px;color:var(--pesca);margin-bottom:26px}
+  #splash .cuore{font-size:46px;animation:beat 1.1s infinite;margin-bottom:30px}
+  @keyframes beat{0%,100%{transform:scale(1)}25%{transform:scale(1.22)}45%{transform:scale(1)}}
+  #splash .enter{font-family:'Press Start 2P',monospace;font-size:10.5px;color:var(--pesca);
+    letter-spacing:2px}
+  #splash.pronto .enter{animation:lampeggia 1.5s infinite}
+  @keyframes lampeggia{0%,100%{opacity:1}50%{opacity:.35}}
   #dbg-pos{position:fixed;left:14px;bottom:14px;z-index:80;font-family:monospace;font-size:12px;
     color:#8f8;background:rgba(0,0,0,.6);padding:4px 8px;border-radius:6px;display:none}
 </style>
@@ -166,7 +178,13 @@
 </div></div>
 
 <div id="danceCap"><b></b><span>tocca per fermarvi</span></div>
-<div id="load"><div class="cuore">❤️</div><div class="t">CARICAMENTO...</div></div>
+<div id="splash"><div class="inner">
+  <div class="brand">SEMPREADDUE</div>
+  <h1 id="spTitolo"></h1>
+  <div class="nomi" id="spNomi"></div>
+  <div class="cuore">❤️</div>
+  <div class="enter" id="spEnter">CARICAMENTO…</div>
+</div></div>
 <div id="dbg-pos"></div>
 
 <script>
@@ -189,6 +207,8 @@ const CONFIG = {
   musica: false,         // true = loop musicale 8-bit all'avvio (gli effetti sonori restano comunque)
 
   salvaProgressi: true,  // ricorda sorprese trovate/scene viste alla riapertura (?reset=1 per azzerare)
+
+  schermataIngresso: true,  // splash "tocca per entrare" coi nomi (sblocca anche l'audio su iPhone)
 
   // Battute di lui: una conversazione, si avanza toccando il riquadro
   dialoghi: [
@@ -295,21 +315,26 @@ const PORTRAITS = {
 class ChiptuneAudio {
   constructor(){
     this.ctx=null; this.muted=false; this.isPlaying=false; this.timer=null;
-    this.tempo=115; this.beat=60/this.tempo;
-    this.melody=[['E',5,1],['G',5,1],['C',6,2],['D',6,1],['C',6,1],['B',5,2],['A',5,1],['B',5,1],['C',6,2],['G',5,2],['E',5,2],
-      ['E',5,1],['G',5,1],['C',6,2],['D',6,1],['F',6,1],['E',6,2],['D',6,2],['C',6,2],['B',5,4],
-      ['A',5,1],['C',6,1],['E',6,2],['D',6,1],['C',6,1],['G',5,2],['F',5,1],['G',5,1],['A',5,2],['E',5,4],
-      ['F',5,1],['A',5,1],['D',6,2],['B',5,2],['G',5,2],['C',6,4],[null,0,2]];
-    this.harmony=[['C',5,1],['E',5,1],['G',5,2],['B',5,1],['A',5,1],['G',5,2],['F',5,1],['G',5,1],['A',5,2],['E',5,2],['C',5,2],
-      ['C',5,1],['E',5,1],['G',5,2],['B',5,1],['D',6,1],['C',6,2],['B',5,2],['A',5,2],['G',5,4],
-      ['F',5,1],['A',5,1],['C',6,2],['B',5,1],['A',5,1],['E',5,2],['D',5,1],['E',5,1],['F',5,2],['C',5,4],
-      ['D',5,1],['F',5,1],['B',5,2],['G',5,2],['F',5,2],['E',5,4],[null,0,2]];
-    this.bass=[['C',3,4],['G',3,4],['A',3,4],['E',3,4],['C',3,4],['F',3,4],['G',3,4],['G',3,4],
-      ['F',3,4],['C',3,4],['F',3,4],['C',3,4],['D',3,4],['G',3,4],['C',3,4],['C',3,4]];
-    this.arp=[['C',5,.5],['E',5,.5],['G',5,.5],['C',6,.5],['G',5,.5],['E',5,.5],['C',5,.5],[null,0,.5],
-      ['D',5,.5],['F',5,.5],['A',5,.5],['D',6,.5],['A',5,.5],['F',5,.5],['D',5,.5],[null,0,.5],
-      ['F',5,.5],['A',5,.5],['C',6,.5],['F',6,.5],['C',6,.5],['A',5,.5],['F',5,.5],[null,0,.5],
-      ['G',5,.5],['B',5,.5],['D',6,.5],['G',6,.5],['D',6,.5],['B',5,.5],['G',5,.5],[null,0,.5]];
+    /* Loop di sottofondo "caldo": 16 battute, Do–Lam–Fa–Sol, timbri morbidi */
+    this.tempo=84; this.beat=60/this.tempo;
+    this.melody=[
+      ['E',4,2],['G',4,2],['C',5,4], ['B',4,2],['A',4,2],['G',4,4],
+      ['A',4,2],['C',5,2],['D',5,4], ['B',4,2],['D',5,2],['G',4,4],
+      ['E',5,2],['D',5,2],['C',5,4], ['C',5,2],['B',4,2],['A',4,4],
+      ['A',4,2],['B',4,2],['C',5,4], ['D',5,2],['B',4,2],['C',5,4]];
+    this.harmony=[['G',3,8],['E',3,8],['A',3,8],['D',4,8],
+                  ['G',3,8],['E',3,8],['A',3,8],['D',4,8]];
+    this.bass=[['C',3,8],['A',2,8],['F',2,8],['G',2,8],
+               ['C',3,8],['A',2,8],['F',2,8],['G',2,8]];
+    this.arp=[
+      ['C',4,.5],['E',4,.5],['G',4,.5],['C',5,.5],['G',4,.5],['E',4,.5],['C',4,.5],[null,0,4.5],
+      ['A',3,.5],['C',4,.5],['E',4,.5],['A',4,.5],['E',4,.5],['C',4,.5],['A',3,.5],[null,0,4.5],
+      ['F',3,.5],['A',3,.5],['C',4,.5],['F',4,.5],['C',4,.5],['A',3,.5],['F',3,.5],[null,0,4.5],
+      ['G',3,.5],['B',3,.5],['D',4,.5],['G',4,.5],['D',4,.5],['B',3,.5],['G',3,.5],[null,0,4.5],
+      ['C',4,.5],['E',4,.5],['G',4,.5],['C',5,.5],['G',4,.5],['E',4,.5],['C',4,.5],[null,0,4.5],
+      ['A',3,.5],['C',4,.5],['E',4,.5],['A',4,.5],['E',4,.5],['C',4,.5],['A',3,.5],[null,0,4.5],
+      ['F',3,.5],['A',3,.5],['C',4,.5],['F',4,.5],['C',4,.5],['A',3,.5],['F',3,.5],[null,0,4.5],
+      ['G',3,.5],['B',3,.5],['D',4,.5],['G',4,.5],['D',4,.5],['B',3,.5],['G',3,.5],[null,0,4.5]];
     this.freqs={C:16.35,'C#':17.32,D:18.35,'D#':19.45,E:20.60,F:21.83,'F#':23.12,G:24.50,'G#':25.96,A:27.50,'A#':29.14,B:30.87};
   }
   init(){ if(!this.ctx) this.ctx=new (window.AudioContext||window.webkitAudioContext)();
@@ -344,10 +369,10 @@ class ChiptuneAudio {
     let mi=0,hi=0,bi=0,ai=0;
     let tm=this.ctx.currentTime+.1, th=tm, tb=tm, ta=tm;
     const chans=[
-      [this.melody, ()=>tm, v=>tm=v, ()=>mi, v=>mi=v, 'square', .04, .02],
-      [this.harmony,()=>th, v=>th=v, ()=>hi, v=>hi=v, 'square', .025,.02],
-      [this.bass,   ()=>tb, v=>tb=v, ()=>bi, v=>bi=v, 'triangle',.06, .01],
-      [this.arp,    ()=>ta, v=>ta=v, ()=>ai, v=>ai=v, 'sine',  .015,.01],
+      [this.melody, ()=>tm, v=>tm=v, ()=>mi, v=>mi=v, 'triangle', .05, .04],
+      [this.harmony,()=>th, v=>th=v, ()=>hi, v=>hi=v, 'sine',    .022,.05],
+      [this.bass,   ()=>tb, v=>tb=v, ()=>bi, v=>bi=v, 'triangle', .055,.05],
+      [this.arp,    ()=>ta, v=>ta=v, ()=>ai, v=>ai=v, 'sine',    .014,.02],
     ];
     const loop=()=>{ if(!this.isPlaying) return;
       const now=this.ctx.currentTime, ahead=.3;
@@ -390,7 +415,7 @@ const audio = new ChiptuneAudio();
 /* ============================================================
    MOTORE
    ============================================================ */
-const ENGINE_V = '0.9.0';
+const ENGINE_V = '1.0.0-rc1';
 console.log('Sempreaddue · stanza v'+ENGINE_V);
 const W = 1254;                       // lato stanza in px mondo
 const PCT = W/100;                    // 1% in px mondo
@@ -510,6 +535,8 @@ function resize(){
   if(ready) rebuildCache();
 }
 addEventListener('resize', resize);
+// iOS Safari: la barra degli indirizzi cambia il viewport senza evento resize classico
+if(window.visualViewport) visualViewport.addEventListener('resize', resize);
 function camFocus(){
   if(dance.on)  return {x:CONFIG.ballo.x, y:CONFIG.ballo.y-8};
   if(fuochi.on) return {x:51, y:22};
@@ -1189,11 +1216,26 @@ function begin(){
   resize(); buildInter(); updateHearts();
   unstuck(player);
   document.title=CONFIG.titolo;
-  document.getElementById('hint').textContent =
+  const hintEl=document.getElementById('hint');
+  hintEl.textContent =
     isTouch ? 'Levetta per muoverti · tocca ❤ vicino alle sorprese'
             : 'WASD / frecce per muoverti · E per interagire';
-  setTimeout(()=>document.getElementById('hint').classList.add('hide'), 7000);
-  document.getElementById('load').classList.add('hide');
+  // splash: da "caricamento" a "tocca per entrare"
+  const sp=document.getElementById('splash');
+  document.getElementById('spTitolo').textContent=CONFIG.titolo;
+  document.getElementById('spNomi').textContent=CONFIG.nomi.lei+' ❤ '+CONFIG.nomi.lui;
+  const entra=()=>{
+    firstGesture();                       // sblocca l'audio dentro il gesto (iOS)
+    sp.classList.add('via');
+    setTimeout(()=>sp.remove(), 1000);
+    setTimeout(()=>hintEl.classList.add('hide'), 7000);
+  };
+  if(CONFIG.schermataIngresso===false){ entra(); }
+  else {
+    document.getElementById('spEnter').textContent='TOCCA PER ENTRARE ❤';
+    sp.classList.add('pronto');
+    sp.addEventListener('pointerdown', entra, {once:true});
+  }
   requestAnimationFrame(loop);
 }
 </script>
