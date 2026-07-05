@@ -1,0 +1,59 @@
+{
+  "_slug": "esempio",
+
+  "titolo": "Una stanza tutta per voi",
+  "nomi": { "lei": "Anna", "lui": "Marco" },
+  "dataInizio": "2022-06-18",
+  "musica": false,
+
+  "dialoghi": [
+    "Ciao amore… ti stavo aspettando. ❤",
+    "Questa stanza è nostra. Solo nostra.",
+    "Guardati intorno: ho nascosto qualche sorpresa per te…",
+    "Cerca i luccichii ✨ e vieni a raccontarmi cosa trovi!"
+  ],
+
+  "gatto": {
+    "nome": "Micio",
+    "x": 19, "y": 46,
+    "larghezza": 9.5,
+    "messaggio": "Prrr… anche Micio è felice di vedervi insieme. 🐾"
+  },
+
+  "ballo": {
+    "x": 47, "y": 64,
+    "didascalia": "♪ La nostra canzone ♪"
+  },
+
+  "fuochi": { "didascalia": "I nostri fuochi, solo per noi ✨" },
+
+  "sorprese": [
+    { "icona": "🎶", "x": 20, "y": 26, "raggio": 13,
+      "titolo": "La nostra canzone",
+      "testo": "Ricordi la prima volta che l'abbiamo ballata?\nIl giradischi la suona ancora, solo per noi.",
+      "foto": null },
+    { "icona": "🍷", "x": 51, "y": 34.5, "raggio": 12,
+      "titolo": "Un brindisi a noi",
+      "testo": "Due calici, la luna e i fuochi d'artificio.\nA tutte le sere che ci aspettano.",
+      "foto": null },
+    { "icona": "📺", "x": 79, "y": 38.5, "raggio": 12,
+      "titolo": "Le nostre serate",
+      "testo": "Film brutti, coperta e divano.\nCon te anche il telecomando conteso è romantico.",
+      "foto": null },
+    { "icona": "💌", "x": 31, "y": 79, "raggio": 12,
+      "titolo": "Una lettera per te",
+      "testo": "Sulla scrivania c'è una lettera con il tuo nome.\nDentro c'è scritto tutto quello che sei per me.\nOgni giorno con te è il mio posto preferito.",
+      "foto": null,
+      "lettera": true }
+  ],
+
+  "finale": {
+    "titolo": "Buon anniversario ❤",
+    "testo": "Hai trovato tutte le sorprese…\nma la sorpresa più bella resti tu.\nQuesta stanza è nostra, per sempre."
+  },
+
+  "posizioni": {
+    "lei": { "x": 50, "y": 75 },
+    "lui": { "x": 72, "y": 60 }
+  }
+}
