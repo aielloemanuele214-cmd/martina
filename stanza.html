@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!-- Sempreaddue · Una stanza tutta per voi · motore v0.9.0 -->
 <html lang="it">
 <head>
 <meta charset="UTF-8">
@@ -27,6 +28,9 @@
     font-size:17px;letter-spacing:3px;filter:drop-shadow(0 2px 3px rgba(0,0,0,.6));
     cursor:pointer;padding:4px}
   #hearts .off{opacity:.28;filter:grayscale(1)}
+  #hearts .oro{filter:drop-shadow(0 0 7px rgba(255,215,100,.9));
+    display:inline-block;animation:oroPop .7s cubic-bezier(.34,1.56,.64,1)}
+  @keyframes oroPop{from{transform:scale(0) rotate(-30deg)}to{transform:scale(1) rotate(0)}}
   #btns{position:fixed;top:calc(8px + env(safe-area-inset-top));right:12px;z-index:30;display:flex;gap:8px}
   #btns button{width:40px;height:40px;border-radius:12px;border:1px solid rgba(246,201,168,.35);
     background:rgba(30,16,20,.78);color:var(--crema);font-size:18px;cursor:pointer}
@@ -104,6 +108,8 @@
   #finale .giorni{margin-top:16px;font-family:'Press Start 2P',monospace;font-size:11px;
     color:var(--rosa);letter-spacing:1px}
   #finale .giorni:empty{display:none}
+  #finale .segreta{margin-top:10px;font-size:13.5px;color:#a4763f}
+  #finale .segreta:empty{display:none}
   #finale button{margin-top:20px;background:var(--rosa);border:none;color:#fff;
     font-family:'Baloo 2',cursive;font-weight:800;font-size:16px;padding:12px 30px;
     border-radius:999px;cursor:pointer}
@@ -155,6 +161,7 @@
 <div id="finale"><div class="box">
   <div class="px">SEMPREADDUE</div><h2></h2><div class="testo"></div>
   <div class="giorni"></div>
+  <div class="segreta"></div>
   <button>Restiamo qui ❤</button>
 </div></div>
 
@@ -383,6 +390,8 @@ const audio = new ChiptuneAudio();
 /* ============================================================
    MOTORE
    ============================================================ */
+const ENGINE_V = '0.9.0';
+console.log('Sempreaddue · stanza v'+ENGINE_V);
 const W = 1254;                       // lato stanza in px mondo
 const PCT = W/100;                    // 1% in px mondo
 const H_LUI = 24.8*PCT;               // altezza di lui (~311px)
@@ -454,7 +463,7 @@ const player = {
   vx:0, vy:0, dir:'down', moving:false, animT:0, stepAcc:0,
 };
 const npc = { x:CONFIG.posizioni.lui.x, y:CONFIG.posizioni.lui.y, talked:false };
-const cat = { ...CONFIG.gatto, awakeUntil:0 };
+const cat = { ...CONFIG.gatto, awakeUntil:0, trovato:false };  // sorpresa segreta 💛
 const found = CONFIG.sorprese.map(()=>false);
 let frozen = false;          // input bloccato (dialoghi/modali)
 let finaleShown = false;
@@ -472,13 +481,14 @@ function loadSave(){
     fuochi.visti=!!s.fuochi;
     npc.talked=!!s.npc;
     finaleShown=!!s.finale;
+    cat.trovato=!!s.segreto;
   }catch(e){}
 }
 function save(){
   if(!CONFIG.salvaProgressi) return;
   try{
     localStorage.setItem(SAVE_KEY, JSON.stringify(
-      {found, fuochi:fuochi.visti, npc:npc.talked, finale:finaleShown}));
+      {found, fuochi:fuochi.visti, npc:npc.talked, finale:finaleShown, segreto:cat.trovato}));
   }catch(e){}
 }
 function vibra(pattern){ try{ navigator.vibrate && navigator.vibrate(pattern); }catch(e){} }
@@ -710,6 +720,11 @@ function pokeCat(){
   cat.awakeUntil=clock+5;
   audio.sfx('meow');
   burst(cat.x, cat.y-4, 6);
+  if(!cat.trovato){   // sorpresa segreta: appare il quinto cuore dorato
+    cat.trovato=true;
+    updateHearts(); vibra(40); save();
+    audio.sfx('item');
+  }
   showDialog(CONFIG.gatto.nome, 'gatto', [cat.messaggio]);
 }
 
@@ -775,6 +790,8 @@ function showFinale(){
     const g=Math.max(0, Math.floor((Date.now()-new Date(CONFIG.dataInizio+'T00:00:00'))/864e5));
     gEl.textContent=`INSIEME DA ${g.toLocaleString('it-IT')} GIORNI ❤`;
   } else gEl.textContent='';
+  finaleEl.querySelector('.segreta').textContent =
+    cat.trovato ? '💛 E avete trovato anche la sorpresa segreta…' : '';
   // pioggia di cuori
   for(let i=0;i<26;i++){
     const h=document.createElement('div');
@@ -795,7 +812,8 @@ finaleEl.querySelector('button').addEventListener('click', ()=>{
 /* ---------- HUD ---------- */
 function updateHearts(){
   const el=document.getElementById('hearts');
-  el.innerHTML=CONFIG.sorprese.map((s,i)=>`<span class="${found[i]?'':'off'}">❤️</span>`).join('');
+  el.innerHTML=CONFIG.sorprese.map((s,i)=>`<span class="${found[i]?'':'off'}">❤️</span>`).join('')
+    + (cat.trovato?'<span class="oro">💛</span>':'');
 }
 // col gioco completato, un tocco sul contatore rivede il finale
 document.getElementById('hearts').addEventListener('pointerdown', e=>{
