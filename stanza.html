@@ -195,7 +195,7 @@ const CONFIG = {
     nome: 'Micio',
     x: 19, y: 46,        // posizione sul letto
     larghezza: 9.5,      // larghezza in % stanza
-    messaggio: 'Prrr… anche Micio è felice di vedervi insieme. 🐾',
+    messaggio: 'Dicono che i gatti siano esseri magici: vegliano sulle case e su chi si ama. E se riesci a vederli davvero… splendono come stelle. ✨',
   },
 
   // Scena del ballo: dopo aver scoperto la sorpresa del giradischi,
@@ -573,8 +573,8 @@ function ptrEnd(e){
   if(e.pointerId===joy.id){ joy.active=false; joy.id=null; joy.dx=0; joy.dy=0; }
   else if(e.pointerId===tap.id){
     if(performance.now()-tap.t0<280 && !tap.moved){
-      // tap veloce: prima la finestra (fuochi), poi l'interazione normale
-      if(frozen || !tryWindow(tap.x,tap.y)) pressInteract();
+      // tap veloce: prima il gatto e la finestra, poi l'interazione normale
+      if(frozen || (!tryCat(tap.x,tap.y) && !tryWindow(tap.x,tap.y))) pressInteract();
     }
     tap.id=null;
   }
@@ -648,6 +648,15 @@ const FW_COLORI=['#E890A8','#F6C9A8','#E8896B','#ffd97a','#9ad1ff'];
 function tryWindow(cssX,cssY){
   const wx=(cssX/S+camX)/PCT, wy=(cssY/S+camY)/PCT;
   if(wx>41 && wx<61 && wy>2 && wy<28 && player.y<62){ startFuochi(); return true; }
+  return false;
+}
+/* Tocco diretto sul gatto: funziona da qualsiasi distanza (è magico) */
+function tryCat(cssX,cssY){
+  const wx=(cssX/S+camX)/PCT, wy=(cssY/S+camY)/PCT;
+  const w=cat.larghezza, h=w*ASSETS.gatto.fh/ASSETS.gatto.fw;
+  if(wx>cat.x-w/2-1.5 && wx<cat.x+w/2+1.5 && wy>cat.y-h-2 && wy<cat.y+1.5){
+    pokeCat(); return true;
+  }
   return false;
 }
 function startFuochi(){
@@ -881,6 +890,16 @@ function update(dt){
     else actionEl.classList.remove('show');
   }
 
+  // scintille dorate del gatto quando il suo alone è visibile
+  {
+    const dG=Math.hypot(player.x-cat.x, player.y-cat.y);
+    const g=Math.max((22-dG)/12, clock<cat.awakeUntil?1:0);
+    if(g>.15 && Math.random()<dt*2*Math.min(1,g))
+      parts.push({x:cat.x+(Math.random()-.5)*cat.larghezza*1.2,
+        y:cat.y-1-Math.random()*4.5, vy:-(1+Math.random()*1.5),
+        sway:Math.random()*Math.PI*2, life:.85, ch:'✨', size:11+Math.random()*8});
+  }
+
   // vicini vicini: qualche cuoricino quando lei sta accanto a lui
   if(!frozen && Math.hypot(player.x-npc.x, player.y-npc.y)<8 && Math.random()<dt*.6)
     parts.push({x:(player.x+npc.x)/2+(Math.random()-.5)*3, y:Math.min(player.y,npc.y)-20,
@@ -945,6 +964,14 @@ function rebuildCache(){
   rg.addColorStop(0,'rgba(0,0,0,.42)'); rg.addColorStop(1,'rgba(0,0,0,0)');
   g.fillStyle=rg; g.fillRect(0,0,128,128);
   CACHE.shadow=sh;
+  // alone dorato del gatto
+  const gl=mk(160,160), gg=gl.getContext('2d');
+  const grg=gg.createRadialGradient(80,80,10,80,80,80);
+  grg.addColorStop(0,'rgba(255,222,140,.55)');
+  grg.addColorStop(.55,'rgba(255,200,110,.22)');
+  grg.addColorStop(1,'rgba(255,190,90,0)');
+  gg.fillStyle=grg; gg.fillRect(0,0,160,160);
+  CACHE.aloneGatto=gl;
   // glifi emoji rasterizzati una volta
   for(const ch of ['✨','❤','💬','❤️','🎶']){
     const gc=mk(64,64), cg=gc.getContext('2d');
@@ -1037,6 +1064,19 @@ function render(){
   const catFrame=clock<cat.awakeUntil?1:0;
   const ents=[
     {y:cat.y, draw(){
+      // l'alone dorato si accende solo avvicinandosi (o quando si sveglia)
+      const d=Math.hypot(player.x-cat.x, player.y-cat.y);
+      const glow=Math.max(Math.max(0,Math.min(1,(22-d)/12)), clock<cat.awakeUntil?1:0);
+      if(glow>.02){
+        const wW=cat.larghezza*PCT;
+        const rx=wW*.85*PS, ry=rx*.62;
+        const cxp=cvx(cat.x*PCT), cyp=cvy((cat.y-2.4)*PCT);
+        ctx.save();
+        ctx.globalCompositeOperation='lighter';
+        ctx.globalAlpha=glow*(.55+.25*Math.sin(clock*2.2));
+        ctx.drawImage(CACHE.aloneGatto, cxp-rx, cyp-ry, rx*2, ry*2);
+        ctx.restore();
+      }
       blitShadow(cat.x, cat.y, cat.larghezza*PCT*.8, .8);
       blit('gatto', catFrame, cat.x, cat.y, false, 1, 0);
     }},
@@ -1087,8 +1127,8 @@ function render(){
     blit('luiBack', 0, 52.9, 29.4, false, 1, Math.sin(fuochi.t*1.5+.9)*-1.5);
   }
 
-  // particelle cuore
-  for(const p of parts) glyph('❤️', p.x, p.y, 20, Math.max(0,p.life), 0);
+  // particelle (cuori e scintille)
+  for(const p of parts) glyph(p.ch||'❤️', p.x, p.y, p.size||20, Math.max(0,p.life), 0);
 
   // joystick fisso (spazio schermo, solo touch)
   ctx.setTransform(dpr,0,0,dpr,0,0);
