@@ -1,0 +1,61 @@
+{
+  "_slug": "demo",
+
+  "titolo": "Una stanza tutta per voi",
+  "nomi": { "lei": "Lei", "lui": "Lui" },
+  "dataInizio": null,
+  "musica": false,
+  "salvaProgressi": false,
+  "schermataIngresso": true,
+
+  "dialoghi": [
+    "Ciao! Benvenuti nella stanza demo di Sempreaddue. ❤",
+    "Ogni stanza è unica: nomi, dialoghi, sorprese e foto della coppia.",
+    "Cerca i luccichii ✨, accarezza il gatto, e prova il giradischi…",
+    "Ti piacerebbe una stanza tutta vostra? Scrivici su @sempreaddue!"
+  ],
+
+  "gatto": {
+    "nome": "Micio",
+    "x": 19, "y": 46,
+    "larghezza": 9.5,
+    "messaggio": "Dicono che i gatti siano esseri magici: vegliano sulle case e su chi si ama. E se riesci a vederli davvero… splendono come stelle. ✨"
+  },
+
+  "ballo": {
+    "x": 47, "y": 64,
+    "didascalia": "♪ La vostra canzone ♪"
+  },
+
+  "fuochi": { "didascalia": "I vostri fuochi, solo per voi ✨" },
+
+  "sorprese": [
+    { "icona": "🎶", "x": 20, "y": 26, "raggio": 13,
+      "titolo": "La vostra canzone",
+      "testo": "Qui va il ricordo della vostra canzone.\nE dopo averla trovata… toccate di nuovo il giradischi per ballare.",
+      "foto": null },
+    { "icona": "🍷", "x": 51, "y": 34.5, "raggio": 12,
+      "titolo": "Un brindisi a voi",
+      "testo": "Ogni sorpresa può avere un testo personale\ne una vostra foto vera.",
+      "foto": null },
+    { "icona": "📺", "x": 79, "y": 38.5, "raggio": 12,
+      "titolo": "Le vostre serate",
+      "testo": "Film, coperta e divano.\nScrivete qui il vostro rito di coppia preferito.",
+      "foto": null },
+    { "icona": "💌", "x": 31, "y": 79, "raggio": 12,
+      "titolo": "Una lettera per te",
+      "testo": "La lettera si scrive da sola, a macchina da scrivere.\nImmagina qui le parole che vorresti dirle.\nQuesta è la sorpresa più amata.",
+      "foto": null,
+      "lettera": true }
+  ],
+
+  "finale": {
+    "titolo": "Fatta apposta per voi ❤",
+    "testo": "Questa era la demo.\nLa vostra stanza avrà i vostri nomi, i vostri ricordi,\nle vostre foto e la vostra dedica.\n\n@sempreaddue"
+  },
+
+  "posizioni": {
+    "lei": { "x": 50, "y": 75 },
+    "lui": { "x": 72, "y": 60 }
+  }
+}
