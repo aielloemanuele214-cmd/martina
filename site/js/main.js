@@ -119,17 +119,82 @@
     paint();
   }
 
-  /* ---------- Demo: l'iframe (3,7 MB) viene caricato solo su richiesta ---------- */
+  /* ---------- Popup founder: −5% col codice FOUNDER26 ---------- */
+  const overlay = $('#promoOverlay');
+  if (overlay && !localStorage.getItem('sad-promo-iscritta')) {
+    const close = () => {
+      overlay.hidden = true;
+      document.removeEventListener('keydown', onKey);
+    };
+    const onKey = (e) => { if (e.key === 'Escape') close(); };
+    setTimeout(() => {
+      overlay.hidden = false;
+      document.addEventListener('keydown', onKey);
+      $('input[type="email"]', overlay)?.focus({ preventScroll: true });
+    }, 10000);
+    $('#promoClose').addEventListener('click', close);
+    overlay.addEventListener('click', (e) => { if (e.target === overlay) close(); });
+    $('#promoForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const form = e.target;
+      const btn = $('button[type="submit"]', form);
+      btn.disabled = true;
+      try {
+        // Netlify Forms: POST AJAX verso la pagina stessa
+        const res = await fetch('/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: new URLSearchParams(new FormData(form)).toString()
+        });
+        if (!res.ok) throw new Error(res.status);
+        form.outerHTML = '<p class="promo-ok">💌 Fatto! Il tuo codice founder ' +
+          'sta arrivando nella tua casella email.</p>';
+        localStorage.setItem('sad-promo-iscritta', '1');
+      } catch {
+        btn.disabled = false;
+        $('.promo-err', form)?.remove();
+        form.insertAdjacentHTML('beforeend',
+          '<p class="promo-err">Ops, invio non riuscito: riprova tra poco o scrivici su Instagram.</p>');
+      }
+    });
+  }
+
+  /* ---------- Demo: l'iframe (≈4,5 MB) viene caricato solo su richiesta ---------- */
   const start = $('#demoStart');
   if (start) {
+    // il video di gameplay parte solo quando la sezione è visibile (e mai con reduced motion)
+    const video = $('.demo-video', start);
+    if (video && !reduceMotion && 'IntersectionObserver' in window) {
+      const vio = new IntersectionObserver((entries) => {
+        for (const e of entries) {
+          if (e.isIntersecting) video.play().catch(() => {});
+          else video.pause();
+        }
+      }, { threshold: 0.3 });
+      vio.observe(video);
+    } else if (video) {
+      video.remove(); // resta il poster statico
+    }
     start.addEventListener('click', () => {
       const frame = $('#demoFrame');
+      const label = $('.demo-poster-label', start);
+      const play = $('.demo-play', start);
+      if (label) label.textContent = 'Caricamento…';
+      if (play) play.style.display = 'none';
       const iframe = document.createElement('iframe');
-      iframe.src = 'stanza.html';
-      iframe.title = 'Demo giocabile di Sempreaddue';
+      iframe.src = 'demo.html';
+      iframe.title = 'Demo giocabile di Sempreaddue — Il Villaggio Incantato';
       iframe.allow = 'autoplay; fullscreen';
-      frame.replaceChildren(iframe);
-      iframe.focus();
+      // il poster resta visibile finché il gioco (≈4,5 MB) non è pronto;
+      // niente replaceChildren: spostare un iframe nel DOM lo ricaricherebbe
+      iframe.addEventListener('load', () => {
+        video?.pause();
+        start.remove();
+        iframe.style.visibility = '';
+        iframe.focus();
+      });
+      iframe.style.visibility = 'hidden';
+      frame.appendChild(iframe);
     }, { once: true });
   }
 })();

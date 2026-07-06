@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Ordina la tua avventura — Sempreaddue</title>
+  <meta name="description" content="Racconta la vostra storia in pochi passi: nomi, ricordi, foto e sorprese. Trasformiamo tutto in un'avventura pixel art personalizzata.">
+  <link rel="canonical" href="https://sempreaddue.netlify.app/ordina.html">
+  <meta name="theme-color" content="#120a10">
+  <link rel="icon" href="site/img/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="site/css/main.css">
+</head>
+<body>
+
+<a class="skip-link" href="#main">Salta al contenuto</a>
+
+<header class="header scrolled">
+  <div class="container nav">
+    <a class="logo" href="index.html" aria-label="Sempreaddue — torna alla home">
+      <svg viewBox="0 0 16 16" aria-hidden="true"><path fill="#E8896B" d="M2 3h3v1h1v1h1v1h2V5h1V4h1V3h3v1h1v4h-1v1h-1v1h-1v1h-1v1h-1v1h-1v1H8v-1H7v-1H6v-1H5v-1H4V9H3V8H2V7H1V4h1z"/></svg>
+      Sempreaddue
+    </a>
+    <a class="btn btn-ghost" style="padding:9px 20px;font-size:.92rem" href="index.html">← Torna al sito</a>
+  </div>
+</header>
+
+<main id="main" class="order-page">
+  <div class="container order-shell">
+    <div class="order-head">
+      <span class="kicker">Ordina la tua avventura</span>
+      <h1>Raccontaci di <span class="accent">voi due</span></h1>
+      <p>Quattro passi, cinque minuti. Poi al resto pensiamo noi:
+        ti ricontattiamo entro un giorno con anteprima dei tempi e conferma del prezzo.</p>
+    </div>
+
+    <!-- Barra di avanzamento -->
+    <div class="steps-bar" aria-hidden="true">
+      <span class="steps-dot active" data-dot="1"></span>
+      <span class="steps-line"></span>
+      <span class="steps-dot" data-dot="2"></span>
+      <span class="steps-line"></span>
+      <span class="steps-dot" data-dot="3"></span>
+      <span class="steps-line"></span>
+      <span class="steps-dot" data-dot="4"></span>
+    </div>
+    <p class="steps-label" id="stepLabel" aria-live="polite">Passo 1 di 4 · L'occasione</p>
+
+    <!--
+      Form compatibile con Netlify Forms: su Netlify la POST viene raccolta
+      automaticamente (attributo data-netlify) e l'utente arriva su grazie.html.
+      Su altri hosting serve un endpoint equivalente.
+    -->
+    <form class="order-form" id="orderForm" name="ordine" method="POST"
+          action="grazie.html" data-netlify="true" netlify-honeypot="campo-extra">
+      <input type="hidden" name="form-name" value="ordine">
+      <p class="hp" aria-hidden="true"><label>Non compilare: <input name="campo-extra" tabindex="-1" autocomplete="off"></label></p>
+
+      <!-- PASSO 1 · Occasione e pacchetto -->
+      <fieldset class="step" data-step="1">
+        <legend class="sr-only">L'occasione e il pacchetto</legend>
+
+        <p class="field-label">Per quale occasione è il regalo?</p>
+        <div class="choice-grid" role="radiogroup" aria-label="Occasione">
+          <label class="choice"><input type="radio" name="occasione" value="Anniversario / dedica" required>
+            <span><b>💞 Anniversario</b><i>o una dedica "senza motivo"</i></span></label>
+          <label class="choice"><input type="radio" name="occasione" value="Compleanno">
+            <span><b>🎂 Compleanno</b><i>sorprese e auguri a tema festa</i></span></label>
+          <label class="choice"><input type="radio" name="occasione" value="Proposta di matrimonio">
+            <span><b>💍 Proposta</b><i>il finale apre la Richiesta Ufficiale</i></span></label>
+          <label class="choice"><input type="radio" name="occasione" value="Altro">
+            <span><b>✨ Altro</b><i>raccontacelo al passo 3</i></span></label>
+        </div>
+
+        <div class="order-base">
+          <span class="order-base-body"><b>L'Avventura · 19,50&nbsp;€</b>
+            <i>tutto incluso — avventura completa con gli sprite di voi due,
+            3 sorprese personalizzate, finale, link privato + QR Code</i></span>
+        </div>
+      </fieldset>
+
+      <!-- PASSO 2 · Voi due -->
+      <fieldset class="step" data-step="2" hidden>
+        <legend class="sr-only">I protagonisti</legend>
+        <div class="field-row">
+          <label class="field">Il tuo nome
+            <input type="text" name="nome-tuo" autocomplete="given-name" required maxlength="60" placeholder="Es. Emanuele">
+          </label>
+          <label class="field">Il nome di chi riceve il regalo
+            <input type="text" name="nome-partner" required maxlength="60" placeholder="Es. Martina">
+          </label>
+        </div>
+        <label class="field">State insieme da… <small>(facoltativo: apparirà nel gioco)</small>
+          <input type="date" name="insieme-da">
+        </label>
+        <label class="field">La vostra storia in poche righe
+          <textarea name="storia" rows="5" required maxlength="2000"
+            placeholder="Come vi siete conosciuti, i momenti che contano, le frasi che solo voi capite…"></textarea>
+        </label>
+      </fieldset>
+
+      <!-- PASSO 3 · Dettagli -->
+      <fieldset class="step" data-step="3" hidden>
+        <legend class="sr-only">I dettagli dell'avventura</legend>
+
+        <p class="field-label">Vuoi renderla ancora più vostra? <small style="font-weight:400;font-family:var(--font-body);color:var(--testo-soft)">(extra facoltativi a prezzo founder)</small></p>
+        <div class="extra-list" role="group" aria-label="Extra facoltativi">
+          <label class="extra-row">
+            <span class="extra-body"><b>📷 Le vostre foto reali</b><i><s>1&nbsp;€</s> 0,50&nbsp;€ l'una, dentro le sorprese</i></span>
+            <span class="extra-ctrl"><input type="number" name="foto-reali" data-prezzo="0.5"
+              min="0" max="10" value="0" inputmode="numeric" aria-label="Quante foto reali"> foto</span>
+          </label>
+          <label class="extra-row">
+            <span class="extra-body"><b>🐱 Personaggi in più</b><i><s>6&nbsp;€</s> 3&nbsp;€ a sprite: il gatto, un amico, la famiglia…</i></span>
+            <span class="extra-ctrl"><input type="number" name="sprite-extra" data-prezzo="3"
+              min="0" max="5" value="0" inputmode="numeric" aria-label="Quanti personaggi in più"> sprite</span>
+          </label>
+          <label class="extra-row">
+            <span class="extra-body"><b>🖼️ Biglietto QR da stampare</b><i><s>10&nbsp;€</s> 5&nbsp;€, design elegante pronto per la stampa</i></span>
+            <span class="extra-ctrl"><input type="checkbox" name="qr-stampabile" value="Sì (+5€)" data-prezzo="5"
+              aria-label="Aggiungi il biglietto QR da stampare"></span>
+          </label>
+        </div>
+        <p class="order-total" aria-live="polite">Totale: <b id="orderTotal">19,50&nbsp;€</b></p>
+
+        <label class="field">Le 3 sorprese che vorresti nascondere nel gioco
+          <textarea name="sorprese" rows="4" maxlength="1500"
+            placeholder="Es. la foto del primo viaggio, la lettera che non le ho mai scritto, il nostro posto…"></textarea>
+        </label>
+        <label class="field">Data entro cui ti serve <small>(facoltativo)</small>
+          <input type="date" name="scadenza">
+        </label>
+        <label class="field">Note e richieste speciali <small>(facoltativo)</small>
+          <textarea name="note" rows="3" maxlength="1000"
+            placeholder="Ambientazione particolare, il vostro gatto, un tema fantasy come la demo…"></textarea>
+        </label>
+      </fieldset>
+
+      <!-- PASSO 4 · Contatti -->
+      <fieldset class="step" data-step="4" hidden>
+        <legend class="sr-only">Come ricontattarti</legend>
+        <div class="field-row">
+          <label class="field">La tua email
+            <input type="email" name="email" autocomplete="email" required maxlength="120" placeholder="nome@esempio.it">
+          </label>
+          <label class="field">Instagram <small>(facoltativo, se preferisci il DM)</small>
+            <input type="text" name="instagram" maxlength="60" placeholder="@iltuoprofilo">
+          </label>
+        </div>
+        <label class="check">
+          <input type="checkbox" name="privacy" value="accettata" required>
+          <span>Ho letto l'<a href="privacy.html" target="_blank" rel="noopener">informativa privacy</a>:
+          foto e ricordi verranno usati solo per creare la nostra avventura.</span>
+        </label>
+        <label class="field">Codice promo <small>(facoltativo — il codice founder vale il −50% sul totale, fino al 6 ottobre 2026)</small>
+          <input type="text" name="codice-promo" id="promoInput" maxlength="20"
+                 autocomplete="off" autocapitalize="characters" placeholder="Scrivilo qui">
+        </label>
+        <p class="promo-feedback" id="promoFeedback" aria-live="polite" hidden></p>
+        <div class="order-recap" id="orderRecap" aria-live="polite"></div>
+        <p class="order-pay-note">🔒 Dopo l'invio ti portiamo al pagamento sicuro con
+          <strong>Stripe</strong>. Nessun addebito prima della conferma dell'ordine.</p>
+      </fieldset>
+
+      <div class="order-nav">
+        <button type="button" class="btn btn-ghost" id="btnPrev" hidden>← Indietro</button>
+        <button type="button" class="btn btn-primary" id="btnNext">Continua →</button>
+        <button type="submit" class="btn btn-primary btn-lg" id="btnSend" hidden>
+          Invia la richiesta
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 21s-8-5-10.4-9.6C-.1 8.1 1.7 4.4 5.3 3.9c2.2-.3 4.2.8 6.7 3.3 2.5-2.5 4.5-3.6 6.7-3.3 3.6.5 5.4 4.2 3.7 7.5C20 16 12 21 12 21z"/></svg>
+        </button>
+      </div>
+      <p class="order-alt">Preferisci parlare con una persona? Scrivici su
+        <a href="https://instagram.com/sempreaddue" target="_blank" rel="noopener">Instagram @sempreaddue</a>
+        <!-- Email temporanea: sostituire col dominio definitivo in futuro -->
+        o via email a <a href="mailto:sempreaddue@gmail.com">sempreaddue@gmail.com</a>.</p>
+    </form>
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="container footer-bottom" style="border:0;margin:0;padding:0">
+    <span>© 2026 Sempreaddue. Tutti i diritti riservati.</span>
+    <span>Fatto con <span class="heart" aria-hidden="true">♥</span> e tanti pixel</span>
+  </div>
+</footer>
+
+<script src="site/js/ordina.js" defer></script>
+</body>
+</html>

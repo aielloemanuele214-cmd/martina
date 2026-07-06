@@ -35,6 +35,7 @@ python3 tools/sad.py ordine <slug>          # nuovo ordine: crea clienti/<slug>/
 python3 tools/sad.py validate clienti/<slug>/ordine.json   # schema + lint (id, file, limiti)
 python3 tools/sad.py build clienti/<slug>/ordine.json      # → dist/stanza-<slug>.html (valida prima)
 python3 tools/sad.py qa [dist/stanza-<slug>.html]          # suite QA Playwright (13 verifiche)
+python3 tools/sad.py consegna <slug> [--push]              # build+QA+g/<token>.html+QR: consegna in un comando
 python3 tools/sad.py build-base [pack]      # moduli engine + pack + asset → stanza.html
 python3 tools/sad.py validate [pack]        # schema + lint dell'intero pack
 python3 tools/sad.py new <slug> --da martina# nuovo pack (copia da uno esistente)

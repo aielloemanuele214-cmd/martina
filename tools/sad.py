@@ -10,6 +10,9 @@ Comandi:
     ordine <slug>             scaffolding di un nuovo ordine (clienti/<slug>.json)
     new <slug> [--da pack]    scaffolding di un nuovo pack (copia di un pack esistente)
     qa [file.html]            suite QA Playwright parametrica (default: stanza.html)
+    consegna <slug> [--push] [--senza-qa] [--base-url URL]
+                              build + QA + copia in g/<token>.html + QR pronto da
+                              inviare; con --push committa e pubblica (deploy Netlify)
     preview                   server locale per provare stanza.html e dist/
     art                       rigenera gli sprite da assets/_src/ (tools/sprites.py)
     music <in.mp3> <out.mp3>  loop strumentale senza stacco (tools/music.py)
@@ -428,6 +431,90 @@ def qa(file=None):
     sys.exit(r)
 
 
+def consegna(slug, push=False, senza_qa=False, base_url=None):
+    """Consegna un ordine: build → QA → g/<token>.html → QR.
+
+    Il gioco finisce in g/ con un nome impossibile da indovinare: su Netlify
+    (integrazione Git) il push pubblica tutto da solo e il link è pronto.
+    robots.txt esclude g/ dai motori di ricerca.
+    """
+    import secrets, shutil
+    # Sostituire col dominio definitivo quando ci sarà (o usare SAD_BASE_URL)
+    base_url = (base_url or os.environ.get('SAD_BASE_URL')
+                or 'https://sempreaddue.netlify.app').rstrip('/')
+
+    # 1. trova l'ordine: clienti/<slug>/ordine.json oppure clienti/<slug>.json
+    per_cartella = os.path.join(ROOT, 'clienti', slug, 'ordine.json')
+    per_file = os.path.join(ROOT, 'clienti', f'{slug}.json')
+    json_path = per_cartella if os.path.exists(per_cartella) else per_file
+    assert os.path.exists(json_path), \
+        f'ordine non trovato: clienti/{slug}/ordine.json né clienti/{slug}.json'
+
+    # 2. build (valida da solo)
+    build_client(json_path)
+    dist = os.path.join(ROOT, 'dist', f'stanza-{slug}.html')
+
+    # 3. QA (13 verifiche Playwright); --senza-qa per saltarla
+    if senza_qa:
+        print('⚠ QA saltata (--senza-qa)')
+    else:
+        env = dict(os.environ); env['GAME_FILE'] = os.path.abspath(dist)
+        r = subprocess.call(['node', os.path.join(ROOT, 'tools', 'qa.js')], env=env)
+        if r != 0:
+            sys.exit('✗ QA fallita: consegna interrotta. '
+                     'Se è un problema di tooling (node/playwright), usa --senza-qa.')
+
+    # 4. copia in g/ con token segreto (solo il cliente conoscerà il link)
+    alfabeto = 'abcdefghjkmnpqrstuvwxyz23456789'   # niente 0/o/1/l/i ambigui
+    token = ''.join(secrets.choice(alfabeto) for _ in range(12))
+    token = f'{token[:4]}-{token[4:8]}-{token[8:]}'
+    gdir = os.path.join(ROOT, 'g')
+    os.makedirs(gdir, exist_ok=True)
+    dest = os.path.join(gdir, f'{token}.html')
+    shutil.copyfile(dist, dest)
+    url = f'{base_url}/g/{token}.html'
+
+    # 5. QR nella cartella dell'ordine (o in dist/ per gli ordini a file singolo)
+    qr_path = None
+    try:
+        import qrcode
+        qr = qrcode.QRCode(error_correction=qrcode.constants.ERROR_CORRECT_Q, border=3)
+        qr.add_data(url)
+        img = qr.make_image(fill_color='#5E2A47', back_color='#FBF3E9')
+        qr_dir = os.path.dirname(per_cartella) if json_path == per_cartella \
+            else os.path.join(ROOT, 'dist')
+        qr_path = os.path.join(qr_dir, f'qr-{slug}.png')
+        img.save(qr_path)
+    except ImportError:
+        print('⚠ modulo "qrcode" assente (pip install qrcode): QR non generato')
+
+    # 6. annota il link nelle NOTE dell'ordine
+    note = os.path.join(ROOT, 'clienti', slug, 'NOTE.md')
+    if os.path.exists(note):
+        txt = open(note, encoding='utf-8').read()
+        txt = txt.replace('- consegna (link): \n', f'- consegna (link): {url}\n') \
+            if '- consegna (link): \n' in txt else txt + f'\n- consegna (link): {url}\n'
+        open(note, 'w', encoding='utf-8').write(txt)
+
+    print(f'\n🎁 consegna pronta per "{slug}"')
+    print(f'   file   g/{token}.html ({os.path.getsize(dest)//1024//1024} MB)')
+    print(f'   link   {url}')
+    if qr_path:
+        print(f'   QR     {os.path.relpath(qr_path, ROOT)}')
+
+    # 7. pubblicazione: commit + push (su Netlify col repo collegato = deploy)
+    if push:
+        da_aggiungere = [dest] + ([qr_path] if qr_path else []) \
+            + ([note] if os.path.exists(note) else [])
+        subprocess.check_call(['git', 'add', *da_aggiungere], cwd=ROOT)
+        subprocess.check_call(['git', 'commit', '-m', f'Consegna ordine {slug}'], cwd=ROOT)
+        subprocess.check_call(['git', 'push'], cwd=ROOT)
+        print('   push eseguito: se il repo è collegato a Netlify, il link è (quasi) online')
+    else:
+        print('   per pubblicare:  git add g/ clienti/ dist/ && git commit -m'
+              f' "Consegna {slug}" && git push   (oppure rilancia con --push)')
+
+
 def preview():
     import http.server, functools
     os.chdir(ROOT)
@@ -457,6 +544,11 @@ if __name__ == '__main__':
         nuovo_pack(sys.argv[2], da)
     elif cmd == 'qa':
         qa(*sys.argv[2:3])
+    elif cmd == 'consegna' and len(sys.argv) >= 3:
+        args = sys.argv[2:]
+        burl = args[args.index('--base-url') + 1] if '--base-url' in args else None
+        consegna(args[0], push='--push' in args,
+                 senza_qa='--senza-qa' in args, base_url=burl)
     elif cmd == 'preview':
         preview()
     elif cmd == 'art':

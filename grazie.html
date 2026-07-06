@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Richiesta inviata — Sempreaddue</title>
+  <meta name="robots" content="noindex">
+  <meta name="theme-color" content="#120a10">
+  <link rel="icon" href="site/img/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="site/css/main.css">
+</head>
+<body>
+
+<header class="header scrolled">
+  <div class="container nav">
+    <a class="logo" href="index.html" aria-label="Sempreaddue — torna alla home">
+      <svg viewBox="0 0 16 16" aria-hidden="true"><path fill="#E8896B" d="M2 3h3v1h1v1h1v1h2V5h1V4h1V3h3v1h1v4h-1v1h-1v1h-1v1h-1v1h-1v1h-1v1H8v-1H7v-1H6v-1H5v-1H4V9H3V8H2V7H1V4h1z"/></svg>
+      Sempreaddue
+    </a>
+  </div>
+</header>
+
+<main class="final" style="min-height:82svh;display:grid;place-items:center">
+  <div class="container reveal in" style="text-align:center">
+    <img class="sprite-couple pixel" src="site/img/ballo.webp" width="206" height="312"
+         style="position:static;width:120px;margin:0 auto 24px"
+         alt="I due protagonisti pixel art che ballano abbracciati">
+    <h2>Richiesta inviata! <span class="accent">❤</span></h2>
+    <p style="max-width:46ch;margin:16px auto 34px;color:var(--testo-soft)">
+      Grazie: la vostra storia è arrivata. Ti ricontattiamo entro un giorno
+      con i tempi, il prezzo confermato e le prime idee per l'avventura.</p>
+    <div id="payBlock" hidden style="margin-bottom:26px">
+      <a class="btn btn-primary btn-lg" id="payLink" href="#" rel="noopener">
+        🔒 Completa il pagamento con Stripe
+      </a>
+      <p style="margin-top:12px;color:var(--testo-soft);font-size:.9rem;max-width:46ch;
+        margin-inline:auto">Nel checkout scegli le stesse quantità di foto e personaggi
+        extra indicate nella richiesta: il totale si calcola da solo.</p>
+    </div>
+    <a class="btn btn-ghost btn-lg" href="index.html#demo">Nel frattempo, gioca la demo</a>
+    <script>
+      /* Stripe Payment Link — DA CONFIGURARE:
+         1. Su dashboard.stripe.com crea 4 prodotti: L'Avventura 19,50€ (quantità fissa 1),
+            Foto reale 0,50€ (quantità regolabile 0-10), Personaggio extra 3€ (0-5),
+            Biglietto QR 5€ (0-1).
+         2. Crea un coupon "FOUNDER26" al −50% e abilita "Consenti codici promozionali"
+            sul Payment Link: il cliente inserisce il codice direttamente nel checkout.
+         3. Crea il Payment Link con i 4 prodotti (quantità regolabile per gli extra)
+            e incolla qui l'URL. Finché è vuoto, il bottone non compare. */
+      const STRIPE_PAYMENT_LINK = '';
+      if (STRIPE_PAYMENT_LINK) {
+        document.getElementById('payLink').href = STRIPE_PAYMENT_LINK;
+        document.getElementById('payBlock').hidden = false;
+      }
+    </script>
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="container footer-bottom" style="border:0;margin:0;padding:0">
+    <span>© 2026 Sempreaddue. Tutti i diritti riservati.</span>
+    <span>Fatto con <span class="heart" aria-hidden="true">♥</span> e tanti pixel</span>
+  </div>
+</footer>
+
+</body>
+</html>
