@@ -1,15 +1,15 @@
 {
-  "_note": "fw/fh = dimensioni cella in px del foglio impacchettato, n = numero frame, alt = altezza in scena (% piazza). Fogli propri del pack in packs/villaggio-incantato/assets/ (characters/, rooms/, popup/); 'gatto'/'pt_gatto' riusano l'asset condiviso esistente (stesso micio, solo rinominato in Cenere nei testi).",
+  "_note": "fw/fh = dimensioni cella in px del foglio impacchettato, n = numero frame, alt = altezza in scena (% piazza). alt calibrata sugli oggetti della piazza alla stessa profondità del cammino (fontana ~13.8%, lampione ~16.2%): un personaggio di ~1.55-1.65m risulta 12-12.8%, non sulle porte degli edifici (più lontane e quindi più piccole per la prospettiva del dipinto). Fogli propri del pack in packs/villaggio-incantato/assets/ (characters/, rooms/, popup/); 'gatto'/'pt_gatto' riusano l'asset condiviso esistente (stesso micio, solo rinominato in Cenere nei testi).",
   "assetUri": ["pt_gatto", "pop_cielo", "pt_finn_0", "pt_finn_1", "pt_finn_2", "pt_finn_3", "pt_finn_4"],
   "ritrattiNpc": ["pt_finn_0", "pt_finn_1", "pt_finn_2", "pt_finn_3", "pt_finn_4"],
   "sheets": {
     "bg":        { "asset": "villaggio_bg" },
     "bg2":       { "asset": "villaggio_bg2", "_note": "secondo frame: lanterne/fuochi leggermente più luminosi, per il flicker" },
-    "lyraDown":  { "asset": "lyra_down",  "fw": 242, "fh": 240, "n": 6, "alt": 23.4 },
-    "lyraRight": { "asset": "lyra_right", "fw": 296, "fh": 240, "n": 6, "alt": 23.4 },
-    "lyraUp":    { "asset": "lyra_up",    "fw": 246, "fh": 240, "n": 6, "alt": 23.4 },
-    "lyraLeft":  { "asset": "lyra_left",  "fw": 198, "fh": 240, "n": 6, "alt": 23.4 },
-    "finnFront": { "asset": "finn_front", "fw": 212, "fh": 260, "n": 5, "alt": 24.6 },
+    "lyraDown":  { "asset": "lyra_down",  "fw": 242, "fh": 240, "n": 6, "alt": 12.0 },
+    "lyraRight": { "asset": "lyra_right", "fw": 296, "fh": 240, "n": 6, "alt": 12.0 },
+    "lyraUp":    { "asset": "lyra_up",    "fw": 246, "fh": 240, "n": 6, "alt": 12.0 },
+    "lyraLeft":  { "asset": "lyra_left",  "fw": 198, "fh": 240, "n": 6, "alt": 12.0 },
+    "finnFront": { "asset": "finn_front", "fw": 212, "fh": 260, "n": 5, "alt": 12.8 },
     "gatto":     { "asset": "gatto",      "fw": 433, "fh": 240, "n": 2 }
   },
   "personaggi": {
