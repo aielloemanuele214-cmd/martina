@@ -16,17 +16,32 @@ os.makedirs(OUT, exist_ok=True); os.makedirs(DBG, exist_ok=True)
 BLEED_IT = 10
 
 
-def key_bg(rgb, ref, dist):
-    """alpha=0 per lo sfondo collegato al bordo (pixel entro `dist` dal colore
-    di riferimento `ref`, anche con gradiente/vignetta); il resto opaco.
-    Poi color-bleed dei colori nei pixel trasparenti (niente frange al resize)."""
+def key_bg(rgb, ref, dist, dist2=None, dark_neutral=None):
+    """alpha=0 per lo sfondo (pixel entro `dist` dal colore di riferimento `ref`):
+    - le regioni collegate al bordo (sfondo esterno, anche con gradiente);
+    - se `dist2` è dato, le SACCHE di sfondo INTRAPPOLATE il cui colore medio è
+      a meno di `dist2` dal riferimento;
+    - se `dark_neutral=(soglia, margine)` è dato (fogli su fondo scuro), anche i
+      pixel scuri e NEUTRI/bluastri (sfondo navy + ombre nere nei varchi fra
+      braccio e busto o fra i due corpi), preservando i capelli castani (R≫B).
+    Il resto resta opaco. Poi color-bleed per evitare frange al resize."""
     a = rgb.astype(np.int32)
     d = np.sqrt(((a - np.array(ref)) ** 2).sum(axis=2))
     target = d <= dist
-    lbl, _ = ndimage.label(target)
+    lbl, n = ndimage.label(target)
     border = set(lbl[0, :]) | set(lbl[-1, :]) | set(lbl[:, 0]) | set(lbl[:, -1])
     border.discard(0)
     bg = np.isin(lbl, list(border))
+    if dist2 is not None and n:
+        meand = ndimage.mean(d, lbl, range(1, n + 1))
+        trapped = [i + 1 for i, m in enumerate(meand) if m < dist2]
+        if trapped:
+            bg = bg | np.isin(lbl, trapped)
+    if dark_neutral is not None:
+        soglia, margine = dark_neutral
+        somma = a.sum(axis=2)
+        neutro = (somma < soglia) & ((a[:, :, 0] - a[:, :, 2]) < margine)
+        bg = bg | neutro
     rgba = np.dstack([a.astype(np.uint8), np.where(bg, 0, 255).astype(np.uint8)])
     rgbf = rgba[:, :, :3].astype(np.float32)
     known = rgba[:, :, 3] > 0
@@ -51,7 +66,7 @@ def key_bg(rgb, ref, dist):
     return rgba
 
 
-def despeckle(rgba, minsize=250):
+def despeckle(rgba, minsize=550):
     """Elimina i granelli opachi isolati (scintille, rumore) più piccoli di minsize."""
     op = rgba[:, :, 3] > 0
     lbl, n = ndimage.label(op)
@@ -125,7 +140,11 @@ def pack(cells, fh, name, quantize=True):
     bad = sum(1 for i in range(len(scaled))
               if arr[:, i*fw].any() or arr[:, (i+1)*fw-1].any() or arr[0, i*fw:(i+1)*fw].any())
     if quantize:
-        sheet = Image.fromarray(np.array(sheet.quantize(256, method=Image.FASTOCTREE).convert('RGBA')))
+        # quantizza SOLO i canali RGB e riattacca l'alpha originale: la
+        # quantize su RGBA di Pillow bucava le tute chiare (trasparenze spurie).
+        alpha = sheet.split()[3]
+        rgb = sheet.convert('RGB').quantize(255, method=Image.FASTOCTREE).convert('RGB')
+        sheet = Image.merge('RGBA', (*rgb.split(), alpha))
     path = os.path.join(OUT, name + '.png')
     sheet.save(path)
     print(f'{name}: n={len(scaled)} fw={fw} fh={fh} '
@@ -133,12 +152,12 @@ def pack(cells, fh, name, quantize=True):
     return {'fw': fw, 'fh': fh, 'n': len(scaled)}
 
 
-def process(name, ref, dist, crop, expect, fh, out):
+def process(name, ref, dist, crop, expect, fh, out, dist2=None, dark_neutral=None):
     im = Image.open(SRC + name + '.png').convert('RGB')
     rgb = np.array(im)
     if crop:
         rgb = rgb[crop[1]:crop[3], crop[0]:crop[2]]
-    rgba = key_bg(rgb, ref, dist)
+    rgba = key_bg(rgb, ref, dist, dist2, dark_neutral)
     rgba = despeckle(rgba)
     # anteprima keyed su fondo magenta per il controllo visivo
     prev = Image.new('RGBA', (rgba.shape[1], rgba.shape[0]), (255, 0, 255, 255))
@@ -186,23 +205,25 @@ if __name__ == '__main__':
     only = sys.argv[1] if len(sys.argv) > 1 else 'all'
 
     if only in ('all', 'cat'):
-        cells, _ = process('cat', (1, 1, 1), 45, (0, 280, 1408, 704), 2, 240, 'gatto')
+        cells, _ = process('cat', (1, 1, 1), 45, (0, 280, 1408, 704), 2, 240, 'gatto', dist2=30)
         if len(cells) == 2:
             DIMS['gatto'] = pack(cells, 240, 'gatto')
 
     if only in ('all', 'lui'):
-        cells, _ = process('lui_emo', (25, 29, 36), 92, (0, 30, 1408, 698), 5, 262, 'astro2')
+        cells, _ = process('lui_emo', (25, 29, 36), 92, (0, 30, 1408, 698), 5, 262, 'astro2',
+                           dist2=34, dark_neutral=(150, 18))
         if len(cells) == 5:
             DIMS['astro2'] = pack(cells, 262, 'astro2')
 
     if only in ('all', 'ballo'):
-        cells, _ = process('ballo', (26, 29, 35), 92, (0, 30, 1408, 698), 5, 312, 'coppia')
+        cells, _ = process('ballo', (26, 29, 35), 92, (0, 30, 1408, 698), 5, 312, 'coppia',
+                           dist2=34, dark_neutral=(150, 18))
         if len(cells) == 5:
             DIMS['coppia'] = pack(cells, 312, 'coppia')
 
     if only in ('all', 'lei'):
         # lei: fondo bianco, 4 pose (avanti A=fronte, avanti B=lato, dietro A, dietro B)
-        cells, _ = process('lei_walk', (254, 254, 254), 42, (0, 95, 1408, 702), 4, 242, 'astro')
+        cells, _ = process('lei_walk', (254, 254, 254), 42, (0, 95, 1408, 702), 4, 242, 'astro', dist2=24)
         if len(cells) == 4:
             front, side, back, back2 = cells
             DIMS['astro_down'] = pack([front], 242, 'astro_down')
@@ -212,5 +233,20 @@ if __name__ == '__main__':
 
     if only in ('all', 'extra'):
         derivati()
+
+    if only == 'all':
+        # sincronizza fw/fh/n dentro sprites.json (preservando alt/asset): mai più
+        # dimensioni sfasate rispetto ai PNG effettivi (QA: check dimensioni fogli).
+        import json
+        spath = os.path.join(ROOT, 'packs', 'ultima-orbita', 'config', 'sprites.json')
+        sp = json.load(open(spath, encoding='utf-8'))
+        keymap = {'astroDown': 'astro_down', 'astroUp': 'astro_up', 'astroLeft': 'astro_left',
+                  'astroRight': 'astro_right', 'astro2': 'astro2', 'coppia': 'coppia', 'gatto': 'gatto'}
+        for sk, dk in keymap.items():
+            if sk in sp['sheets'] and dk in DIMS:
+                for f in ('fw', 'fh', 'n'):
+                    sp['sheets'][sk][f] = DIMS[dk][f]
+        open(spath, 'w', encoding='utf-8').write(json.dumps(sp, ensure_ascii=False, indent=2) + '\n')
+        print('sprites.json: dimensioni fogli sincronizzate')
 
     print('\nDIMS =', DIMS)
