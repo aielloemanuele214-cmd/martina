@@ -16,7 +16,10 @@ packs/martina/                IL CONTENUTO: manifest + config/*.json
   config/cutscenes.json         ballo, contratto
   config/endings.json           finale
   config/room.json              collisioni, limiti, zona dietro-letto
-  config/sprites.json           dimensioni dei fogli sprite
+  config/sprites.json           fogli sprite: dimensioni, stati di animazione, altezze
+  config/story.json             IL COMPORTAMENTO: eventi (quando/se/fai), scene a
+                                passi (ballo, contratto, fusa), dialoghi, segreti,
+                                finali a regole — tutto dati, zero codice
 assets/                       asset finali (sprites/ rooms/ popup/ audio/) + _src/ (fogli grezzi)
 tools/sad.py                  CLI unica: build-base [pack] · build <cliente> · check [pack]
 tools/sprites.py              pipeline: scontorno + packing + ritratti da assets/_src/
