@@ -3,6 +3,45 @@
 Il prodotto è **un solo file**: `stanza.html`. Contiene motore, grafica e
 audio incorporati (base64), funziona offline e su qualunque hosting statico.
 
+## Struttura del repo (dopo F1 — engine a moduli + pack)
+
+```
+engine/src/                   17 moduli ordinati del motore (css, motore, story, render…)
+engine/CHANGELOG.md           versioni del motore (semver)
+packs/martina/                IL CONTENUTO: manifest + config/*.json
+  config/settings.json          nomi, data, musica, salvataggio
+  config/characters.json        posizioni, gatto
+  config/dialogues.json         battute di lui, messaggio del gatto
+  config/interactions.json      i 3 indizi (posizioni, arrivo, testi) + finestra
+  config/cutscenes.json         ballo, contratto
+  config/endings.json           finale
+  config/room.json              collisioni, limiti, zona dietro-letto
+  config/sprites.json           fogli sprite: dimensioni, stati di animazione, altezze
+  config/story.json             IL COMPORTAMENTO: eventi (quando/se/fai), scene a
+                                passi (ballo, contratto, fusa), dialoghi, segreti,
+                                finali a regole — tutto dati, zero codice
+assets/                       asset finali (sprites/ rooms/ popup/ audio/) + _src/ (fogli grezzi)
+tools/sad.py                  CLI unica: build-base [pack] · build <cliente> · check [pack]
+tools/sprites.py              pipeline: scontorno + packing + ritratti da assets/_src/
+clienti/*.json                personalizzazioni per cliente (sostituiscono il CONFIG)
+dist/                         file consegnabili
+legacy/prototipo/             primo prototipo (non più usato)
+```
+
+Comandi:
+
+```bash
+python3 tools/sad.py build-base                  # moduli engine + pack + asset → stanza.html
+python3 tools/sad.py build clienti/<slug>.json   # stanza.html + JSON cliente → dist/
+python3 tools/sad.py check                       # verifica pack, asset e placeholder
+python3 tools/sprites.py                         # rigenera gli sprite da assets/_src/
+```
+
+(`python3 build.py clienti/<slug>.json` continua a funzionare: delega a `sad.py`.)
+
+Il motore non contiene alcun contenuto: per cambiare stanza, collisioni,
+testi, indizi o sprite si toccano SOLO i JSON del pack e gli asset.
+
 ## Flusso per ogni ordine (5 minuti)
 
 1. **Copia** `clienti/esempio.json` → `clienti/nome-cliente.json`
@@ -51,16 +90,20 @@ Per il ballo: 5 pose di coppia abbracciata, fila orizzontale.
 
 ## Architettura (per chi mette le mani nel codice)
 
-- `stanza.html` — prodotto completo. Il blocco tra `★★ INIZIO CONFIG ★★`
-  e `★★ FINE CONFIG ★★` è l'unica parte che il builder sostituisce.
-- Motore: canvas con cache pre-scalate (60fps su mobile), camera adattiva
-  (stanza intera su desktop, zoom+follow su mobile), joystick fisso touch,
-  collisioni su poligoni (`COLLIDERS`, editabili visivamente con `?debug=1`).
-- Scene: dialoghi con ritratto, 4 sorprese + lettera a macchina da
-  scrivere, ballo lento al giradischi, fuochi alla finestra, finale con
-  contatore giorni.
-- Audio: synth Web Audio (nessun file audio), valzer diegetico nel ballo.
-- `build.py` + `clienti/*.json` — produzione copie clienti in `dist/`.
+- `engine/stanza_template.html` — sorgente del gioco con i placeholder
+  `{{B64:*}}`; `tools/sad.py build-base` lo trasforma in `stanza.html`.
+- In `stanza.html` il blocco tra `★★ INIZIO CONFIG ★★` e `★★ FINE CONFIG ★★`
+  è l'unica parte che il builder cliente sostituisce.
+- Motore: canvas con cache pre-scalate (60fps su mobile), camera adattiva,
+  punta-e-clicca con pathfinding BFS + WASD, macchina a stati
+  (idle/walk/interact/dance), collisioni su poligoni (`COLLIDERS`,
+  ispezionabili con `?debug=1`).
+- Scene: dialoghi con ritratti emotivi event-driven, 3 indizi con popup 1:1,
+  4 segreti (gatto 💛, finestra, ballo, contratto), cinematiche una-tantum,
+  finale con contatore giorni e contatore segreti.
+- Audio: mp3 in loop senza stacco (Warm Memories in gioco, Paper Lantern nel
+  menù), effetti soft Web Audio, valzer synth nel ballo.
+- Il prossimo passo architetturale è descritto in `ARCHITETTURA.md` (F1+).
 
 ## Prompt di generazione sprite (da adattare)
 

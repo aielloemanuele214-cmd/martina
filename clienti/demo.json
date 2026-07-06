@@ -32,16 +32,16 @@
   },
 
   "sorprese": [
-    { "id": "vinile", "x": 20, "y": 26, "raggio": 13,
+    { "id": "vinile", "x": 20, "y": 26, "ax": 20, "ay": 34.5, "ri": 5.5,
       "titolo": "La vostra canzone",
       "testo": "Qui va il ricordo della vostra canzone.\nScoprilo per ultimo… e guarda cosa succede.",
       "img": "file:../assets/popup/pop_vinile.jpg",
       "evento": "ballo" },
-    { "id": "tv", "x": 79, "y": 38.5, "raggio": 12,
+    { "id": "tv", "x": 79, "y": 38.5, "ax": 78, "ay": 50, "ri": 4.5,
       "titolo": "Le vostre serate",
       "testo": "Ogni sorpresa può avere un testo personale e una vostra foto vera.",
       "img": "file:../assets/popup/pop_tv.jpg" },
-    { "id": "lettera", "x": 31, "y": 79, "raggio": 12,
+    { "id": "lettera", "x": 31, "y": 79, "ax": 41, "ay": 70, "ri": 5.5,
       "titolo": "Una lettera per te",
       "testo": "Immagina qui le parole che vorresti dirle.\nQuesta è la sorpresa più amata.",
       "img": "file:../assets/popup/pop_scrivania.jpg" }
