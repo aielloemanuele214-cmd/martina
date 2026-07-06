@@ -30,7 +30,12 @@ def key_navy(rgb, dist, minsize):
     dei colori nei pixel trasparenti (niente frange al resize)."""
     a = rgb.astype(np.int32)
     d = np.sqrt(((a - NAVY) ** 2).sum(axis=2))
-    m = d <= dist
+    # Lo sfondo navy è BLU-dominante; capelli castani e pelle sono CALDI
+    # (rosso-dominante). Escludendo i pixel caldi dalla maschera di sfondo, i
+    # capelli non vengono mai erosi dove toccano il navy → niente teste/caschi
+    # staccati dal corpo (era il difetto della vista di spalle).
+    warm = (a[:, :, 0] - a[:, :, 2]) > 8
+    m = (d <= dist) & ~warm
     lbl, _ = ndimage.label(m)
     border = set(lbl[0, :]) | set(lbl[-1, :]) | set(lbl[:, 0]) | set(lbl[:, -1])
     border.discard(0)
