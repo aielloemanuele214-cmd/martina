@@ -26,31 +26,56 @@
          style="position:static;width:120px;margin:0 auto 24px"
          alt="I due protagonisti pixel art che ballano abbracciati">
     <h2>Richiesta inviata! <span class="accent">❤</span></h2>
-    <p style="max-width:46ch;margin:16px auto 34px;color:var(--testo-soft)">
-      Grazie: la vostra storia è arrivata. Ti ricontattiamo entro un giorno
-      con i tempi, il prezzo confermato e le prime idee per l'avventura.</p>
-    <div id="payBlock" hidden style="margin-bottom:26px">
-      <a class="btn btn-primary btn-lg" id="payLink" href="#" rel="noopener">
-        🔒 Completa il pagamento con Stripe
-      </a>
-      <p style="margin-top:12px;color:var(--testo-soft);font-size:.9rem;max-width:46ch;
-        margin-inline:auto">Nel checkout scegli le stesse quantità di foto e personaggi
-        extra indicate nella richiesta: il totale si calcola da solo.</p>
-    </div>
+    <p style="max-width:46ch;margin:16px auto 30px;color:var(--testo-soft)">
+      Grazie: la vostra storia è arrivata. Ecco cosa succede adesso.</p>
+
+    <ol class="next-steps" aria-label="Cosa succede ora">
+      <li><span class="ns-num">1</span><span>Leggiamo con calma la vostra richiesta</span></li>
+      <li><span class="ns-num">2</span><span>Vi rispondiamo <b>entro un giorno</b> via email
+        con il preventivo finale confermato</span></li>
+      <li><span class="ns-num">3</span><span>Vi mandiamo la richiesta di pagamento con
+        <b>PayPal</b>, per l'importo esatto</span></li>
+      <li><span class="ns-num">4</span><span>Ricevuto il pagamento, iniziamo subito a
+        costruire la vostra avventura</span></li>
+    </ol>
+
+    <p class="pay-trust" id="payTrust" hidden>💳 Pagamenti sicuri con PayPal —
+      <b id="payTrustHandle"></b></p>
+
     <a class="btn btn-ghost btn-lg" href="index.html#demo">Nel frattempo, gioca la demo</a>
+
     <script>
-      /* Stripe Payment Link — DA CONFIGURARE:
-         1. Su dashboard.stripe.com crea 4 prodotti: L'Avventura 19,50€ (quantità fissa 1),
-            Foto reale 0,50€ (quantità regolabile 0-10), Personaggio extra 3€ (0-5),
-            Biglietto QR 5€ (0-1).
-         2. Crea un coupon "FOUNDER26" al −50% e abilita "Consenti codici promozionali"
-            sul Payment Link: il cliente inserisce il codice direttamente nel checkout.
-         3. Crea il Payment Link con i 4 prodotti (quantità regolabile per gli extra)
-            e incolla qui l'URL. Finché è vuoto, il bottone non compare. */
+      /* Fase di test senza partita IVA (vedi docs/LISTINO.md): il pagamento
+         NON è automatico sul sito. Dopo aver confermato il preventivo finale
+         via email, gli inviate una richiesta di pagamento dall'app/sito
+         PayPal ("Richiedi denaro") per l'importo esatto — un account PayPal
+         personale incassa pagamenti "beni e servizi" senza bisogno di
+         partita IVA. Qui sotto solo un riferimento, non un bottone di paga. */
+      const PAYPAL_HANDLE = 'aielloemanuele@yahoo.it';
+      if (PAYPAL_HANDLE) {
+        document.getElementById('payTrustHandle').textContent = PAYPAL_HANDLE;
+        document.getElementById('payTrust').hidden = false;
+      }
+
+      /* Stripe Payment Link — PRONTO MA SPENTO. Da riattivare quando aprirai
+         la partita IVA e vorrai automatizzare l'incasso (Stripe in Italia
+         richiede tipicamente un'attività registrata per i pagamenti live):
+         1. Su dashboard.stripe.com crea 4 prodotti: L'Avventura 19,50€
+            (quantità fissa 1), Foto reale 0,50€ (0-10), Personaggio extra 3€
+            (0-5), Biglietto QR 5€ (0-1).
+         2. Crea un coupon "FOUNDER26" al −50% e abilita "Consenti codici
+            promozionali" sul Payment Link.
+         3. Crea il Payment Link e incolla l'URL qui sotto: ricompare in alto
+            un bottone "Completa il pagamento con Stripe". */
       const STRIPE_PAYMENT_LINK = '';
       if (STRIPE_PAYMENT_LINK) {
-        document.getElementById('payLink').href = STRIPE_PAYMENT_LINK;
-        document.getElementById('payBlock').hidden = false;
+        const a = document.createElement('a');
+        a.className = 'btn btn-primary btn-lg';
+        a.href = STRIPE_PAYMENT_LINK;
+        a.rel = 'noopener';
+        a.style.marginBottom = '22px';
+        a.textContent = '🔒 Completa il pagamento con Stripe';
+        document.querySelector('.next-steps').insertAdjacentElement('beforebegin', a);
       }
     </script>
   </div>

@@ -97,7 +97,7 @@
       (extras.length ? ` + ${extras.join(' + ')}` : '') + `</p>
        <p>${v('nome-tuo') || '—'} &amp; ${v('nome-partner') || '—'}` +
       (v('scadenza') ? ` · consegna entro <b>${v('scadenza')}</b>` : '') +
-      ` · totale ${riga}</p>`;
+      ` · totale stimato ${riga}</p>`;
   };
 
   btnNext.addEventListener('click', () => {
