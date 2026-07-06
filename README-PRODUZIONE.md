@@ -82,6 +82,19 @@ clienti/anna-marco/
 5. **Pubblica**: trascina il file su [Netlify Drop](https://app.netlify.com/drop)
    (gratis), genera il QR, segna il link in `NOTE.md`, **committa la cartella**.
 
+## Editor in-gioco (?editor) — per nuove ambientazioni
+
+Apri una build con `?editor` in fondo all'URL: pannello in basso a sinistra.
+- **✏️ Poligono**: ogni tocco un vertice → "Chiudi poligono" crea la hitbox
+  (subito attiva: prova a camminarci contro con WASD)
+- **✥ Sposta indizi**: tocca un marker (● oggetto · ○ punto d'arrivo), poi
+  tocca la nuova posizione
+- **🗑 Elimina**: tocca dentro un collider per rimuoverlo
+- **⇩ Esporta JSON**: copia il risultato in `room.json` e `interactions.json`
+
+È lo strumento per calibrare una stanza nuova in minuti invece che a
+tentativi nel JSON. Nelle copie consegnate non esiste (parametro ignoto al cliente).
+
 ## Cosa si personalizza dal JSON (senza toccare il codice)
 
 | Campo | Cosa cambia | Tier suggerito |

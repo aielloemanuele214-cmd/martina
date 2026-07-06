@@ -30,6 +30,7 @@ canvas.addEventListener('pointercancel', e=>{ if(e.pointerId===tap.id) tap.id=nu
 /* Smistamento del tocco nel mondo */
 function handleTap(cssX,cssY){
   const wx=(cssX/S+camX)/PCT, wy=(cssY/S+camY)/PCT;
+  if(EDITOR){ editorTap(wx,wy); return; }        // in editor il tocco disegna, non muove
   // segreti: rispondono al tocco diretto da qualsiasi distanza, senza indicatori
   if(tryCat(cssX,cssY)) return;
   if(tryWindow(cssX,cssY)) return;

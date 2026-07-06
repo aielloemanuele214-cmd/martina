@@ -156,6 +156,8 @@ function render(){
   // particelle (cuori e scintille)
   for(const p of parts) glyph(p.ch||'❤️', p.x, p.y, p.size||20, Math.max(0,p.life), 0);
 
+  edDraw();                              // overlay dell'editor (?editor)
+
   // anello di conferma del tocco (dove hai puntato)
   if(tapFx){
     const k=tapFx.t/.55;

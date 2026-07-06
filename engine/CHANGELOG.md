@@ -1,5 +1,15 @@
 # Engine — changelog
 
+## 1.3.0 (F5 — editor di produzione in-gioco)
+- Modalità `?editor`: disegno di poligoni di collisione a tocchi (chiudi/
+  annulla vertice), spostamento dei marker degli indizi (oggetto ● e punto
+  d'arrivo ○), eliminazione collider al tocco, export JSON pronto da
+  incollare in room.json / interactions.json. WASD attivo per testare
+  subito i percorsi. `prepColliders()` + `buildGrid()` rieseguiti a ogni
+  modifica: le hitbox nuove valgono immediatamente.
+- Inattivo e invisibile nelle copie consegnate (nessun peso a runtime).
+- QA 13/13 invariata in modalità normale.
+
 ## 1.2.0 (F2 — sistemi generici: il motore è un interprete)
 - **State bag**: tutto lo stato di partita è un sacchetto di flag con chiavi
   decise dal pack ('trovato.vinile', 'segreto.gatto', 'fatto.ballo'…);
