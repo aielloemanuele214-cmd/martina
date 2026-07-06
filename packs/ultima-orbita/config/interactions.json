@@ -1,0 +1,52 @@
+{
+  "_note": "I 3 oggetti (oblò, diario, lettore) sono le 'sorprese' (cuori nell'HUD + guida ✨). x,y = marker sull'oggetto; ax,ay = punto d'arrivo calpestabile; ri = raggio d'apertura. La finestra romantica del motore è disattivata: qui l'oblò è un oggetto vero. stella e puntiSegreti = i due segreti a-non-tocco-oggetto.",
+  "sorprese": [
+    {
+      "id": "oblo",
+      "x": 50, "y": 13,
+      "ax": 50, "ay": 50,
+      "ri": 6.5,
+      "titolo": "Grande oblò panoramico",
+      "testo": "Dicono che l'universo sia infinito.\nIo ho smesso di cercarlo il giorno in cui ho incontrato te.",
+      "img": "{{B64:pop_oblo}}"
+    },
+    {
+      "id": "diario",
+      "x": 26, "y": 35,
+      "ax": 26, "ay": 50,
+      "ri": 6,
+      "titolo": "Diario di bordo",
+      "testo": "Giorno 12 — Ancora colleghe.\n\nGiorno 87 — Forse qualcosa sta cambiando.\n\nOggi — Non ho più paura di chiamarti casa.",
+      "img": "{{B64:pop_diario}}"
+    },
+    {
+      "id": "lettore",
+      "x": 77, "y": 38,
+      "ax": 76, "ay": 50,
+      "ri": 6,
+      "titolo": "Lettore musicale dello shuttle",
+      "testo": "Parte una musica rilassante, e per un istante lo spazio smette di essere vuoto.",
+      "img": "{{B64:pop_oblo}}"
+    }
+  ],
+  "finestra": {
+    "attiva": false,
+    "testo": "L'oblò è un oggetto della storia, non un segreto: gestito dalle sorprese."
+  },
+  "stella": {
+    "_note": "Segreto: resta ferma nella zona davanti all'oblò per 'secondi' secondi.",
+    "zona": [42, 58, 45, 57],
+    "secondi": 10,
+    "evento": "interagisci:stella",
+    "flag": "segreto.stella",
+    "arco": [27, 11, 75, 25]
+  },
+  "puntiSegreti": [
+    {
+      "id": "abbraccio",
+      "_note": "Punto invisibile vicino alla porta dello shuttle (in basso al centro).",
+      "zona": [42, 58, 84, 96],
+      "evento": "interagisci:abbraccio"
+    }
+  ]
+}

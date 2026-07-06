@@ -1,0 +1,19 @@
+{
+  "_note": "ballo e contratto sono richiesti dallo schema del motore ma NON usati da questa avventura (le sue scene vivono in story.json). Restano come segnaposto validi.",
+  "ballo": {
+    "x": 50,
+    "y": 50,
+    "introTesto": "",
+    "outroTesto": "",
+    "durata": 1
+  },
+  "contratto": {
+    "intro": "—",
+    "documento": {
+      "titolo": "—",
+      "sezioni": [
+        { "paragrafi": ["—"] }
+      ]
+    }
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "_note": "dialoghi = battute casuali di Sofia (l'NPC) rivolte a Elena. gatto.messaggio = frase del gatto spaziale.",
+  "dialoghi": [
+    "Guarda che meraviglia, Elena… e pensare che quasi non partivo, per questa missione.",
+    "Da quassù la Terra è piccolissima. Ma tu riempi tutto lo spazio che vedo.",
+    "Se restiamo un'altra orbita… nessuno se ne accorgerà, vero?",
+    "Ci hanno addestrate per l'ignoto. Nessuno mi aveva preparata a te.",
+    "Ho controllato i sistemi tre volte. È solo il cuore che va fuori scala.",
+    "Qualunque rotta prenderemo dopo, spero soltanto che sia la stessa.",
+    "Mi piace il silenzio dello spazio. Ma la tua voce mi piace di più.",
+    "Vieni, guarda ancora fuori. Le cose belle vanno guardate in due.",
+    "Milioni di chilometri di vuoto… e io mi sento a casa solo accanto a te.",
+    "Prometto: qualsiasi cosa ci sia oltre quelle stelle, la affrontiamo insieme.",
+    "Sai qual è la costellazione che preferisco? Quella che disegnano i tuoi occhi.",
+    "Ancora pochi minuti così. Poi possiamo anche rientrare sulla Terra."
+  ],
+  "gatto": {
+    "messaggio": "Anche nello spazio qualcuno sa sempre dove trovare le coccole. 🐾"
+  }
+}

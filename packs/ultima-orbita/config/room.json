@@ -1,0 +1,13 @@
+{
+  "_note": "Coordinate in % (0-100), origine in alto a sinistra. La parete di fondo (console, oblò, diario, lettore) è tutta y<44 (non calpestabile): gli oggetti stanno lì, i punti d'arrivo sul pavimento sotto. dietroLetto è un angolo inerte (questa stanza non ha zone di trasparenza).",
+  "bounds": { "xMin": 12, "xMax": 88, "yMin": 44, "yMax": 92 },
+  "colliders": [
+    { "t": "parete-fondo", "pts": [[0, 0], [100, 0], [100, 44], [0, 44]] },
+    { "t": "parete-sx",    "pts": [[0, 0], [12, 0], [12, 100], [0, 100]] },
+    { "t": "parete-dx",    "pts": [[88, 0], [100, 0], [100, 100], [88, 100]] },
+    { "t": "parete-basso", "pts": [[0, 92], [100, 92], [100, 100], [0, 100]] },
+    { "t": "poltrone", "rx": 1.2, "pts": [[17, 60], [31, 60], [31, 81], [17, 81]] },
+    { "t": "casse",    "rx": 1.2, "pts": [[82, 73], [95, 73], [95, 91], [82, 91]] }
+  ],
+  "dietroLetto": { "_note": "angolo inerte (nessuna trasparenza in questa stanza)", "pts": [[0, 0], [2, 0], [2, 2], [0, 2]] }
+}

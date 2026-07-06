@@ -66,6 +66,17 @@ function update(dt){
     else actionEl.classList.remove('show');
   }
 
+  // stella cadente: resta ferma nella zona davanti all'oblò per N secondi (segreto)
+  if(CONFIG.stella && !frozen && !cinematic && !flag(CONFIG.stella.flag||'segreto.stella')){
+    const z=CONFIG.stella.zona;
+    const inZ = player.x>z[0]&&player.x<z[1]&&player.y>z[2]&&player.y<z[3];
+    if(inZ && player.state==='idle'){
+      player.fermoT=(player.fermoT||0)+dt;
+      if(player.fermoT>=(CONFIG.stella.secondi||10)){ player.fermoT=0; trigger(CONFIG.stella.evento||'idle:oblo'); }
+    } else player.fermoT=0;
+  }
+  if(starFx){ starFx.t+=dt; if(starFx.t>starFx.dur) starFx=null; }
+
   // vicini vicini: qualche cuoricino quando lei sta accanto a lui
   if(!frozen && Math.hypot(player.x-npc.x, player.y-npc.y)<8 && Math.random()<dt*.6)
     parts.push({x:(player.x+npc.x)/2+(Math.random()-.5)*3, y:Math.min(player.y,npc.y)-20,
