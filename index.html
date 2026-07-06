@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+
+  <title>Sempreaddue — La vostra storia diventa un videogioco</title>
+  <meta name="description" content="Sempreaddue trasforma la vostra storia d'amore in una mini avventura pixel art personalizzata: personaggi, foto, lettere e sorprese in un vero videogioco da regalare con un link o un QR Code.">
+
+  <!-- Sostituisci con il dominio definitivo prima della pubblicazione -->
+  <link rel="canonical" href="https://sempreaddue.netlify.app/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Sempreaddue">
+  <meta property="og:locale" content="it_IT">
+  <meta property="og:title" content="Sempreaddue — La vostra storia diventa un videogioco">
+  <meta property="og:description" content="Mini avventure pixel art personalizzate: la vostra storia, i vostri ricordi, le vostre sorprese. Un regalo che si gioca.">
+  <meta property="og:url" content="https://sempreaddue.netlify.app/">
+  <meta property="og:image" content="https://sempreaddue.netlify.app/site/img/og.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Sempreaddue — La vostra storia diventa un videogioco">
+  <meta name="twitter:description" content="Mini avventure pixel art personalizzate. Un regalo che si gioca.">
+  <meta name="twitter:image" content="https://sempreaddue.netlify.app/site/img/og.jpg">
+
+  <meta name="theme-color" content="#120a10">
+  <link rel="icon" href="site/img/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="site/img/apple-touch-icon.png">
+  <link rel="manifest" href="site.webmanifest">
+
+  <link rel="preload" href="site/fonts/baloo2-800.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="site/fonts/nunito-400.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="site/img/room-800.webp" as="image" type="image/webp" media="(max-width:960px)">
+  <link rel="preload" href="site/img/room-1600.webp" as="image" type="image/webp" media="(min-width:961px)">
+  <link rel="stylesheet" href="site/css/main.css">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    "name": "Sempreaddue — Avventura pixel art personalizzata",
+    "description": "Mini avventura grafica interattiva in pixel art, realizzata su misura con i vostri personaggi, foto, lettere e sorprese. Consegnata via link o QR Code.",
+    "image": "https://sempreaddue.netlify.app/site/img/og.jpg",
+    "brand": { "@type": "Brand", "name": "Sempreaddue" },
+    "offers": {
+      "@type": "AggregateOffer",
+      "priceCurrency": "EUR",
+      "lowPrice": "19.50",
+      "highPrice": "44.50",
+      "availability": "https://schema.org/InStock"
+    }
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      { "@type": "Question", "name": "Quanto costa un'avventura Sempreaddue?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Un solo pacchetto: 19,50€ fissi per l'avventura completa con gli sprite di voi due, nomi, dedica, 3 sorprese personalizzate, finale, link privato e QR Code. Extra: foto reali 0,50€ l'una, personaggi in più 3€ a sprite, biglietto QR da stampare 5€. Fino al 6 ottobre 2026: −50% sul totale con il codice founder, inviato via email a chi lo richiede dal sito." } },
+      { "@type": "Question", "name": "Come viene consegnato il gioco?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Ricevi un link privato e un QR Code. Il gioco funziona direttamente nel browser, su smartphone e computer, senza installare nulla." } },
+      { "@type": "Question", "name": "Quanto tempo serve per realizzarlo?",
+        "acceptedAnswer": { "@type": "Answer", "text": "In genere da 2 a 7 giorni, a seconda del livello di personalizzazione scelto." } },
+      { "@type": "Question", "name": "Le mie foto e i miei messaggi sono al sicuro?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Sì. Tutto il materiale viene usato esclusivamente per creare la vostra avventura e non viene mai condiviso o pubblicato senza consenso esplicito." } }
+    ]
+  }
+  </script>
+</head>
+<body>
+
+<a class="skip-link" href="#main">Salta al contenuto</a>
+
+<!-- ======================= HEADER ======================= -->
+<header class="header" id="header">
+  <div class="container nav">
+    <a class="logo" href="#top" aria-label="Sempreaddue — torna all'inizio">
+      <svg viewBox="0 0 16 16" aria-hidden="true"><path fill="#E8896B" d="M2 3h3v1h1v1h1v1h2V5h1V4h1V3h3v1h1v4h-1v1h-1v1h-1v1h-1v1h-1v1h-1v1H8v-1H7v-1H6v-1H5v-1H4V9H3V8H2V7H1V4h1z"/></svg>
+      Sempreaddue
+    </a>
+    <button class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="navLinks" aria-label="Apri il menu">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+    </button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#cose">Cos'è</a></li>
+      <li><a href="#come-funziona">Come funziona</a></li>
+      <li><a href="#demo">Demo</a></li>
+      <li><a href="#galleria">Galleria</a></li>
+      <li><a href="#prezzi">Prezzi</a></li>
+      <li><a href="#faq">FAQ</a></li>
+      <li><a class="btn btn-primary" href="ordina.html">Ordina la tua avventura</a></li>
+    </ul>
+  </div>
+</header>
+
+<main id="main">
+
+<!-- ======================= HERO ======================= -->
+<section class="hero" id="top">
+  <div class="stars" id="stars" aria-hidden="true"></div>
+  <div class="container hero-grid">
+    <div class="hero-copy">
+      <span class="badge"><span class="dot"></span> Fatto a mano, in pixel art</span>
+      <h1>La vostra storia,<br>in un <span class="accent">videogioco</span>.</h1>
+      <p class="lead">Sempreaddue trasforma i vostri ricordi in una mini avventura
+        pixel art personalizzata: voi due come protagonisti, le vostre foto, le vostre
+        lettere, le vostre parole. Un regalo che non si guarda — <strong>si gioca</strong>.</p>
+      <div class="hero-cta">
+        <a class="btn btn-primary btn-lg" href="ordina.html">Ordina la tua avventura</a>
+        <a class="btn btn-ghost btn-lg" href="#demo">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg>
+          Prova la demo
+        </a>
+      </div>
+      <p class="hero-note">
+        <img class="pixel" src="site/img/pt-gatto.webp" alt="" width="128" height="128" loading="eager" fetchpriority="low">
+        <strong>19,50&nbsp;€</strong> tutto incluso · Consegna via link o QR Code · Su ogni smartphone, senza app
+      </p>
+    </div>
+    <div class="hero-visual" data-parallax>
+      <div class="game-frame">
+        <img src="site/img/room-800.webp"
+             srcset="site/img/room-800.webp 800w, site/img/room-1600.webp 1600w"
+             sizes="(max-width:960px) 92vw, 46vw"
+             width="800" height="800" fetchpriority="high"
+             alt="Scena del gioco: una cameretta pixel art illuminata dalle candele, con fuochi d'artificio alla finestra">
+        <div class="frame-hud" aria-hidden="true">❤️ ❤️ 🖤</div>
+        <div class="frame-hint" aria-hidden="true">Tocca dove vuoi andare…</div>
+      </div>
+      <img class="sprite-couple pixel" src="site/img/ballo.webp" width="206" height="312"
+           alt="I due protagonisti in pixel art che ballano abbracciati">
+      <img class="float-heart pixel" src="site/img/cuore.webp" alt="" aria-hidden="true"
+           style="top:-14px;left:8%">
+      <img class="float-heart pixel" src="site/img/cuore.webp" alt="" aria-hidden="true"
+           style="top:26%;right:-12px;width:18px;animation-delay:-3s">
+    </div>
+  </div>
+  <a class="scroll-cue" href="#cose">Scorri</a>
+</section>
+
+<!-- ======================= STRIP ======================= -->
+<div class="strip" role="presentation">
+  <div class="container strip-row">
+    <span class="no">Non è un video</span>
+    <span class="no">Non è un album fotografico</span>
+    <span class="no">Non è un semplice sito</span>
+    <span class="yes">È <strong>un'esperienza interattiva</strong> ✦</span>
+  </div>
+</div>
+
+<!-- ======================= COS'È ======================= -->
+<section class="section" id="cose">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="kicker">Cos'è Sempreaddue</span>
+      <h2>Un regalo che si esplora, <span class="accent">stanza per stanza</span></h2>
+      <p>Una piccola avventura grafica costruita intorno a voi due. Chi la riceve
+        si muove nella scena, tocca gli oggetti, e ogni oggetto nasconde un pezzo
+        della vostra storia.</p>
+    </div>
+    <div class="cose-grid">
+      <article class="card reveal">
+        <span class="cose-icon"><img class="pixel" src="site/img/pt-lui-1.webp" alt="" width="128" height="128" loading="lazy"></span>
+        <h3>Voi due, in pixel art</h3>
+        <p>I protagonisti siete voi: vi trasformiamo in personaggi pixel art
+          disegnati su misura, con espressioni, ritratti e persino il vostro gatto.</p>
+      </article>
+      <article class="card reveal reveal-d1">
+        <span class="cose-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16v12H4z"/><path d="m4 7 8 6 8-6"/></svg></span>
+        <h3>Ricordi veri, nascosti ovunque</h3>
+        <p>Fotografie reali, lettere, messaggi e dialoghi si svelano interagendo
+          con la scena: il vinile, la scrivania, la finestra… ogni angolo è una sorpresa.</p>
+      </article>
+      <article class="card reveal reveal-d2">
+        <span class="cose-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM18 18h3v3h-3z"/></svg></span>
+        <h3>Un link. Un QR Code. Fatto.</h3>
+        <p>Niente app da installare: il gioco vive in un link privato o in un QR Code
+          da stampare. Si apre sul telefono e funziona anche offline.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= COME FUNZIONA ======================= -->
+<section class="section" id="come-funziona">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="kicker">Come funziona</span>
+      <h2>Dalla vostra storia al gioco, <span class="accent">in 4 passi</span></h2>
+    </div>
+    <ol class="timeline" style="list-style:none">
+      <li class="step reveal">
+        <span class="step-num" aria-hidden="true">1</span>
+        <div class="step-body">
+          <h3>Tu racconti la vostra storia <span class="step-emoji" aria-hidden="true">💌</span></h3>
+          <p>Ci mandi i ricordi che contano: come vi siete conosciuti, le foto,
+            le frasi che solo voi capite.</p>
+        </div>
+      </li>
+      <li class="step reveal">
+        <span class="step-num" aria-hidden="true">2</span>
+        <div class="step-body">
+          <h3>Noi realizziamo il gioco <span class="step-emoji" aria-hidden="true">🎨</span></h3>
+          <p>Disegniamo i personaggi, componiamo la stanza, nascondiamo le sorprese
+            e scriviamo i dialoghi. Ogni dettaglio è curato a mano.</p>
+        </div>
+      </li>
+      <li class="step reveal">
+        <span class="step-num" aria-hidden="true">3</span>
+        <div class="step-body">
+          <h3>Ricevi il link o il QR Code <span class="step-emoji" aria-hidden="true">🔗</span></h3>
+          <p>Ti consegniamo un link privato pronto da condividere, o un QR Code
+            elegante da stampare e mettere in un biglietto.</p>
+        </div>
+      </li>
+      <li class="step reveal">
+        <span class="step-num" aria-hidden="true">4</span>
+        <div class="step-body">
+          <h3>La persona scopre tutto giocando <span class="step-emoji" aria-hidden="true">✨</span></h3>
+          <p>Esplora la stanza, trova le sorprese una a una e arriva al finale
+            scritto apposta per lei. Quel momento è tutto vostro.</p>
+        </div>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<!-- ======================= DEMO ======================= -->
+<section class="section demo-section" id="demo">
+  <div class="container">
+    <div class="section-head reveal" style="text-align:center;margin-inline:auto">
+      <span class="kicker" style="justify-content:center">Provala adesso</span>
+      <h2>Non crederci sulla parola. <span class="accent">Gioca.</span></h2>
+      <p>Questa è una vera avventura Sempreaddue: <em>Il Villaggio Incantato</em>.
+        Esplora, parla con i personaggi, trova le sorprese.</p>
+    </div>
+    <div class="demo-shell reveal">
+      <div class="demo-frame" id="demoFrame">
+        <button class="demo-poster" id="demoStart" aria-label="Avvia la demo giocabile">
+          <img src="site/img/village-800.webp" width="800" height="800" loading="lazy"
+               alt="Anteprima della demo: un villaggio fantasy pixel art al chiaro di luna, con locanda, emporio e fontana">
+          <video class="demo-video" src="site/img/gameplay.webm" width="640" height="640"
+                 muted loop playsinline preload="none"
+                 poster="site/img/village-800.webp" aria-hidden="true" tabindex="-1"></video>
+          <span class="demo-play" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l11-6.5z"/></svg>
+          </span>
+          <span class="demo-poster-label" aria-hidden="true">Tocca per giocare</span>
+        </button>
+      </div>
+      <div class="demo-actions">
+        <a class="btn btn-ghost" href="demo.html" target="_blank" rel="noopener">
+          Apri a schermo intero
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg>
+        </a>
+        <a class="btn btn-primary" href="ordina.html">La voglio per noi due</a>
+      </div>
+      <p class="demo-tip">💡 Su smartphone è ancora più bella: attiva l'audio e alza il volume.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= GALLERIA ======================= -->
+<section class="section gallery" id="galleria">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="kicker">Galleria</span>
+      <h2>Dentro <span class="accent">un'avventura</span></h2>
+      <p>Scene, dialoghi, sorprese e finali: ogni elemento è illustrato in pixel art
+        e costruito intorno alla vostra storia.</p>
+    </div>
+    <div class="gal-track reveal" id="galTrack" tabindex="0" role="region"
+         aria-label="Galleria di immagini del gioco — scorri orizzontalmente">
+      <figure class="gal-item">
+        <img src="site/img/room-800.webp" width="800" height="800" loading="lazy"
+             alt="La stanza principale del gioco, illuminata da candele, con fuochi d'artificio alla finestra">
+        <figcaption class="gal-cap">La stanza <span>Ogni ambientazione è disegnata su misura</span></figcaption>
+      </figure>
+      <figure class="gal-item">
+        <img src="site/img/pop-vinile.webp" width="560" height="560" loading="lazy"
+             alt="Primo piano pixel art di un giradischi con vinile e candela accesa">
+        <figcaption class="gal-cap">Il vinile <span>Un ricordo nascosto in ogni oggetto</span></figcaption>
+      </figure>
+      <figure class="gal-item">
+        <img src="site/img/pop-scrivania.webp" width="560" height="560" loading="lazy"
+             alt="Scrivania pixel art con rose rosse, una lettera e una lampada verde">
+        <figcaption class="gal-cap">La lettera <span>Le vostre parole, scritte a mano</span></figcaption>
+      </figure>
+      <figure class="gal-item">
+        <img src="site/img/pop-finestra.webp" width="560" height="560" loading="lazy"
+             alt="Una coppia guarda i fuochi d'artificio sul golfo dalla finestra, in pixel art">
+        <figcaption class="gal-cap">Il finale <span>Il momento che ricorderà per sempre</span></figcaption>
+      </figure>
+      <figure class="gal-item">
+        <img src="site/img/pop-tv.webp" width="560" height="560" loading="lazy"
+             alt="Televisione pixel art accesa in una stanza calda a lume di candela">
+        <figcaption class="gal-cap">I vostri ricordi <span>Foto vere dentro la scena</span></figcaption>
+      </figure>
+      <figure class="gal-item">
+        <img src="site/img/village-800.webp" width="800" height="800" loading="lazy"
+             alt="Villaggio fantasy pixel art al chiaro di luna con locanda, emporio, fontana e castello">
+        <figcaption class="gal-cap">Il Villaggio Incantato <span>Ogni mondo è possibile: provalo nella demo</span></figcaption>
+      </figure>
+      <figure class="gal-item">
+        <img src="site/img/room2-900.webp" width="900" height="900" loading="lazy"
+             alt="Variante notturna della stanza pixel art con atmosfera più intima">
+        <figcaption class="gal-cap">Le sorprese <span>Segreti che si svelano giocando</span></figcaption>
+      </figure>
+    </div>
+    <div class="gal-nav">
+      <button class="gal-btn" id="galPrev" aria-label="Immagine precedente">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 6-6 6 6 6"/></svg>
+      </button>
+      <div class="gal-dots" id="galDots" role="tablist" aria-label="Vai all'immagine"></div>
+      <button class="gal-btn" id="galNext" aria-label="Immagine successiva">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= PERSONALIZZAZIONI ======================= -->
+<section class="section" id="personalizza">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="kicker">Su misura</span>
+      <h2>Tutto quello che puoi <span class="accent">personalizzare</span></h2>
+      <p>Ogni avventura è un pezzo unico. Questi sono solo i punti di partenza.</p>
+    </div>
+    <div class="perso-grid">
+      <div class="perso-card reveal"><span class="perso-check" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg></span><span class="perso-ico" aria-hidden="true">🧑‍🤝‍🧑</span><h3>Protagonisti</h3><p>Voi due, in sprite disegnati su misura</p></div>
+      <div class="perso-card reveal"><span class="perso-check" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg></span><span class="perso-ico" aria-hidden="true">🏠</span><h3>Ambientazione</h3><p>La vostra stanza, la vostra città, il vostro posto</p></div>
+      <div class="perso-card reveal"><span class="perso-check" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg></span><span class="perso-ico" aria-hidden="true">💌</span><h3>Lettere</h3><p>Parole vostre, svelate al momento giusto</p></div>
+      <div class="perso-card reveal"><span class="perso-check" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg></span><span class="perso-ico" aria-hidden="true">📷</span><h3>Fotografie</h3><p>Scatti veri incastonati nella scena</p></div>
+      <div class="perso-card reveal"><span class="perso-check" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg></span><span class="perso-ico" aria-hidden="true">🐱</span><h3>I vostri animali</h3><p>Il gatto o il cane, anche loro in pixel art</p></div>
+      <div class="perso-card reveal"><span class="perso-check" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg></span><span class="perso-ico" aria-hidden="true">💬</span><h3>Dialoghi</h3><p>Battute scritte con il vostro tono</p></div>
+      <div class="perso-card reveal"><span class="perso-check" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg></span><span class="perso-ico" aria-hidden="true">🎆</span><h3>Finale</h3><p>Dedica, buono regalo o proposta 💍</p></div>
+      <div class="perso-card reveal"><span class="perso-check" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg></span><span class="perso-ico" aria-hidden="true">🎁</span><h3>Sorprese</h3><p>Momenti nascosti da scoprire uno a uno</p></div>
+      <div class="perso-card reveal"><span class="perso-check" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg></span><span class="perso-ico" aria-hidden="true">🪑</span><h3>Oggetti</h3><p>Ogni oggetto può custodire un ricordo</p></div>
+      <div class="perso-card reveal"><span class="perso-check" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg></span><span class="perso-ico" aria-hidden="true">🎂</span><h3>Tema</h3><p>Anniversario, compleanno, proposta…</p></div>
+      <div class="perso-card reveal"><span class="perso-check" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg></span><span class="perso-ico" aria-hidden="true">🎨</span><h3>Colori</h3><p>Palette e atmosfera su misura</p></div>
+      <div class="perso-card reveal"><span class="perso-check" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg></span><span class="perso-ico" aria-hidden="true">🤫</span><h3>Messaggi nascosti</h3><p>Segreti che solo voi due potete capire</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= PERCHÉ È DIVERSO ======================= -->
+<section class="section" id="perche">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="kicker">Perché è un regalo diverso</span>
+      <h2>I regali si aprono. <span class="accent">Questo si vive.</span></h2>
+    </div>
+    <div class="vs-grid reveal">
+      <div class="vs-col">
+        <div class="vs-old"><span class="ico" aria-hidden="true">📔</span>
+          <span>Album fotografico<small>Si sfoglia una volta, poi resta sullo scaffale</small></span></div>
+        <div class="vs-old"><span class="ico" aria-hidden="true">🎬</span>
+          <span>Video romantico<small>Si guarda, ma non si può toccare</small></span></div>
+        <div class="vs-old"><span class="ico" aria-hidden="true">💬</span>
+          <span>Messaggio<small>Bello, ma dura trenta secondi</small></span></div>
+      </div>
+      <div class="vs-arrow" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
+      </div>
+      <div class="vs-hero">
+        <h3>Sempreaddue</h3>
+        <p>Un'esperienza in cui la persona amata entra, esplora e scopre.</p>
+        <ul class="vs-list">
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 13 4 4L19 7"/></svg>È interattivo: ogni sorpresa va trovata, guadagnata, vissuta</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 13 4 4L19 7"/></svg>È unico al mondo: esiste in una sola copia, la vostra</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 13 4 4L19 7"/></svg>Si può rigiocare per sempre, e ogni volta emoziona</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 13 4 4L19 7"/></svg>Racconta la vostra storia come nessun oggetto può fare</li>
+        </ul>
+        <img class="vs-sprite pixel" src="site/img/lei.webp" width="128" height="242" alt="" aria-hidden="true">
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= PREZZI ======================= -->
+<section class="section price-section" id="prezzi">
+  <div class="container">
+    <div class="section-head reveal" style="text-align:center;margin-inline:auto">
+      <span class="kicker" style="justify-content:center">Un solo pacchetto, semplice</span>
+      <h2>La vostra avventura a <span class="accent">19,50&nbsp;€</span></h2>
+      <p>Prezzo fisso, tutto incluso: un'avventura completa e giocabile, con voi due
+        in pixel art, consegnata con link privato e QR Code. E fino al <strong>6 ottobre 2026</strong>,
+        <strong>−50% sul totale</strong> con il codice founder — lascia la tua email
+        e te lo inviamo.</p>
+    </div>
+    <div class="price-solo reveal">
+      <article class="price-card price-featured">
+        <span class="price-badge">Tutto incluso</span>
+        <h3>L'Avventura</h3>
+        <p class="price-tag">19,50<span class="price-cur">€</span></p>
+        <p class="price-desc">Tutto quello che serve per far dire "non ci credo, è per noi?".</p>
+        <ul class="price-list">
+          <li><strong>Voi due in pixel art</strong>: gli sprite dei protagonisti sono inclusi</li>
+          <li>Tema per la vostra occasione: romantico, compleanno o proposta</li>
+          <li>I vostri nomi, la dedica e la data "insieme da…"</li>
+          <li>3 sorprese con i vostri testi, nascoste nella scena</li>
+          <li>Finale personalizzato</li>
+          <li>Link privato + QR Code funzionante</li>
+          <li>Anteprima prima della consegna, in 2–5 giorni</li>
+        </ul>
+        <a class="btn btn-primary btn-lg" href="ordina.html">Ordina a 19,50&nbsp;€</a>
+      </article>
+      <div class="addon-col">
+        <p class="addon-title">Rendila ancora più vostra <span aria-hidden="true">✨</span> <small class="addon-founder">prezzi founder −50%</small></p>
+        <div class="addon-grid">
+          <div class="addon"><span class="addon-ico" aria-hidden="true">📷</span>
+            <span class="addon-body"><b>Le vostre foto vere</b><i>dentro le sorprese</i></span>
+            <span class="addon-price"><s>1&nbsp;€</s> 0,50&nbsp;€<i>/foto</i></span></div>
+          <div class="addon"><span class="addon-ico" aria-hidden="true">🐱</span>
+            <span class="addon-body"><b>Personaggi in più</b><i>il gatto, un amico, la famiglia…</i></span>
+            <span class="addon-price"><s>6&nbsp;€</s> 3&nbsp;€<i>/sprite</i></span></div>
+          <div class="addon"><span class="addon-ico" aria-hidden="true">🖼️</span>
+            <span class="addon-body"><b>Biglietto QR da stampare</b><i>design elegante pronto per la stampa</i></span>
+            <span class="addon-price"><s>10&nbsp;€</s> 5&nbsp;€</span></div>
+        </div>
+        <p class="price-note">Scegli gli extra direttamente nel modulo d'ordine.
+          Idee particolari? <a href="ordina.html">Scrivici</a>: troviamo la formula giusta.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ RECENSIONI (nascoste finché non ci sono recensioni reali:
+     per riattivarle, rimuovere questo commento) ═══════
+======================= RECENSIONI =======================
+<section class="section" id="recensioni">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="kicker">Dicono di noi</span>
+      <h2>Lacrime di gioia <span class="accent">garantite</span></h2>
+    </div>
+    <div class="review-grid">
+      <article class="card review reveal">
+        <span class="review-stars" aria-label="5 stelle su 5">★★★★★</span>
+        <q>Quando ha trovato la lettera nascosta nella scrivania si è messa a piangere.
+          Poi ha ricominciato il gioco da capo per riviverlo. Miglior regalo che le abbia mai fatto.</q>
+        <div class="review-who">
+          <img class="pixel" src="site/img/pt-lui-0.webp" alt="" width="128" height="128" loading="lazy">
+          <div><strong>Alessandro</strong><span>Anniversario · 3 anni insieme</span></div>
+        </div>
+      </article>
+      <article class="card review reveal reveal-d1">
+        <span class="review-stars" aria-label="5 stelle su 5">★★★★★</span>
+        <q>Ho inquadrato il QR Code dal biglietto di auguri e mi sono ritrovata dentro
+          la nostra storia. Il gatto pixel art identico al nostro mi ha distrutta. 😭</q>
+        <div class="review-who">
+          <img class="pixel" src="site/img/pt-gatto.webp" alt="" width="128" height="128" loading="lazy">
+          <div><strong>Giulia</strong><span>Compleanno a sorpresa</span></div>
+        </div>
+      </article>
+      <article class="card review reveal reveal-d2">
+        <span class="review-stars" aria-label="5 stelle su 5">★★★★★</span>
+        <q>Le ho fatto la proposta con il finale del gioco: la lettera si apriva sulla
+          "Richiesta Ufficiale di Matrimonio". Ha detto sì prima ancora di finire di leggere.</q>
+        <div class="review-who">
+          <img class="pixel" src="site/img/pt-lui-4.webp" alt="" width="128" height="128" loading="lazy">
+          <div><strong>Marco</strong><span>Proposta di matrimonio 💍</span></div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+
+-->
+
+<!-- ======================= FAQ ======================= -->
+<section class="section" id="faq">
+  <div class="container">
+    <div class="section-head reveal" style="text-align:center;margin-inline:auto">
+      <span class="kicker" style="justify-content:center">Domande frequenti</span>
+      <h2>Tutto quello che vuoi <span class="accent">sapere</span></h2>
+    </div>
+    <div class="faq-list reveal">
+      <details class="faq">
+        <summary>Quanto costa un'avventura Sempreaddue?
+          <span class="chev" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span>
+        </summary>
+        <div class="faq-body">Un solo pacchetto, semplice: <strong>19,50 €</strong> fissi per
+          l'avventura completa con <strong>gli sprite di voi due</strong>, nomi, dedica,
+          3 sorprese personalizzate, finale, link privato e QR Code. Extra a prezzo founder:
+          foto reali 0,50 € l'una, personaggi in più 3 € a sprite, biglietto QR da stampare
+          5 €. E c'è il <strong>−50% sul totale</strong> con il
+          codice founder (fino al 6 ottobre 2026): lascia la tua email nel riquadro che compare sul sito e te lo
+          inviamo. <a href="#prezzi">Guarda cosa è incluso</a>.</div>
+      </details>
+      <details class="faq">
+        <summary>Come viene consegnato il gioco?
+          <span class="chev" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span>
+        </summary>
+        <div class="faq-body">Ricevi un <strong>link privato</strong> e un <strong>QR Code</strong>
+          pronto da stampare su un biglietto o una cornice. Il gioco si apre direttamente
+          nel browser: niente app, niente account, niente download.</div>
+      </details>
+      <details class="faq">
+        <summary>Su quali dispositivi funziona?
+          <span class="chev" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span>
+        </summary>
+        <div class="faq-body">Su qualunque smartphone, tablet o computer con un browser
+          moderno. È pensato prima di tutto per il telefono: touch, audio e
+          salvataggio dei progressi funzionano alla perfezione anche su iPhone.</div>
+      </details>
+      <details class="faq">
+        <summary>Quanto tempo serve per realizzarlo?
+          <span class="chev" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span>
+        </summary>
+        <div class="faq-body">In genere <strong>da 2 a 7 giorni</strong>, a seconda del livello
+          di personalizzazione. Se hai una data importante in arrivo, scrivicelo subito:
+          facciamo il possibile per arrivare in tempo.</div>
+      </details>
+      <details class="faq">
+        <summary>Posso vederlo prima della consegna?
+          <span class="chev" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span>
+        </summary>
+        <div class="faq-body">Certo: prima della consegna ricevi un'anteprima completa e
+          puoi chiederci le modifiche che vuoi. Il regalo parte solo quando è perfetto per te.</div>
+      </details>
+      <details class="faq">
+        <summary>Che fine fanno le nostre foto e i nostri messaggi?
+          <span class="chev" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span>
+        </summary>
+        <div class="faq-body">Vengono usati <strong>solo</strong> per costruire la vostra
+          avventura e trattati con la massima riservatezza. Niente viene mai condiviso o
+          pubblicato senza il tuo consenso esplicito. <a href="#privacy">Leggi il nostro impegno sulla privacy</a>.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= PRIVACY ======================= -->
+<section class="section privacy-section" id="privacy">
+  <div class="container privacy-card reveal">
+    <div class="privacy-icons" aria-hidden="true">
+      <div class="pi">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+        <span>Materiale protetto</span>
+      </div>
+      <div class="pi">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v5c0 5-3.5 8.5-7 10-3.5-1.5-7-5-7-10V6z"/></svg>
+        <span>Nessuna condivisione</span>
+      </div>
+      <div class="pi">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20s-7-4.35-9.33-8.44C1.1 8.79 2.66 5.5 5.86 5.06 7.8 4.8 9.64 5.8 12 8c2.36-2.2 4.2-3.2 6.14-2.94 3.2.44 4.76 3.73 3.19 6.5C18.99 15.65 12 20 12 20z"/></svg>
+        <span>Rispetto delle persone</span>
+      </div>
+      <div class="pi">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M12 12v4m0-4-1.5 1.5M12 12l1.5 1.5"/></svg>
+        <span>Archivi riservati</span>
+      </div>
+    </div>
+    <div class="privacy-copy">
+      <span class="kicker">Privacy e riservatezza</span>
+      <h2>I vostri ricordi restano <span class="accent">vostri</span></h2>
+      <ul>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 13 4 4L19 7"/></svg>
+          <span>Fotografie, video, audio, messaggi, lettere e informazioni personali vengono
+          usati <strong>esclusivamente</strong> per realizzare la vostra avventura.</span></li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 13 4 4L19 7"/></svg>
+          <span>Nessun materiale viene condiviso, pubblicato, ceduto o riutilizzato per altri
+          scopi senza il tuo consenso esplicito.</span></li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 13 4 4L19 7"/></svg>
+          <span>Ogni contenuto è trattato con la massima riservatezza, dal primo messaggio
+          alla consegna del gioco.</span></li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 13 4 4L19 7"/></svg>
+          <span>Il nostro obiettivo è un regalo unico, creato nel pieno rispetto della privacy
+          di tutte le persone coinvolte.</span></li>
+      </ul>
+      <a class="btn btn-ghost" href="privacy.html">Leggi l'informativa privacy</a>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= CTA FINALE ======================= -->
+<section class="final" id="ordina">
+  <div class="container reveal">
+    <img class="sprite-couple pixel" src="site/img/ballo.webp" width="206" height="312"
+         alt="I due protagonisti pixel art che ballano abbracciati">
+    <h2>C'è una storia che solo voi due conoscete.<br>
+      <span class="accent">Trasformiamola in un gioco.</span></h2>
+    <p>Raccontaci il vostro primo appuntamento, la vostra stanza, quella frase che vi
+      fa ridere ancora. Al resto pensiamo noi.</p>
+    <div class="final-cta">
+      <a class="btn btn-primary btn-lg" href="ordina.html">
+        Realizza la tua avventura
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 21s-8-5-10.4-9.6C-.1 8.1 1.7 4.4 5.3 3.9c2.2-.3 4.2.8 6.7 3.3 2.5-2.5 4.5-3.6 6.7-3.3 3.6.5 5.4 4.2 3.7 7.5C20 16 12 21 12 21z"/></svg>
+      </a>
+      <a class="btn btn-ghost btn-lg" href="https://instagram.com/sempreaddue"
+         target="_blank" rel="noopener">Scrivici su Instagram</a>
+    </div>
+    <!-- Email temporanea: sostituire col dominio definitivo in futuro -->
+    <small>DM a <strong>@sempreaddue</strong> o email a
+      <a href="mailto:sempreaddue@gmail.com">sempreaddue@gmail.com</a> · Ti rispondiamo in giornata</small>
+  </div>
+</section>
+
+</main>
+
+<!-- ======================= FOOTER ======================= -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <a class="logo" href="#top">
+        <svg viewBox="0 0 16 16" aria-hidden="true"><path fill="#E8896B" d="M2 3h3v1h1v1h1v1h2V5h1V4h1V3h3v1h1v4h-1v1h-1v1h-1v1h-1v1h-1v1h-1v1H8v-1H7v-1H6v-1H5v-1H4V9H3V8H2V7H1V4h1z"/></svg>
+        Sempreaddue
+      </a>
+      <ul class="footer-links">
+        <li><a href="ordina.html">Ordina</a></li>
+        <li><a href="https://instagram.com/sempreaddue" target="_blank" rel="noopener">Instagram</a></li>
+        <!-- Email temporanea: sostituire col dominio definitivo in futuro -->
+        <li><a href="mailto:sempreaddue@gmail.com">Email</a></li>
+        <li><a href="privacy.html">Privacy</a></li>
+        <li><a href="#demo">Demo</a></li>
+      </ul>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Sempreaddue. Tutti i diritti riservati.</span>
+      <span>Fatto con <span class="heart" aria-hidden="true">♥</span> e tanti pixel</span>
+    </div>
+  </div>
+</footer>
+
+<!-- ======================= POPUP FOUNDER =======================
+     Compare dopo ~10s (una sola volta: localStorage). Il form è raccolto
+     da Netlify Forms ("promo"): il codice FOUNDER26 lo invii tu via email. -->
+<div class="promo-overlay" id="promoOverlay" hidden>
+  <div class="promo-modal" role="dialog" aria-modal="true" aria-labelledby="promoTitle">
+    <button class="promo-close" id="promoClose" aria-label="Chiudi">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+    <img class="pixel" src="site/img/cuore.webp" alt="" width="180" height="180"
+         style="width:52px;margin:0 auto 14px" loading="lazy">
+    <h2 id="promoTitle">−50% per i founder</h2>
+    <p>Solo fino al <strong>6 ottobre 2026</strong>: <strong>sconto del 50% sul
+      totale</strong> del tuo ordine. Lasciaci la tua email: ti inviamo il <strong>codice founder</strong>
+      da usare nel riepilogo ordine.</p>
+    <form id="promoForm" name="promo" method="POST" data-netlify="true"
+          netlify-honeypot="campo-promo">
+      <input type="hidden" name="form-name" value="promo">
+      <p class="hp" aria-hidden="true"><label>Non compilare: <input name="campo-promo" tabindex="-1" autocomplete="off"></label></p>
+      <div class="promo-fields">
+        <input type="email" name="email" required maxlength="120" autocomplete="email"
+               placeholder="la-tua@email.it" aria-label="La tua email">
+      </div>
+      <button type="submit" class="btn btn-primary promo-submit">Inviami il codice</button>
+    </form>
+    <p class="promo-privacy">Useremo la tua email solo per inviarti il codice. Zero spam.</p>
+  </div>
+</div>
+
+<script src="site/js/main.js" defer></script>
+</body>
+</html>

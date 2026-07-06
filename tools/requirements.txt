@@ -3,4 +3,5 @@ Pillow>=10        # tools/sprites.py — scontorno e packing
 numpy>=1.26       # tools/sprites.py, tools/music.py
 scipy>=1.11       # tools/sprites.py — flood fill / componenti connesse
 jsonschema>=4     # tools/sad.py validate
+qrcode>=7         # tools/sad.py consegna — QR del link di consegna
 imageio-ffmpeg>=0.4   # tools/music.py — decodifica/codifica mp3 (ffmpeg completo)
