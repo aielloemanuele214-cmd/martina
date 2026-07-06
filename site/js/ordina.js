@@ -13,9 +13,9 @@
   const NAMES = ['L’occasione', 'Voi due', 'I dettagli', 'Come ricontattarti'];
   let current = 0;
 
-  /* totale in tempo reale: base 19,50 € + extra, −5% col codice promo */
+  /* totale in tempo reale: base 19,50 € + extra, −50% col codice promo */
   const BASE = 19.5;
-  const PROMO = { codice: 'FOUNDER26', sconto: 0.05 };
+  const PROMO = { codice: 'FOUNDER26', sconto: 0.5 };
   const euro = (n) => n.toFixed(2).replace('.', ',') + ' €';
   const totale = () => {
     let t = BASE;
@@ -39,7 +39,7 @@
     fb.hidden = !val;
     if (!val) return;
     if (promoValido()) {
-      fb.textContent = '✓ Codice valido: −5% sul totale';
+      fb.textContent = '✓ Codice valido: −50% sul totale';
       fb.className = 'promo-feedback ok';
     } else {
       fb.textContent = 'Codice non riconosciuto';
@@ -89,7 +89,7 @@
     const t = totale();
     const conPromo = promoValido();
     const riga = conPromo
-      ? `<s>${euro(t)}</s> <b>${euro(t * (1 - PROMO.sconto))}</b> <small>(codice ${PROMO.codice}: −5%)</small>`
+      ? `<s>${euro(t)}</s> <b>${euro(t * (1 - PROMO.sconto))}</b> <small>(codice ${PROMO.codice}: −50%)</small>`
       : `<b>${euro(t)}</b>`;
     box.innerHTML =
       `<h3>Riepilogo</h3>

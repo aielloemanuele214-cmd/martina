@@ -20,7 +20,7 @@ Analisi competitor: Gift Games €37,50–60 (template, 4 gg) · Muksun $99 (no 
 Bday Game $250–450 (file Windows) · love-page self-service $5–10. Nessun player
 italiano. Vantaggio nostro: browser via link/QR, mobile-first, pixel art curata.
 
-**Base fissa 19,50 € + promo founder: −5% sul totale per i primi 3 mesi**
+**Base fissa 19,50 € + promo founder: −50% sul totale per i primi 3 mesi**
 (codice **FOUNDER26**, inviato via email a chi lo richiede dal popup del sito;
 le email arrivano dal form Netlify "promo").
 
@@ -45,7 +45,7 @@ Setup una tantum su dashboard.stripe.com:
 1. Crea 4 prodotti: **L'Avventura** 19,50 € (quantità fissa 1), **Foto reale**
    0,50 € (quantità regolabile 0-10), **Personaggio extra** 3 € (0-5),
    **Biglietto QR** 5 € (0-1).
-2. Crea un coupon **FOUNDER26** al −5% e abilita "Consenti codici
+2. Crea un coupon **FOUNDER26** al −50% e abilita "Consenti codici
    promozionali" sul Payment Link (il cliente lo inserisce nel checkout).
 3. Crea il **Payment Link** con i 4 prodotti e quantità regolabile sugli extra.
 4. Incolla l'URL nella costante `STRIPE_PAYMENT_LINK` in `grazie.html`:
