@@ -56,9 +56,9 @@ Setup una tantum su dashboard.stripe.com:
 ## Flusso operativo per ordine
 1. `python3 tools/sad.py ordine <slug>` → cartella `clienti/<slug>/`
 2. compila `ordine.json` + foto in `foto/` (dal template dell'occasione scelta)
-3. `python3 tools/sad.py build clienti/<slug>/ordine.json` (valida da solo)
-4. `python3 tools/sad.py qa dist/stanza-<slug>.html` → 13 verifiche
-5. Netlify Drop → QR → link in `NOTE.md` → commit
+3. `python3 tools/sad.py consegna <slug> --push` → build, QA, copia in
+   `g/<token>.html`, QR in `clienti/<slug>/qr-<slug>.png`, link in `NOTE.md`,
+   commit e push (con il repo collegato a Netlify il push = pubblicazione)
 
 ## Demo commerciale
 `dist/stanza-demo.html` (salvataggio disattivato, watermark @sempreaddue nel
