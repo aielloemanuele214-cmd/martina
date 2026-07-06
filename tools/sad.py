@@ -56,6 +56,25 @@ ASSET_MAP = {
 CONFIG_RE = re.compile(
     r'/\* ★★ INIZIO CONFIG ★★ \*/.*?/\* ★★ FINE CONFIG ★★[^\n]*\*/', re.S)
 
+# Vocabolario '@nome' di default (pack storici: martina/romantica/compleanno/proposta,
+# tutti con lo stesso npc "lui" a 5 ritratti). Un pack nuovo può dichiarare il proprio
+# in sprites.json con "assetUri"/"ritrattiNpc" senza toccare questo file.
+LEGACY_ASSET_URI = ['pt_gatto', 'pop_finestra'] + [f'pt_lui_{i}' for i in range(5)]
+LEGACY_RITRATTI_NPC = [f'pt_lui_{i}' for i in range(5)]
+
+
+def find_pack_asset(pack, name):
+    """Cerca <name>.{png,jpg,jpeg,mp3} dentro packs/<pack>/assets/ (ricorsivo).
+    Permette a un pack di portarsi i propri asset senza registrarli in ASSET_MAP."""
+    pdir = os.path.join(ROOT, 'packs', pack, 'assets')
+    for dirpath, _dirs, files in os.walk(pdir):
+        for f in files:
+            base, ext = os.path.splitext(f)
+            if base == name and ext.lower() in ('.png', '.jpg', '.jpeg', '.mp3'):
+                mime = mimetypes.guess_type(f)[0] or 'application/octet-stream'
+                return os.path.join(dirpath, f), mime
+    return None
+
 
 def b64(path, mime):
     with open(path, 'rb') as f:
@@ -113,15 +132,19 @@ def gen_assets_js(sprites, story):
         dims = ''.join(f', {d}:{sh[d]}' for d in ('fw', 'fh', 'n', 'alt') if d in sh)
         rows.append(f"  {key}: {{ src:'{{{{B64:{sh['asset']}}}}}'{dims} }},")
     # asset referenziabili dalla STORY con '@nome' (ritratti, immagini dei popup)
-    uri_names = ['pt_gatto', 'pop_finestra'] + [f'pt_lui_{i}' for i in range(5)]
+    # — un pack può dichiarare il proprio vocabolario in sprites.json ("assetUri",
+    # "ritrattiNpc"); se assente si usa quello storico (pack martina e derivati)
+    uri_names = sprites.get('assetUri', LEGACY_ASSET_URI)
+    ritratti_npc = sprites.get('ritrattiNpc', LEGACY_RITRATTI_NPC)
     uris = '\n'.join(f"  {n}: '{{{{B64:{n}}}}}'," for n in uri_names)
+    portraits = ', '.join(f'ASSET_URI.{n}' for n in ritratti_npc)
     return ('\n/* ====== ASSET (da packs/<pack>/config/sprites.json, incorporati in base64) ====== */\n'
             'const ASSETS = {\n' + '\n'.join(rows) + '\n};\n'
             '/* Personaggi: fogli, stati di animazione, altezze (data-driven) */\n'
             'const SPR = ' + jsdump(sprites['personaggi']) + ';\n'
             '/* Asset referenziabili con "@nome" da STORY */\n'
             'const ASSET_URI = {\n' + uris + '\n};\n'
-            "const PORTRAITS_LUI = [ASSET_URI.pt_lui_0, ASSET_URI.pt_lui_1, ASSET_URI.pt_lui_2, ASSET_URI.pt_lui_3, ASSET_URI.pt_lui_4];\n"
+            f"const PORTRAITS_LUI = [{portraits}];\n"
             "/* Colonna sonora (mp3 incorporati) */\n"
             "const MUSICHE = {\n"
             "  gioco: '{{B64:mus_gioco}}',\n"
@@ -220,7 +243,7 @@ def validate_pack(pack=DEFAULT_PACK, silenzioso=False):
         for k in r.split('.'):
             o = o.get(k) if isinstance(o, dict) else None
         if o is None: errs.append(f"story.json: '${r}' non risolve nella config del pack")
-    noti = {'pt_gatto', 'pop_finestra'} | {f'pt_lui_{i}' for i in range(5)}
+    noti = set(sprites.get('assetUri', LEGACY_ASSET_URI))
     for r in set(ref_asset):
         if r not in noti: errs.append(f"story.json: '@{r}' non è un asset incorporato noto")
     # 4. i flag usati nelle condizioni sono impostabili da qualche azione
@@ -301,13 +324,21 @@ def build_base(pack=DEFAULT_PACK):
             parts.append(gen_assets_js(sprites, story))
             parts.append(gen_story_js(story))
     html = ''.join(parts)
-    # incorpora gli asset
-    for name, (rel, mime) in ASSET_MAP.items():
+    # incorpora gli asset: prima la mappa storica condivisa (assets/ di repo),
+    # poi — per ogni placeholder non riconosciuto — gli asset propri del pack
+    # (packs/<pack>/assets/**), così un pack nuovo porta i suoi file senza
+    # toccare ASSET_MAP.
+    for name in sorted(set(re.findall(r'\{\{B64:([^}]+)\}\}', html))):
         ph = '{{B64:%s}}' % name
-        path = os.path.join(ROOT, rel)
-        assert os.path.exists(path), f'asset mancante: {rel}'
-        if ph in html:
-            html = html.replace(ph, b64(path, mime))
+        if name in ASSET_MAP:
+            rel, mime = ASSET_MAP[name]
+            path = os.path.join(ROOT, rel)
+            assert os.path.exists(path), f'asset mancante: {rel}'
+        else:
+            found = find_pack_asset(pack, name)
+            assert found, f"asset mancante: '{name}' (né in ASSET_MAP né in packs/{pack}/assets/)"
+            path, mime = found
+        html = html.replace(ph, b64(path, mime))
     left = re.findall(r'\{\{[^}]+\}\}', html)
     assert not left, f'placeholder residui: {sorted(set(left))}'
     if pack == DEFAULT_PACK:

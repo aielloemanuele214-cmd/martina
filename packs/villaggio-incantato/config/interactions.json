@@ -1,0 +1,42 @@
+{
+  "sorprese": [
+    {
+      "id": "fontana",
+      "x": 42,
+      "y": 58,
+      "ax": 42,
+      "ay": 67,
+      "ri": 6,
+      "titolo": "La Fontana dei Desideri",
+      "testo": "Si dice che chi esprime un desiderio qui, nella notte del suo compleanno, lo veda avverarsi prima dell'alba.\n\nChiudi gli occhi, Lyra. Esprimine uno.",
+      "img": "{{B64:pop_fontana}}",
+      "evento": "ballo"
+    },
+    {
+      "id": "bacheca",
+      "x": 9,
+      "y": 64,
+      "ax": 9,
+      "ay": 71,
+      "ri": 5,
+      "titolo": "Un anno di imprese",
+      "testo": "Alla bacheca del villaggio sono affissi gli annunci dell'anno: le tue imprese, le risate, le notti passate a raccontarci storie intorno al fuoco.\n\nIl prossimo anno ne scriveremo altre cento.",
+      "img": "{{B64:pop_bacheca}}"
+    },
+    {
+      "id": "pergamena",
+      "x": 71,
+      "y": 47,
+      "ax": 71,
+      "ay": 56,
+      "ri": 5,
+      "titolo": "La pergamena del mercante",
+      "testo": "Sul bancone dell'Emporio, tra vasi e lanterne, qualcuno ha lasciato una pergamena sigillata con la ceralacca.\n\nPorta il tuo nome, Lyra.",
+      "img": "{{B64:pop_pergamena}}",
+      "evento": "contratto"
+    }
+  ],
+  "finestra": {
+    "testo": "Alzi lo sguardo verso il cielo sopra il villaggio: le stelle sembrano danzare, e una scia luminosa attraversa la notte.\n\nAnche il cielo, stasera, festeggia con te."
+  }
+}

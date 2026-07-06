@@ -1,0 +1,16 @@
+{
+  "slug": "villaggio-incantato",
+  "nome": "Il Villaggio Incantato — Buon Compleanno, Lyra",
+  "descrizione": "Ordine su misura: ambientazione fantasy dedicata (piazza del villaggio di notte), sprite originali di Lyra (player, elfa) e Finn (npc), storia di compleanno inventata da zero.",
+  "versione": "1.0.0",
+  "engine": "1.3.x",
+  "config": [
+    "settings.json",
+    "characters.json",
+    "dialogues.json",
+    "interactions.json",
+    "cutscenes.json",
+    "endings.json"
+  ],
+  "story": "story.json"
+}

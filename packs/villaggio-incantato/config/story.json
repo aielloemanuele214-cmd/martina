@@ -1,0 +1,100 @@
+{
+  "_note": "STORY = comportamento dell'avventura fantasy, 100% dati (stesso interprete del pack martina). 'fontana' e 'pergamena' sono le due sorprese 'finali' (si sbloccano a vicenda, chi delle due si visita per ultima innesca la propria scena); 'bacheca' è libera. 'ballo' e 'contratto' restano i nomi tecnici delle due scene (coerenti con lo schema CONFIG), ma qui raccontano il desiderio alla fontana e il decreto reale.",
+
+  "eventi": [
+    { "id": "fontana", "quando": "interagisci:fontana",
+      "se": { "all": ["!trovato.fontana", "trovato.bacheca", "trovato.pergamena", "!fatto.ballo"] },
+      "fai": [ { "set": "trovato.fontana" }, { "scena": "ballo" } ],
+      "altrimenti": [ { "sorpresa": "fontana" } ] },
+
+    { "id": "bacheca", "quando": "interagisci:bacheca",
+      "fai": [ { "sorpresa": "bacheca" } ] },
+
+    { "id": "pergamena", "quando": "interagisci:pergamena",
+      "se": { "all": ["!trovato.pergamena", "trovato.fontana", "trovato.bacheca", "!fatto.contratto"] },
+      "fai": [ { "set": "trovato.pergamena" }, { "scena": "contratto" } ],
+      "altrimenti": [ { "sorpresa": "pergamena" } ] },
+
+    { "id": "finn", "quando": "interagisci:npc",
+      "fai": [ { "set": "npcParlato" }, { "dialogo": "finn" } ] },
+
+    { "id": "gatto", "quando": "interagisci:gatto",
+      "fai": [
+        { "sveglia": "gatto" }, { "verso": "gatto" }, { "sfx": "meow" },
+        { "se": "!segreto.gatto", "fai": [ { "set": "segreto.gatto" }, { "vibra": 40 } ] },
+        { "se": { "all": ["prima_interazione", "!fatto.fusa"] },
+          "fai": [ { "set": "fatto.fusa" }, { "scena": "fusa" }, { "dialogo": "gatto" } ],
+          "altrimenti": [ { "dialogo": "gatto" } ] } ] },
+
+    { "id": "finestra", "quando": "interagisci:finestra",
+      "fai": [ { "set": "segreto.finestra" },
+               { "popup": { "img": "@pop_cielo", "testo": "$finestra.testo", "verso": [50, 14] } } ] }
+  ],
+
+  "scene": {
+    "ballo": { "passi": [
+      { "inizio": true },
+      { "set": "fatto.ballo" },
+      { "suggerimento": false },
+      { "musicaSfuma": 1.4 },
+      { "nero": true },
+      { "scrivi": { "testo": "$ballo.introTesto", "pausa": 1.4 } },
+      { "posiziona": { "riferimento": "ballo", "dx": -4, "dy": 1, "dir": "right" } },
+      { "statoGiocatore": "interact" },
+      { "synth": true },
+      { "nero": false },
+      { "cuori": { "su": "npc", "n": 14 } },
+      { "attesa": 1.6 },
+      { "cuori": { "su": "npc", "n": 10 } },
+      { "attesa": "$ballo.durata" },
+      { "nero": true },
+      { "synthStop": true },
+      { "scrivi": { "testo": "$ballo.outroTesto", "pausa": 1.8 } },
+      { "nero": false },
+      { "musicaRiprendi": true },
+      { "fine": true } ] },
+
+    "contratto": { "passi": [
+      { "inizio": true },
+      { "set": "fatto.contratto" },
+      { "suggerimento": false },
+      { "nero": true },
+      { "scrivi": { "testo": "$contratto.intro", "pausa": 1.4 } },
+      { "documento": true },
+      { "fine": true } ] },
+
+    "fusa": { "passi": [
+      { "inizio": true },
+      { "statoGiocatore": "interact" },
+      { "cuori": { "su": "gatto", "n": 14 } },
+      { "attesa": 0.38 },
+      { "cuori": { "su": "gatto", "n": 8 } },
+      { "attesa": 0.57 },
+      { "fine": true } ] }
+  },
+
+  "dialoghi": {
+    "finn":  { "nome": "$nomi.lui", "modo": "sacchetto", "fonte": "$dialoghi",
+               "emotivo": true, "verso": "npc" },
+    "gatto": { "nome": "$gatto.nome", "righe": ["$gatto.messaggio"],
+               "ritratto": "@pt_gatto", "verso": "gatto" }
+  },
+
+  "segreti": [
+    { "id": "gatto",     "flag": "segreto.gatto", "hud": "🐾" },
+    { "id": "finestra",  "flag": "segreto.finestra" },
+    { "id": "ballo",     "flag": "fatto.ballo" },
+    { "id": "contratto", "flag": "fatto.contratto" }
+  ],
+
+  "finali": [
+    { "id": "principale", "se": "trovato.*",
+      "titolo": "$finale.titolo", "testo": "$finale.testo" }
+  ],
+
+  "ui": {
+    "giorni": "INSIEME IN QUESTO REGNO DA {g} GIORNI ❤",
+    "segretiCompleti": "Complimenti!\nHai scoperto tutta la magia nascosta di questo villaggio. ❤️",
+    "segretiParziali": "Hai trovato {n}/{tot} segreti del villaggio.\nRicomincia per scoprirli tutti.\n💡 Indizio: prova a cambiare l'ordine in cui esplori i luoghi."
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "titolo": "Il Villaggio Incantato — Buon Compleanno, Lyra!",
+  "nomi": {
+    "lei": "Lyra",
+    "lui": "Finn"
+  },
+  "dataInizio": null,
+  "musica": true,
+  "salvaProgressi": true,
+  "schermataIngresso": true
+}

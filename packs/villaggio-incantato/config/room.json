@@ -1,0 +1,18 @@
+{
+  "_note": "Coordinate in % della piazza (0-100), origine in alto a sinistra. Sfondo: villaggio fantasy notturno (fontana, locanda, emporio, fucina, bacheca, mercato). rx = margine orizzontale ridotto per quell'ostacolo (passaggi stretti).",
+  "bounds": { "xMin": 3, "xMax": 97, "yMin": 5, "yMax": 88 },
+  "colliders": [
+    { "t": "edifici-e-fondale", "_note": "locanda (sx) + specchio d'acqua/molo (centro-alto) + emporio-e-banco (centro-dx) + fucina (dx): l'intera fascia sopra il selciato della piazza",
+      "pts": [[0,0],[100,0],[100,66],[90,66],[90,53],[58,53],[58,41],[25,41],[25,46],[0,46]] },
+    { "t": "muro-sx", "pts": [[0,0],[3,0],[3,100],[0,100]] },
+    { "t": "muro-dx", "pts": [[97,0],[100,0],[100,100],[97,100]] },
+    { "t": "muro-basso", "_note": "oltre la piazza: ponte e specchio d'acqua, fuori dai limiti giocabili",
+      "pts": [[0,88],[100,88],[100,100],[0,100]] },
+    { "t": "fontana", "pts": [[42,52],[47,53.5],[49,58],[47,62.5],[42,64],[37,62.5],[35,58],[37,53.5]] },
+    { "t": "bacheca-e-lampione", "pts": [[2,51],[18,51],[18,74],[2,74]] },
+    { "t": "segnaletica", "pts": [[53,70],[59,70],[59,80],[53,80]] },
+    { "t": "bancarella-mercato", "pts": [[66,66],[96,66],[96,88],[66,88]] }
+  ],
+  "dietroLetto": { "_note": "dietro il tronco dell'albero tra locanda ed emporio: zona di semi-trasparenza",
+    "pts": [[48,41],[58,41],[58,46],[48,46]] }
+}
