@@ -119,17 +119,42 @@
     paint();
   }
 
-  /* ---------- Demo: l'iframe (3,7 MB) viene caricato solo su richiesta ---------- */
+  /* ---------- Demo: l'iframe (≈4,5 MB) viene caricato solo su richiesta ---------- */
   const start = $('#demoStart');
   if (start) {
+    // il video di gameplay parte solo quando la sezione è visibile (e mai con reduced motion)
+    const video = $('.demo-video', start);
+    if (video && !reduceMotion && 'IntersectionObserver' in window) {
+      const vio = new IntersectionObserver((entries) => {
+        for (const e of entries) {
+          if (e.isIntersecting) video.play().catch(() => {});
+          else video.pause();
+        }
+      }, { threshold: 0.3 });
+      vio.observe(video);
+    } else if (video) {
+      video.remove(); // resta il poster statico
+    }
     start.addEventListener('click', () => {
       const frame = $('#demoFrame');
+      const label = $('.demo-poster-label', start);
+      const play = $('.demo-play', start);
+      if (label) label.textContent = 'Caricamento…';
+      if (play) play.style.display = 'none';
       const iframe = document.createElement('iframe');
-      iframe.src = 'stanza.html';
-      iframe.title = 'Demo giocabile di Sempreaddue';
+      iframe.src = 'demo.html';
+      iframe.title = 'Demo giocabile di Sempreaddue — Il Villaggio Incantato';
       iframe.allow = 'autoplay; fullscreen';
-      frame.replaceChildren(iframe);
-      iframe.focus();
+      // il poster resta visibile finché il gioco (≈4,5 MB) non è pronto;
+      // niente replaceChildren: spostare un iframe nel DOM lo ricaricherebbe
+      iframe.addEventListener('load', () => {
+        video?.pause();
+        start.remove();
+        iframe.style.visibility = '';
+        iframe.focus();
+      });
+      iframe.style.visibility = 'hidden';
+      frame.appendChild(iframe);
     }, { once: true });
   }
 })();

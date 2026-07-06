@@ -87,8 +87,9 @@
       <li><a href="#come-funziona">Come funziona</a></li>
       <li><a href="#demo">Demo</a></li>
       <li><a href="#galleria">Galleria</a></li>
+      <li><a href="#prezzi">Prezzi</a></li>
       <li><a href="#faq">FAQ</a></li>
-      <li><a class="btn btn-primary" href="#ordina">Ordina la tua avventura</a></li>
+      <li><a class="btn btn-primary" href="ordina.html">Ordina la tua avventura</a></li>
     </ul>
   </div>
 </header>
@@ -106,7 +107,7 @@
         pixel art personalizzata: voi due come protagonisti, le vostre foto, le vostre
         lettere, la vostra musica. Un regalo che non si guarda — <strong>si gioca</strong>.</p>
       <div class="hero-cta">
-        <a class="btn btn-primary btn-lg" href="#ordina">Ordina la tua avventura</a>
+        <a class="btn btn-primary btn-lg" href="ordina.html">Ordina la tua avventura</a>
         <a class="btn btn-ghost btn-lg" href="#demo">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg>
           Prova la demo
@@ -231,14 +232,17 @@
     <div class="section-head reveal" style="text-align:center;margin-inline:auto">
       <span class="kicker" style="justify-content:center">Provala adesso</span>
       <h2>Non crederci sulla parola. <span class="accent">Gioca.</span></h2>
-      <p>Questa è una vera avventura Sempreaddue. Muoviti nella stanza, tocca gli
-        oggetti, trova le sorprese.</p>
+      <p>Questa è una vera avventura Sempreaddue: <em>Il Villaggio Incantato</em>.
+        Esplora, parla con i personaggi, trova le sorprese.</p>
     </div>
     <div class="demo-shell reveal">
       <div class="demo-frame" id="demoFrame">
         <button class="demo-poster" id="demoStart" aria-label="Avvia la demo giocabile">
-          <img src="site/img/room-800.webp" width="800" height="800" loading="lazy"
-               alt="Anteprima della demo: la stanza pixel art del gioco">
+          <img src="site/img/village-800.webp" width="800" height="800" loading="lazy"
+               alt="Anteprima della demo: un villaggio fantasy pixel art al chiaro di luna, con locanda, emporio e fontana">
+          <video class="demo-video" src="site/img/gameplay.webm" width="640" height="640"
+                 muted loop playsinline preload="none"
+                 poster="site/img/village-800.webp" aria-hidden="true" tabindex="-1"></video>
           <span class="demo-play" aria-hidden="true">
             <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l11-6.5z"/></svg>
           </span>
@@ -246,11 +250,11 @@
         </button>
       </div>
       <div class="demo-actions">
-        <a class="btn btn-ghost" href="stanza.html" target="_blank" rel="noopener">
+        <a class="btn btn-ghost" href="demo.html" target="_blank" rel="noopener">
           Apri a schermo intero
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg>
         </a>
-        <a class="btn btn-primary" href="#ordina">La voglio per noi due</a>
+        <a class="btn btn-primary" href="ordina.html">La voglio per noi due</a>
       </div>
       <p class="demo-tip">💡 Su smartphone è ancora più bella: attiva l'audio e alza il volume.</p>
     </div>
@@ -292,6 +296,11 @@
         <img src="site/img/pop-tv.webp" width="560" height="560" loading="lazy"
              alt="Televisione pixel art accesa in una stanza calda a lume di candela">
         <figcaption class="gal-cap">I vostri ricordi <span>Foto vere dentro la scena</span></figcaption>
+      </figure>
+      <figure class="gal-item">
+        <img src="site/img/village-800.webp" width="800" height="800" loading="lazy"
+             alt="Villaggio fantasy pixel art al chiaro di luna con locanda, emporio, fontana e castello">
+        <figcaption class="gal-cap">Il Villaggio Incantato <span>Ogni mondo è possibile: provalo nella demo</span></figcaption>
       </figure>
       <figure class="gal-item">
         <img src="site/img/room2-900.webp" width="900" height="900" loading="lazy"
@@ -370,6 +379,59 @@
   </div>
 </section>
 
+<!-- ======================= PREZZI ======================= -->
+<section class="section price-section" id="prezzi">
+  <div class="container">
+    <div class="section-head reveal" style="text-align:center;margin-inline:auto">
+      <span class="kicker" style="justify-content:center">Pacchetti</span>
+      <h2>Scegli quanto in <span class="accent">profondità</span> andare</h2>
+      <p>Tutti i pacchetti includono un'avventura completa e giocabile, consegnata
+        con link privato e QR Code.</p>
+    </div>
+    <div class="price-grid">
+      <article class="price-card reveal">
+        <h3>Base</h3>
+        <p class="price-tag"><span class="price-da">da</span> 29<span class="price-cur">€</span></p>
+        <p class="price-desc">L'avventura con la vostra storia, pronta in pochi giorni.</p>
+        <ul class="price-list">
+          <li>Template a scelta: romantico, compleanno o proposta</li>
+          <li>Nomi, dedica e data "insieme da…"</li>
+          <li>Testi delle 3 sorprese personalizzati</li>
+          <li>Link privato + QR Code</li>
+        </ul>
+        <a class="btn btn-ghost" href="ordina.html?pacchetto=base">Parti da qui</a>
+      </article>
+      <article class="price-card price-featured reveal reveal-d1">
+        <span class="price-badge">Il più scelto</span>
+        <h3>Plus</h3>
+        <p class="price-tag"><span class="price-da">da</span> 59<span class="price-cur">€</span></p>
+        <p class="price-desc">I vostri ricordi veri, dentro il gioco.</p>
+        <ul class="price-list">
+          <li>Tutto il pacchetto Base</li>
+          <li>Le vostre fotografie nelle sorprese</li>
+          <li>Lettera o documento finale scritto su misura</li>
+          <li>Anteprima e una revisione inclusa</li>
+        </ul>
+        <a class="btn btn-primary" href="ordina.html?pacchetto=plus">Scegli Plus</a>
+      </article>
+      <article class="price-card reveal reveal-d2">
+        <h3>Su misura</h3>
+        <p class="price-tag"><span class="price-da">da</span> 149<span class="price-cur">€</span></p>
+        <p class="price-desc">Un mondo costruito da zero intorno a voi.</p>
+        <ul class="price-list">
+          <li>Tutto il pacchetto Plus</li>
+          <li>Sprite dei veri protagonisti, disegnati su di voi</li>
+          <li>La vostra canzone come colonna sonora</li>
+          <li>Richieste speciali: ambientazioni, scene, segreti</li>
+        </ul>
+        <a class="btn btn-ghost" href="ordina.html?pacchetto=sumisura">Raccontaci l'idea</a>
+      </article>
+    </div>
+    <p class="price-note reveal">Hai una data vicina o un'idea particolare?
+      <a href="ordina.html">Scrivici comunque</a>: troviamo la formula giusta.</p>
+  </div>
+</section>
+
 <!-- ======================= RECENSIONI ======================= -->
 <section class="section" id="recensioni">
   <div class="container">
@@ -425,7 +487,8 @@
           testi, dedica e sorprese personalizzati. Con le vostre foto vere e un documento
           scritto su misura si va da 59 €; l'esperienza completamente su misura — con i
           vostri sprite disegnati da zero e la vostra musica — parte da 149 €.
-          Scrivici e troviamo insieme la formula giusta.</div>
+          <a href="#prezzi">Guarda i pacchetti</a> oppure scrivici: troviamo insieme
+          la formula giusta.</div>
       </details>
       <details class="faq">
         <summary>Come viene consegnato il gioco?
@@ -522,12 +585,17 @@
       <span class="accent">Trasformiamola in un gioco.</span></h2>
     <p>Raccontaci il vostro primo appuntamento, la vostra canzone, quella frase che vi
       fa ridere ancora. Al resto pensiamo noi.</p>
-    <a class="btn btn-primary btn-lg" href="https://instagram.com/sempreaddue"
-       target="_blank" rel="noopener">
-      Realizza la tua avventura
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 21s-8-5-10.4-9.6C-.1 8.1 1.7 4.4 5.3 3.9c2.2-.3 4.2.8 6.7 3.3 2.5-2.5 4.5-3.6 6.7-3.3 3.6.5 5.4 4.2 3.7 7.5C20 16 12 21 12 21z"/></svg>
-    </a>
-    <small>Scrivici su Instagram <strong>@sempreaddue</strong> · Ti rispondiamo in giornata</small>
+    <div class="final-cta">
+      <a class="btn btn-primary btn-lg" href="ordina.html">
+        Realizza la tua avventura
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 21s-8-5-10.4-9.6C-.1 8.1 1.7 4.4 5.3 3.9c2.2-.3 4.2.8 6.7 3.3 2.5-2.5 4.5-3.6 6.7-3.3 3.6.5 5.4 4.2 3.7 7.5C20 16 12 21 12 21z"/></svg>
+      </a>
+      <a class="btn btn-ghost btn-lg" href="https://instagram.com/sempreaddue"
+         target="_blank" rel="noopener">Scrivici su Instagram</a>
+    </div>
+    <!-- Email placeholder: sostituire con l'indirizzo definitivo quando sarà creato -->
+    <small>DM a <strong>@sempreaddue</strong> o email a
+      <a href="mailto:ordini@sempreaddue.it">ordini@sempreaddue.it</a> · Ti rispondiamo in giornata</small>
   </div>
 </section>
 
@@ -542,8 +610,10 @@
         Sempreaddue
       </a>
       <ul class="footer-links">
+        <li><a href="ordina.html">Ordina</a></li>
         <li><a href="https://instagram.com/sempreaddue" target="_blank" rel="noopener">Instagram</a></li>
-        <li><a href="https://instagram.com/sempreaddue" target="_blank" rel="noopener">Contatti</a></li>
+        <!-- Email placeholder: sostituire con l'indirizzo definitivo -->
+        <li><a href="mailto:ordini@sempreaddue.it">Email</a></li>
         <li><a href="privacy.html">Privacy</a></li>
         <li><a href="#demo">Demo</a></li>
       </ul>
