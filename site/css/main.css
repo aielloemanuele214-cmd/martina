@@ -660,20 +660,19 @@ h3{font-size:1.25rem;font-weight:700}
   color:var(--testo-soft);display:grid;place-items:center;transition:background .2s,color .2s}
 .promo-close:hover{background:rgba(251,243,233,.12);color:var(--crema)}
 .promo-close svg{width:16px;height:16px}
-.promo-row{display:flex;gap:10px}
-.promo-row input{flex:1;min-width:0;font:inherit;color:var(--testo);
+.promo-fields{display:flex;flex-direction:column;gap:10px;margin-bottom:12px}
+.promo-fields input{width:100%;font:inherit;color:var(--testo);
   background:rgba(18,10,16,.6);border:1px solid var(--bordo-forte);
   border-radius:999px;padding:12px 18px}
-.promo-row input:focus{outline:none;border-color:var(--corallo);
+.promo-fields input:focus{outline:none;border-color:var(--corallo);
   box-shadow:0 0 0 3px rgba(232,137,107,.22)}
-.promo-row .btn{padding:12px 22px;font-size:.95rem;white-space:nowrap}
+.promo-submit{width:100%;padding:12px 22px;font-size:.95rem}
 .promo-privacy{margin-top:14px;font-size:.78rem;color:var(--testo-soft);opacity:.8}
 .promo-ok{color:var(--pesca);font-weight:700;padding:10px 0}
 .promo-err{color:var(--rosaluce);font-size:.85rem;margin-top:10px}
 .addon-founder{font-family:var(--font-body);font-weight:700;font-size:.78rem;
   color:var(--corallo);background:rgba(232,137,107,.12);border:1px solid var(--bordo-forte);
   padding:3px 10px;border-radius:999px;vertical-align:2px;margin-left:6px;white-space:nowrap}
-@media (max-width:480px){.promo-row{flex-direction:column}.promo-row .btn{width:100%}}
 
 /* ---------- Reveal allo scroll ---------- */
 .reveal{opacity:0;transform:translateY(26px);

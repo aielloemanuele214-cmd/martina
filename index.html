@@ -638,17 +638,19 @@
          style="width:52px;margin:0 auto 14px" loading="lazy">
     <h2 id="promoTitle">−50% per i founder</h2>
     <p>Solo fino al <strong>6 ottobre 2026</strong>: <strong>sconto del 50% sul
-      totale</strong> del tuo ordine. Lasciaci la tua email: ti inviamo il <strong>codice founder</strong>
+      totale</strong> del tuo ordine. Lasciaci nome ed email: ti inviamo il <strong>codice founder</strong>
       da usare nel riepilogo ordine.</p>
     <form id="promoForm" name="promo" method="POST" data-netlify="true"
           netlify-honeypot="campo-promo">
       <input type="hidden" name="form-name" value="promo">
       <p class="hp" aria-hidden="true"><label>Non compilare: <input name="campo-promo" tabindex="-1" autocomplete="off"></label></p>
-      <div class="promo-row">
-        <input type="email" name="email" required maxlength="120"
+      <div class="promo-fields">
+        <input type="text" name="nome" required maxlength="60" autocomplete="given-name"
+               placeholder="Il tuo nome" aria-label="Il tuo nome">
+        <input type="email" name="email" required maxlength="120" autocomplete="email"
                placeholder="la-tua@email.it" aria-label="La tua email">
-        <button type="submit" class="btn btn-primary">Inviami il codice</button>
       </div>
+      <button type="submit" class="btn btn-primary promo-submit">Inviami il codice</button>
     </form>
     <p class="promo-privacy">Useremo la tua email solo per inviarti il codice. Zero spam.</p>
   </div>
