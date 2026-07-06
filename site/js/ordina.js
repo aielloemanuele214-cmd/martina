@@ -13,17 +13,24 @@
   const NAMES = ['L’occasione', 'Voi due', 'I dettagli', 'Come ricontattarti'];
   let current = 0;
 
-  /* totale in tempo reale: base 19,90 € + extra selezionati */
+  /* totale in tempo reale: base 19,90 € (prezzo founder) + extra */
   const BASE = 19.9;
   const euro = (n) => n.toFixed(2).replace('.', ',') + ' €';
-  const totale = () => BASE + [...form.querySelectorAll('input[name="extra"]:checked')]
-    .reduce((sum, c) => sum + Number(c.dataset.prezzo || 0), 0);
+  const totale = () => {
+    let t = BASE;
+    for (const el of form.querySelectorAll('[data-prezzo]')) {
+      const unit = Number(el.dataset.prezzo);
+      if (el.type === 'checkbox') t += el.checked ? unit : 0;
+      else t += unit * Math.max(0, Number(el.value) || 0);
+    }
+    return t;
+  };
   const paintTotal = () => {
     const el = document.getElementById('orderTotal');
     if (el) el.textContent = euro(totale());
   };
-  form.addEventListener('change', (e) => {
-    if (e.target.name === 'extra') paintTotal();
+  form.addEventListener('input', (e) => {
+    if (e.target.matches('[data-prezzo]')) paintTotal();
   });
 
   const paint = () => {
@@ -54,14 +61,19 @@
     const v = (n) => (form.elements[n]?.value || '').trim();
     const box = document.getElementById('orderRecap');
     const chk = (form.querySelector('input[name="occasione"]:checked') || {}).value || '—';
-    const extras = [...form.querySelectorAll('input[name="extra"]:checked')].map((c) => c.value);
+    const extras = [];
+    const nFoto = Number(v('foto-reali')) || 0;
+    const nSprite = Number(v('sprite-extra')) || 0;
+    if (nFoto) extras.push(`${nFoto} foto reali`);
+    if (nSprite) extras.push(`${nSprite} personaggi in più`);
+    if (form.elements['qr-stampabile']?.checked) extras.push('biglietto QR da stampare');
     box.innerHTML =
       `<h3>Riepilogo</h3>
        <p><b>${chk}</b> · L'Avventura 19,90 €` +
       (extras.length ? ` + ${extras.join(' + ')}` : '') + `</p>
        <p>${v('nome-tuo') || '—'} &amp; ${v('nome-partner') || '—'}` +
       (v('scadenza') ? ` · consegna entro <b>${v('scadenza')}</b>` : '') +
-      ` · totale <b>${euro(totale())}</b></p>`;
+      ` · totale <b>${euro(totale())}</b> <small>(prezzo founder −50%)</small></p>`;
   };
 
   btnNext.addEventListener('click', () => {

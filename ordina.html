@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Ordina la tua avventura — Sempreaddue</title>
-  <meta name="description" content="Racconta la vostra storia in pochi passi: nomi, ricordi, musica e sorprese. Trasformiamo tutto in un'avventura pixel art personalizzata.">
+  <meta name="description" content="Racconta la vostra storia in pochi passi: nomi, ricordi, foto e sorprese. Trasformiamo tutto in un'avventura pixel art personalizzata.">
   <link rel="canonical" href="https://sempreaddue.netlify.app/ordina.html">
   <meta name="theme-color" content="#120a10">
   <link rel="icon" href="site/img/favicon.svg" type="image/svg+xml">
@@ -72,9 +72,9 @@
         </div>
 
         <div class="order-base">
-          <span class="order-base-body"><b>L'Avventura · 19,90&nbsp;€</b>
-            <i>offerta lancio (prezzo pieno 29,90&nbsp;€) — avventura completa, 3 sorprese
-            personalizzate, finale, link privato + QR Code</i></span>
+          <span class="order-base-body"><b>L'Avventura · <s>39,80&nbsp;€</s> 19,90&nbsp;€</b>
+            <i>prezzo founder (−50% per i primi 3 mesi) — avventura completa con gli sprite
+            di voi due, 3 sorprese personalizzate, finale, link privato + QR Code</i></span>
         </div>
       </fieldset>
 
@@ -102,31 +102,33 @@
       <fieldset class="step" data-step="3" hidden>
         <legend class="sr-only">I dettagli dell'avventura</legend>
 
-        <p class="field-label">Vuoi renderla ancora più vostra? <small style="font-weight:400;font-family:var(--font-body);color:var(--testo-soft)">(extra facoltativi)</small></p>
-        <div class="choice-grid" role="group" aria-label="Extra facoltativi">
-          <label class="choice"><input type="checkbox" name="extra" value="Foto vere (+10€)" data-prezzo="10">
-            <span><b>📷 Le vostre foto vere</b><i>dentro le sorprese · +10&nbsp;€</i></span></label>
-          <label class="choice"><input type="checkbox" name="extra" value="La vostra canzone (+9€)" data-prezzo="9">
-            <span><b>🎵 La vostra canzone</b><i>come colonna sonora · +9&nbsp;€</i></span></label>
-          <label class="choice"><input type="checkbox" name="extra" value="QR stampato (+12€)" data-prezzo="12">
-            <span><b>🖼️ QR Code stampato</b><i>biglietto elegante a casa · +12&nbsp;€</i></span></label>
-          <label class="choice"><input type="checkbox" name="extra" value="Sprite su misura (+49€)" data-prezzo="49">
-            <span><b>🧑‍🎨 Sprite su misura</b><i>voi due, dalle vostre foto · +49&nbsp;€</i></span></label>
+        <p class="field-label">Vuoi renderla ancora più vostra? <small style="font-weight:400;font-family:var(--font-body);color:var(--testo-soft)">(extra facoltativi, prezzo founder −50%)</small></p>
+        <div class="extra-list" role="group" aria-label="Extra facoltativi">
+          <label class="extra-row">
+            <span class="extra-body"><b>📷 Le vostre foto reali</b><i><s>1&nbsp;€</s> 0,50&nbsp;€ l'una, dentro le sorprese</i></span>
+            <span class="extra-ctrl"><input type="number" name="foto-reali" data-prezzo="0.5"
+              min="0" max="20" value="0" inputmode="numeric" aria-label="Quante foto reali"> foto</span>
+          </label>
+          <label class="extra-row">
+            <span class="extra-body"><b>🐱 Personaggi in più</b><i><s>6&nbsp;€</s> 3&nbsp;€ a sprite: il gatto, un amico, la famiglia…</i></span>
+            <span class="extra-ctrl"><input type="number" name="sprite-extra" data-prezzo="3"
+              min="0" max="10" value="0" inputmode="numeric" aria-label="Quanti personaggi in più"> sprite</span>
+          </label>
+          <label class="extra-row">
+            <span class="extra-body"><b>🖼️ Biglietto QR da stampare</b><i><s>10&nbsp;€</s> 5&nbsp;€, design elegante pronto per la stampa</i></span>
+            <span class="extra-ctrl"><input type="checkbox" name="qr-stampabile" value="Sì (+5€)" data-prezzo="5"
+              aria-label="Aggiungi il biglietto QR da stampare"></span>
+          </label>
         </div>
         <p class="order-total" aria-live="polite">Totale: <b id="orderTotal">19,90&nbsp;€</b></p>
 
         <label class="field">Le 3 sorprese che vorresti nascondere nel gioco
           <textarea name="sorprese" rows="4" maxlength="1500"
-            placeholder="Es. la foto del primo viaggio, la lettera che non le ho mai scritto, la nostra canzone…"></textarea>
+            placeholder="Es. la foto del primo viaggio, la lettera che non le ho mai scritto, il nostro posto…"></textarea>
         </label>
-        <div class="field-row">
-          <label class="field">La vostra canzone <small>(facoltativo)</small>
-            <input type="text" name="musica" maxlength="120" placeholder="Titolo e artista">
-          </label>
-          <label class="field">Data entro cui ti serve <small>(facoltativo)</small>
-            <input type="date" name="scadenza">
-          </label>
-        </div>
+        <label class="field">Data entro cui ti serve <small>(facoltativo)</small>
+          <input type="date" name="scadenza">
+        </label>
         <label class="field">Note e richieste speciali <small>(facoltativo)</small>
           <textarea name="note" rows="3" maxlength="1000"
             placeholder="Ambientazione particolare, il vostro gatto, un tema fantasy come la demo…"></textarea>

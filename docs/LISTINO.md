@@ -20,16 +20,19 @@ Analisi competitor: Gift Games €37,50–60 (template, 4 gg) · Muksun $99 (no 
 Bday Game $250–450 (file Windows) · love-page self-service $5–10. Nessun player
 italiano. Vantaggio nostro: browser via link/QR, mobile-first, pixel art curata.
 
-| Voce | Contenuto | Lavoro | Prezzo |
-|---|---|---|---|
-| **L'Avventura** (unico pacchetto) | template occasione + nomi, dedica, data, testi delle 3 sorprese, finale, link + QR | ~30-45 min (form → `ordine.json`, build, QA automatica, Netlify+QR) | **19,90 €** lancio (pieno 29,90 €) |
-| add-on **Foto vere** | fotografie della coppia nei popup | +15-30 min | +10 € |
-| add-on **Canzone** | musica scelta dal cliente (`sad music`) | +15 min | +9 € |
-| add-on **QR stampato** | biglietto elegante stampato e spedito | stampa locale | +12 € |
-| add-on **Sprite su misura** | protagonisti disegnati dalle foto (pipeline `sad art`) | +2-4 h | +49 € |
+**Prezzo founder: −50% su tutto per i primi 3 mesi dal lancio del sito.**
+I prezzi a sinistra sono il listino pieno, tra parentesi il prezzo founder.
 
+| Voce | Contenuto | Lavoro | Listino (founder) |
+|---|---|---|---|
+| **L'Avventura** (unico pacchetto) | template occasione + **sprite dei due protagonisti inclusi** + nomi, dedica, data, testi delle 3 sorprese, finale, link + QR funzionante | ~30-45 min (form → `ordine.json`, build, QA automatica, Netlify+QR) + sprite | **39,80 €** (19,90 €) |
+| add-on **Foto reali** | fotografie della coppia nei popup, a foto | pochi min/foto | 1 € (0,50 €) l'una |
+| add-on **Personaggi in più** | sprite aggiuntivi: gatto, amici, famiglia (pipeline `sad art`) | ~15-30 min/sprite | 6 € (3 €) a sprite |
+| add-on **Biglietto QR da stampare** | PDF di design elegante pronto per la stampa | ~10 min | 10 € (5 €) |
+
+La musica **non** è personalizzabile (colonna sonora inclusa del template).
 Obiettivo: 19,90 come biglietto d'ingresso (sotto ogni competitor), carrello
-medio reale 30–45 € con gli add-on.
+medio reale 25–35 € con gli extra.
 
 ## Upsell naturali
 - **Seconda occasione** per lo stesso cliente (dal compleanno alla proposta…): sconto fedeltà, il materiale c'è già

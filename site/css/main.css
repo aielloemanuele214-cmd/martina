@@ -350,7 +350,11 @@ h3{font-size:1.25rem;font-weight:700}
 .addon-body b{font-family:var(--font-display);font-size:.97rem;color:var(--crema)}
 .addon-body i{font-style:normal;font-size:.83rem;color:var(--testo-soft)}
 .addon-price{font-family:var(--font-display);font-weight:800;color:var(--corallo);
-  font-size:1.05rem;flex:none}
+  font-size:1.05rem;flex:none;text-align:right;white-space:nowrap}
+.addon-price s{color:var(--testo-soft);font-weight:700;font-size:.82rem;margin-right:4px;
+  text-decoration-color:rgba(232,137,107,.7)}
+.addon-price i{display:block;font-style:normal;font-weight:400;font-size:.72rem;
+  color:var(--testo-soft)}
 .addon-col .price-note{text-align:left;margin-top:6px}
 @media (max-width:900px){
   .price-grid{grid-template-columns:1fr;max-width:440px}
@@ -582,6 +586,25 @@ h3{font-size:1.25rem;font-weight:700}
 .order-base-body{display:flex;flex-direction:column;gap:3px}
 .order-base-body b{font-family:var(--font-display);font-size:1.02rem;color:var(--crema)}
 .order-base-body i{font-style:normal;font-size:.85rem;color:var(--testo-soft)}
+.order-base-body s{color:var(--testo-soft);font-size:.88em;margin-right:4px;
+  text-decoration-color:rgba(232,137,107,.7)}
+.extra-list{display:flex;flex-direction:column;gap:12px}
+.extra-row{display:flex;align-items:center;gap:16px;padding:14px 16px;cursor:pointer;
+  background:rgba(251,243,233,.03);border:1px solid var(--bordo);
+  border-radius:var(--r-md);transition:border-color .2s}
+.extra-row:hover{border-color:var(--bordo-forte)}
+.extra-body{display:flex;flex-direction:column;gap:2px;flex:1;min-width:0}
+.extra-body b{font-family:var(--font-display);font-size:.98rem;color:var(--crema)}
+.extra-body i{font-style:normal;font-size:.84rem;color:var(--testo-soft)}
+.extra-body s{text-decoration-color:rgba(232,137,107,.7)}
+.extra-ctrl{display:flex;align-items:center;gap:8px;flex:none;
+  font-size:.85rem;color:var(--testo-soft)}
+.extra-ctrl input[type="number"]{width:64px;text-align:center;font:inherit;
+  color:var(--testo);background:rgba(18,10,16,.6);border:1px solid var(--bordo-forte);
+  border-radius:10px;padding:9px 6px}
+.extra-ctrl input[type="number"]:focus{outline:none;border-color:var(--corallo);
+  box-shadow:0 0 0 3px rgba(232,137,107,.22)}
+.extra-ctrl input[type="checkbox"]{width:22px;height:22px;accent-color:var(--corallo)}
 .order-total{font-family:var(--font-display);font-weight:700;color:var(--crema);
   text-align:right;font-size:1.05rem}
 .order-total b{color:var(--corallo);font-size:1.25rem}
