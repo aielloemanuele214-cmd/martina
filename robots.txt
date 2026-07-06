@@ -2,5 +2,6 @@ User-agent: *
 Allow: /
 Disallow: /dist/
 Disallow: /g/
+Disallow: /social/
 
 Sitemap: https://sempreaddue.netlify.app/sitemap.xml
