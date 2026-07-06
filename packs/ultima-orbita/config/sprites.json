@@ -9,14 +9,14 @@
     },
     "astroDown": {
       "asset": "astro_down",
-      "fw": 128,
+      "fw": 134,
       "fh": 240,
       "n": 4,
       "alt": 26.7
     },
     "astroUp": {
       "asset": "astro_up",
-      "fw": 118,
+      "fw": 126,
       "fh": 240,
       "n": 4,
       "alt": 26.7
@@ -44,7 +44,7 @@
     },
     "coppia": {
       "asset": "coppia",
-      "fw": 322,
+      "fw": 344,
       "fh": 300,
       "n": 5,
       "alt": 32
