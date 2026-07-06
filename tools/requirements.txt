@@ -1,0 +1,6 @@
+# Dipendenze di BUILD (il gioco a runtime non ha dipendenze)
+Pillow>=10        # tools/sprites.py — scontorno e packing
+numpy>=1.26       # tools/sprites.py, tools/music.py
+scipy>=1.11       # tools/sprites.py — flood fill / componenti connesse
+jsonschema>=4     # tools/sad.py validate
+imageio-ffmpeg>=0.4   # tools/music.py — decodifica/codifica mp3 (ffmpeg completo)
