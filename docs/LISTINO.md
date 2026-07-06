@@ -14,16 +14,24 @@ Tutti e tre condividono lo stesso motore, la stessa stanza e la stessa
 `story.json`: **cambiano solo i testi** (config). Un nuovo template per
 un'occasione diversa = `sad new <slug> --da romantica` + riscrittura dei testi.
 
-## Tier di vendita
+## Modello di prezzo (dal 07/2026 — pacchetto unico + add-on)
 
-| Tier | Contenuto | Lavoro | Prezzo suggerito |
+Analisi competitor: Gift Games €37,50–60 (template, 4 gg) · Muksun $99 (no iOS) ·
+Bday Game $250–450 (file Windows) · love-page self-service $5–10. Nessun player
+italiano. Vantaggio nostro: browser via link/QR, mobile-first, pixel art curata.
+
+| Voce | Contenuto | Lavoro | Prezzo |
 |---|---|---|---|
-| **Base** | template a scelta + nomi, dedica, testi delle 3 sorprese, data "insieme da" | ~30-45 min (scaffolding `sad ordine`, compilazione, QA automatica, Netlify+QR) | 29–49 € |
-| **Plus** | Base + foto vere della coppia nei popup + documento (contratto/buono/proposta) scritto su misura | ~1-2 h | 59–89 € |
-| **Su misura** | Plus + sprite dei veri protagonisti (AI + pipeline `sad art`) + musica scelta dal cliente (`sad music`) + richieste speciali | mezza-una giornata | 149–249 € |
+| **L'Avventura** (unico pacchetto) | template occasione + nomi, dedica, data, testi delle 3 sorprese, finale, link + QR | ~30-45 min (form → `ordine.json`, build, QA automatica, Netlify+QR) | **19,90 €** lancio (pieno 29,90 €) |
+| add-on **Foto vere** | fotografie della coppia nei popup | +15-30 min | +10 € |
+| add-on **Canzone** | musica scelta dal cliente (`sad music`) | +15 min | +9 € |
+| add-on **QR stampato** | biglietto elegante stampato e spedito | stampa locale | +12 € |
+| add-on **Sprite su misura** | protagonisti disegnati dalle foto (pipeline `sad art`) | +2-4 h | +49 € |
+
+Obiettivo: 19,90 come biglietto d'ingresso (sotto ogni competitor), carrello
+medio reale 30–45 € con gli add-on.
 
 ## Upsell naturali
-- **QR stampato** in cornice o biglietto (stampa locale): +10–15 €
 - **Seconda occasione** per lo stesso cliente (dal compleanno alla proposta…): sconto fedeltà, il materiale c'è già
 - **Versione "gemella"** per l'altro partner (dialoghi invertiti): +30%
 

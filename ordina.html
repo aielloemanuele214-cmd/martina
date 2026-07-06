@@ -71,16 +71,10 @@
             <span><b>✨ Altro</b><i>raccontacelo al passo 3</i></span></label>
         </div>
 
-        <p class="field-label">Quale pacchetto ti interessa?</p>
-        <div class="choice-grid" role="radiogroup" aria-label="Pacchetto">
-          <label class="choice"><input type="radio" name="pacchetto" value="Base (da 29€)" required>
-            <span><b>Base · da 29€</b><i>testi e dedica personalizzati</i></span></label>
-          <label class="choice"><input type="radio" name="pacchetto" value="Plus (da 59€)">
-            <span><b>Plus · da 59€</b><i>+ foto vere e lettera su misura</i></span></label>
-          <label class="choice"><input type="radio" name="pacchetto" value="Su misura (da 149€)">
-            <span><b>Su misura · da 149€</b><i>+ sprite di voi due e la vostra musica</i></span></label>
-          <label class="choice"><input type="radio" name="pacchetto" value="Non so ancora">
-            <span><b>Consigliami tu</b><i>ne parliamo insieme</i></span></label>
+        <div class="order-base">
+          <span class="order-base-body"><b>L'Avventura · 19,90&nbsp;€</b>
+            <i>offerta lancio (prezzo pieno 29,90&nbsp;€) — avventura completa, 3 sorprese
+            personalizzate, finale, link privato + QR Code</i></span>
         </div>
       </fieldset>
 
@@ -107,6 +101,20 @@
       <!-- PASSO 3 · Dettagli -->
       <fieldset class="step" data-step="3" hidden>
         <legend class="sr-only">I dettagli dell'avventura</legend>
+
+        <p class="field-label">Vuoi renderla ancora più vostra? <small style="font-weight:400;font-family:var(--font-body);color:var(--testo-soft)">(extra facoltativi)</small></p>
+        <div class="choice-grid" role="group" aria-label="Extra facoltativi">
+          <label class="choice"><input type="checkbox" name="extra" value="Foto vere (+10€)" data-prezzo="10">
+            <span><b>📷 Le vostre foto vere</b><i>dentro le sorprese · +10&nbsp;€</i></span></label>
+          <label class="choice"><input type="checkbox" name="extra" value="La vostra canzone (+9€)" data-prezzo="9">
+            <span><b>🎵 La vostra canzone</b><i>come colonna sonora · +9&nbsp;€</i></span></label>
+          <label class="choice"><input type="checkbox" name="extra" value="QR stampato (+12€)" data-prezzo="12">
+            <span><b>🖼️ QR Code stampato</b><i>biglietto elegante a casa · +12&nbsp;€</i></span></label>
+          <label class="choice"><input type="checkbox" name="extra" value="Sprite su misura (+49€)" data-prezzo="49">
+            <span><b>🧑‍🎨 Sprite su misura</b><i>voi due, dalle vostre foto · +49&nbsp;€</i></span></label>
+        </div>
+        <p class="order-total" aria-live="polite">Totale: <b id="orderTotal">19,90&nbsp;€</b></p>
+
         <label class="field">Le 3 sorprese che vorresti nascondere nel gioco
           <textarea name="sorprese" rows="4" maxlength="1500"
             placeholder="Es. la foto del primo viaggio, la lettera che non le ho mai scritto, la nostra canzone…"></textarea>

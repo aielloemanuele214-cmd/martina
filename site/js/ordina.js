@@ -13,14 +13,18 @@
   const NAMES = ['L’occasione', 'Voi due', 'I dettagli', 'Come ricontattarti'];
   let current = 0;
 
-  /* preselezione pacchetto da ?pacchetto=base|plus|sumisura */
-  const pkg = new URLSearchParams(location.search).get('pacchetto');
-  const pkgMap = { base: 'Base', plus: 'Plus', sumisura: 'Su misura' };
-  if (pkg && pkgMap[pkg]) {
-    const radio = [...form.querySelectorAll('input[name="pacchetto"]')]
-      .find((r) => r.value.startsWith(pkgMap[pkg]));
-    if (radio) radio.checked = true;
-  }
+  /* totale in tempo reale: base 19,90 € + extra selezionati */
+  const BASE = 19.9;
+  const euro = (n) => n.toFixed(2).replace('.', ',') + ' €';
+  const totale = () => BASE + [...form.querySelectorAll('input[name="extra"]:checked')]
+    .reduce((sum, c) => sum + Number(c.dataset.prezzo || 0), 0);
+  const paintTotal = () => {
+    const el = document.getElementById('orderTotal');
+    if (el) el.textContent = euro(totale());
+  };
+  form.addEventListener('change', (e) => {
+    if (e.target.name === 'extra') paintTotal();
+  });
 
   const paint = () => {
     steps.forEach((s, i) => { s.hidden = i !== current; });
@@ -50,12 +54,14 @@
     const v = (n) => (form.elements[n]?.value || '').trim();
     const box = document.getElementById('orderRecap');
     const chk = (form.querySelector('input[name="occasione"]:checked') || {}).value || '—';
-    const pk = (form.querySelector('input[name="pacchetto"]:checked') || {}).value || '—';
+    const extras = [...form.querySelectorAll('input[name="extra"]:checked')].map((c) => c.value);
     box.innerHTML =
       `<h3>Riepilogo</h3>
-       <p><b>${chk}</b> · pacchetto <b>${pk}</b></p>
+       <p><b>${chk}</b> · L'Avventura 19,90 €` +
+      (extras.length ? ` + ${extras.join(' + ')}` : '') + `</p>
        <p>${v('nome-tuo') || '—'} &amp; ${v('nome-partner') || '—'}` +
-      (v('scadenza') ? ` · consegna entro <b>${v('scadenza')}</b>` : '') + `</p>`;
+      (v('scadenza') ? ` · consegna entro <b>${v('scadenza')}</b>` : '') +
+      ` · totale <b>${euro(totale())}</b></p>`;
   };
 
   btnNext.addEventListener('click', () => {

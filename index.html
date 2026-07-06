@@ -45,8 +45,8 @@
     "offers": {
       "@type": "AggregateOffer",
       "priceCurrency": "EUR",
-      "lowPrice": "29",
-      "highPrice": "249",
+      "lowPrice": "19.90",
+      "highPrice": "99.90",
       "availability": "https://schema.org/InStock"
     }
   }
@@ -57,7 +57,7 @@
     "@type": "FAQPage",
     "mainEntity": [
       { "@type": "Question", "name": "Quanto costa un'avventura Sempreaddue?",
-        "acceptedAnswer": { "@type": "Answer", "text": "Si parte da 29€ per il pacchetto Base (testi e dedica personalizzati). Con foto vere e documenti su misura si va da 59€, mentre l'esperienza completamente su misura — con i vostri sprite e la vostra musica — parte da 149€." } },
+        "acceptedAnswer": { "@type": "Answer", "text": "Un solo pacchetto: 19,90€ in offerta lancio (prezzo pieno 29,90€) per l'avventura completa con nomi, dedica, 3 sorprese personalizzate, finale, link privato e QR Code. Extra opzionali: foto vere +10€, la vostra canzone +9€, QR Code stampato +12€, sprite su misura +49€." } },
       { "@type": "Question", "name": "Come viene consegnato il gioco?",
         "acceptedAnswer": { "@type": "Answer", "text": "Ricevi un link privato e un QR Code. Il gioco funziona direttamente nel browser, su smartphone e computer, senza installare nulla." } },
       { "@type": "Question", "name": "Quanto tempo serve per realizzarlo?",
@@ -115,7 +115,7 @@
       </div>
       <p class="hero-note">
         <img class="pixel" src="site/img/pt-gatto.webp" alt="" width="128" height="128" loading="eager" fetchpriority="low">
-        Consegna via link o QR Code · Funziona su ogni smartphone, senza app
+        Da <strong>19,90&nbsp;€</strong> · Consegna via link o QR Code · Su ogni smartphone, senza app
       </p>
     </div>
     <div class="hero-visual" data-parallax>
@@ -383,52 +383,47 @@
 <section class="section price-section" id="prezzi">
   <div class="container">
     <div class="section-head reveal" style="text-align:center;margin-inline:auto">
-      <span class="kicker" style="justify-content:center">Pacchetti</span>
-      <h2>Scegli quanto in <span class="accent">profondità</span> andare</h2>
-      <p>Tutti i pacchetti includono un'avventura completa e giocabile, consegnata
-        con link privato e QR Code.</p>
+      <span class="kicker" style="justify-content:center">Un solo pacchetto, semplice</span>
+      <h2>La vostra avventura a <span class="accent">19,90&nbsp;€</span></h2>
+      <p>Niente listini complicati: un'avventura completa e giocabile, consegnata
+        con link privato e QR Code. Poi, se vuoi, la rendi ancora più vostra.</p>
     </div>
-    <div class="price-grid">
-      <article class="price-card reveal">
-        <h3>Base</h3>
-        <p class="price-tag"><span class="price-da">da</span> 29<span class="price-cur">€</span></p>
-        <p class="price-desc">L'avventura con la vostra storia, pronta in pochi giorni.</p>
+    <div class="price-solo reveal">
+      <article class="price-card price-featured">
+        <span class="price-badge">Offerta lancio</span>
+        <h3>L'Avventura</h3>
+        <p class="price-tag"><s class="price-old">29,90&nbsp;€</s> 19,90<span class="price-cur">€</span></p>
+        <p class="price-desc">Tutto quello che serve per far dire "non ci credo, è per noi?".</p>
         <ul class="price-list">
-          <li>Template a scelta: romantico, compleanno o proposta</li>
-          <li>Nomi, dedica e data "insieme da…"</li>
-          <li>Testi delle 3 sorprese personalizzati</li>
-          <li>Link privato + QR Code</li>
+          <li>Tema per la vostra occasione: romantico, compleanno o proposta</li>
+          <li>I vostri nomi, la dedica e la data "insieme da…"</li>
+          <li>3 sorprese con i vostri testi, nascoste nella scena</li>
+          <li>Finale personalizzato</li>
+          <li>Link privato + QR Code pronto da stampare</li>
+          <li>Anteprima prima della consegna, in 2–5 giorni</li>
         </ul>
-        <a class="btn btn-ghost" href="ordina.html?pacchetto=base">Parti da qui</a>
+        <a class="btn btn-primary btn-lg" href="ordina.html">Ordina a 19,90&nbsp;€</a>
       </article>
-      <article class="price-card price-featured reveal reveal-d1">
-        <span class="price-badge">Il più scelto</span>
-        <h3>Plus</h3>
-        <p class="price-tag"><span class="price-da">da</span> 59<span class="price-cur">€</span></p>
-        <p class="price-desc">I vostri ricordi veri, dentro il gioco.</p>
-        <ul class="price-list">
-          <li>Tutto il pacchetto Base</li>
-          <li>Le vostre fotografie nelle sorprese</li>
-          <li>Lettera o documento finale scritto su misura</li>
-          <li>Anteprima e una revisione inclusa</li>
-        </ul>
-        <a class="btn btn-primary" href="ordina.html?pacchetto=plus">Scegli Plus</a>
-      </article>
-      <article class="price-card reveal reveal-d2">
-        <h3>Su misura</h3>
-        <p class="price-tag"><span class="price-da">da</span> 149<span class="price-cur">€</span></p>
-        <p class="price-desc">Un mondo costruito da zero intorno a voi.</p>
-        <ul class="price-list">
-          <li>Tutto il pacchetto Plus</li>
-          <li>Sprite dei veri protagonisti, disegnati su di voi</li>
-          <li>La vostra canzone come colonna sonora</li>
-          <li>Richieste speciali: ambientazioni, scene, segreti</li>
-        </ul>
-        <a class="btn btn-ghost" href="ordina.html?pacchetto=sumisura">Raccontaci l'idea</a>
-      </article>
+      <div class="addon-col">
+        <p class="addon-title">Rendila ancora più vostra <span aria-hidden="true">✨</span></p>
+        <div class="addon-grid">
+          <div class="addon"><span class="addon-ico" aria-hidden="true">📷</span>
+            <span class="addon-body"><b>Le vostre foto vere</b><i>dentro le sorprese</i></span>
+            <span class="addon-price">+10&nbsp;€</span></div>
+          <div class="addon"><span class="addon-ico" aria-hidden="true">🎵</span>
+            <span class="addon-body"><b>La vostra canzone</b><i>come colonna sonora</i></span>
+            <span class="addon-price">+9&nbsp;€</span></div>
+          <div class="addon"><span class="addon-ico" aria-hidden="true">🖼️</span>
+            <span class="addon-body"><b>QR Code stampato</b><i>biglietto elegante a casa tua</i></span>
+            <span class="addon-price">+12&nbsp;€</span></div>
+          <div class="addon"><span class="addon-ico" aria-hidden="true">🧑‍🎨</span>
+            <span class="addon-body"><b>Sprite su misura</b><i>voi due, disegnati dalle vostre foto</i></span>
+            <span class="addon-price">+49&nbsp;€</span></div>
+        </div>
+        <p class="price-note">Scegli gli extra direttamente nel modulo d'ordine.
+          Idee particolari? <a href="ordina.html">Scrivici</a>: troviamo la formula giusta.</p>
+      </div>
     </div>
-    <p class="price-note reveal">Hai una data vicina o un'idea particolare?
-      <a href="ordina.html">Scrivici comunque</a>: troviamo la formula giusta.</p>
   </div>
 </section>
 
@@ -483,12 +478,12 @@
         <summary>Quanto costa un'avventura Sempreaddue?
           <span class="chev" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span>
         </summary>
-        <div class="faq-body">Si parte da <strong>29 €</strong> per il pacchetto Base, con
-          testi, dedica e sorprese personalizzati. Con le vostre foto vere e un documento
-          scritto su misura si va da 59 €; l'esperienza completamente su misura — con i
-          vostri sprite disegnati da zero e la vostra musica — parte da 149 €.
-          <a href="#prezzi">Guarda i pacchetti</a> oppure scrivici: troviamo insieme
-          la formula giusta.</div>
+        <div class="faq-body">Un solo pacchetto, semplice: <strong>19,90 €</strong> in
+          offerta lancio (prezzo pieno 29,90 €) per l'avventura completa con nomi, dedica,
+          3 sorprese personalizzate, finale, link privato e QR Code. Se vuoi, la arricchisci
+          con gli extra: le vostre foto vere (+10 €), la vostra canzone (+9 €), il QR Code
+          stampato (+12 €) o gli sprite disegnati su di voi (+49 €).
+          <a href="#prezzi">Guarda cosa è incluso</a>.</div>
       </details>
       <details class="faq">
         <summary>Come viene consegnato il gioco?
