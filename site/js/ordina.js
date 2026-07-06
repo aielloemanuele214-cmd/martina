@@ -50,7 +50,43 @@
   form.addEventListener('input', (e) => {
     if (e.target.matches('[data-prezzo]')) paintTotal();
     if (e.target.name === 'codice-promo') paintPromo();
+    if (e.target.name === 'foto-reali') paintFotoField();
   });
+
+  /* Caricamento foto: il campo compare solo se è stata dichiarata almeno
+     1 foto extra; il numero che conta per il prezzo resta quello dichiarato
+     sopra — le foto caricate qui in più vengono scelte/scartate a nostra
+     discrezione (vedi la nota in fondo al form). Max 5 file per invio. */
+  const MAX_FOTO_FILE = 5;
+  const fotoField = document.getElementById('fotoUploadField');
+  const fotoInput = document.getElementById('fotoInput');
+  const fotoHint = document.getElementById('fotoHint');
+
+  const paintFotoField = () => {
+    if (!fotoField) return;
+    const n = Number(form.elements['foto-reali']?.value) || 0;
+    fotoField.hidden = n <= 0;
+  };
+
+  if (fotoInput) {
+    fotoInput.addEventListener('change', () => {
+      let files = [...fotoInput.files];
+      if (files.length > MAX_FOTO_FILE) {
+        const dt = new DataTransfer();
+        files.slice(0, MAX_FOTO_FILE).forEach((f) => dt.items.add(f));
+        fotoInput.files = dt.files;
+        files = [...fotoInput.files];
+        fotoHint.textContent = `Hai selezionato più di ${MAX_FOTO_FILE} foto: abbiamo tenuto le prime ${MAX_FOTO_FILE}. Le altre mandacele via email a sempreaddue@gmail.com.`;
+        fotoHint.className = 'foto-hint warn';
+      } else if (files.length) {
+        const mb = (files.reduce((s, f) => s + f.size, 0) / 1024 / 1024).toFixed(1);
+        fotoHint.textContent = `${files.length} foto selezionate (${mb} MB totali)`;
+        fotoHint.className = 'foto-hint';
+      } else {
+        fotoHint.textContent = '';
+      }
+    });
+  }
 
   const paint = () => {
     steps.forEach((s, i) => { s.hidden = i !== current; });
@@ -86,6 +122,7 @@
     if (nFoto) extras.push(`${nFoto} foto reali`);
     if (nSprite) extras.push(`${nSprite} personaggi in più`);
     if (form.elements['qr-stampabile']?.checked) extras.push('biglietto QR da stampare');
+    if (fotoInput?.files.length) extras.push(`${fotoInput.files.length} foto caricate`);
     const t = totale();
     const conPromo = promoValido();
     const riga = conPromo
@@ -113,5 +150,6 @@
     if (!validStep()) e.preventDefault();
   });
 
+  paintFotoField();
   paint();
 })();

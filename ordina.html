@@ -50,7 +50,7 @@
       automaticamente (attributo data-netlify) e l'utente arriva su grazie.html.
       Su altri hosting serve un endpoint equivalente.
     -->
-    <form class="order-form" id="orderForm" name="ordine" method="POST"
+    <form class="order-form" id="orderForm" name="ordine" method="POST" enctype="multipart/form-data"
           action="grazie.html" data-netlify="true" netlify-honeypot="campo-extra">
       <input type="hidden" name="form-name" value="ordine">
       <p class="hp" aria-hidden="true"><label>Non compilare: <input name="campo-extra" tabindex="-1" autocomplete="off"></label></p>
@@ -123,6 +123,12 @@
         <p class="order-total" aria-live="polite">Totale stimato: <b id="orderTotal">19,50&nbsp;€</b>
           <small>preventivo indicativo — confermiamo entro un giorno</small></p>
 
+        <label class="field" id="fotoUploadField" hidden>Carica le tue foto
+          <small>facoltativo, massimo 5 file — jpg, png, heic, webp</small>
+          <input type="file" name="foto" id="fotoInput" accept="image/jpeg,image/png,image/webp,.heic,.heif" multiple>
+          <span class="foto-hint" id="fotoHint"></span>
+        </label>
+
         <label class="field">Le 3 sorprese che vorresti nascondere nel gioco
           <textarea name="sorprese" rows="4" maxlength="1500"
             placeholder="Es. la foto del primo viaggio, la lettera che non le ho mai scritto, il nostro posto…"></textarea>
@@ -161,6 +167,13 @@
         <p class="order-pay-note">📋 Dopo l'invio confermiamo il preventivo finale via email
           e vi mandiamo la richiesta di pagamento con <strong>PayPal</strong>.
           Nessun addebito prima della conferma.</p>
+        <p class="creative-note">📸 Una nota sulle foto e sui dettagli: il numero di foto incluse
+          nell'avventura è quello indicato al passo precedente ("Quante foto reali"). Se ce ne
+          mandi di più, scegliamo noi quali usare in base a cosa serve meglio alla scena; se una
+          richiesta risulta poco dettagliata, ci prendiamo la libertà creativa di interpretarla al
+          meglio per il risultato finale. Non potremo essere ritenuti responsabili di eventuali
+          incomprensioni dovute a informazioni incomplete o troppo generiche — il nostro obiettivo
+          resta comunque uno solo: la scena più bella per voi due.</p>
       </fieldset>
 
       <div class="order-nav">
