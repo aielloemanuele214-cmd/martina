@@ -1,0 +1,18 @@
+{
+  "posizioni": {
+    "lei": {
+      "x": 50,
+      "y": 75
+    },
+    "lui": {
+      "x": 72,
+      "y": 60
+    }
+  },
+  "gatto": {
+    "nome": "Micio",
+    "x": 19,
+    "y": 46,
+    "larghezza": 9.5
+  }
+}

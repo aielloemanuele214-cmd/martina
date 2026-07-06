@@ -1,0 +1,53 @@
+{
+  "ballo": {
+    "x": 47,
+    "y": 64,
+    "introTesto": "Ho una sorpresa di compleanno per te…",
+    "outroTesto": "Buon compleanno, amore.\nQuesto ballo è il primo dei tuoi regali.",
+    "durata": 15
+  },
+  "contratto": {
+    "intro": "C'è un documento importante qui…\nSembra un regalo.",
+    "documento": {
+      "titolo": "Buono Regalo Ufficiale di Compleanno",
+      "sotto": "Documento a validità illimitata, emesso con amore nel giorno del tuo compleanno.",
+      "sezioni": [
+        {
+          "titolo": "Intestazione",
+          "paragrafi": [
+            "Il presente buono è intestato alla <b>Festeggiata</b>, la persona più importante di questa stanza (e non solo)."
+          ]
+        },
+        {
+          "titolo": "Articolo 1 – Diritti della Festeggiata",
+          "paragrafi": [
+            "Diritto a una giornata interamente dedicata a lei, senza orari e senza doveri.",
+            "Diritto a colazione servita, abbracci illimitati e desiderio extra a sorpresa."
+          ]
+        },
+        {
+          "titolo": "Articolo 2 – Il Regalo",
+          "paragrafi": [
+            "Il regalo vero è nascosto fuori da questa stanza…",
+            "Segui l'indizio che ti dirò a voce. 🎁",
+            {
+              "nb": "<b>Nota Bene:</b> gli abbracci ricevuti durante la ricerca non sono rimborsabili."
+            }
+          ]
+        },
+        {
+          "titolo": "Articolo 3 – Validità",
+          "paragrafi": [
+            "Questo buono si rinnova automaticamente a ogni tuo compleanno, per sempre."
+          ]
+        }
+      ],
+      "meta": [
+        "<b>Emesso il:</b> giorno del tuo compleanno",
+        "<b>Validità:</b> illimitata"
+      ],
+      "firma": "Con tutto il mio amore",
+      "bottone": "Chiudi il buono 🎂"
+    }
+  }
+}

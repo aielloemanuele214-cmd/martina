@@ -49,6 +49,17 @@ Dipendenze di build: `pip install -r tools/requirements.txt` (+ `npm i playwrigh
 Il motore non contiene alcun contenuto: per cambiare stanza, collisioni,
 testi, indizi o sprite si toccano SOLO i JSON del pack e gli asset.
 
+## Template per occasione (packs/)
+
+- **martina** — il pack originale (golden test del motore)
+- **romantica** — base neutra: anniversari, dediche, regali di coppia
+- **compleanno** — sorprese a tema festa + Buono Regalo elegante
+- **proposta** — la lettera apre la Richiesta Ufficiale di Matrimonio 💍
+
+`python3 tools/sad.py build-base <template>` → `dist/base-<template>.html` per provarli.
+Un ordine parte dal template dell'occasione: copia i suoi testi in `ordine.json`.
+Catalogo e prezzi: `docs/LISTINO.md`.
+
 ## Flusso per ogni ordine (5 minuti + QA automatica)
 
 **Un ordine = una cartella** `clienti/<slug>/` — dentro ci sta TUTTO il

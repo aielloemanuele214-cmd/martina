@@ -1,0 +1,21 @@
+{
+  "_note": "Coordinate in % della stanza (0-100), origine in alto a sinistra. rx = margine orizzontale del corpo ridotto per quel mobile (corridoi stretti).",
+  "bounds": { "xMin": 2, "xMax": 97.5, "yMin": 14, "yMax": 98 },
+  "colliders": [
+    { "t": "muro-alto",  "pts": [[0,0],[100,0],[100,25],[60,25],[60,29],[42,29],[42,23],[0,23]] },
+    { "t": "muro-sx",    "pts": [[0,0],[3.5,0],[3.5,30],[1.8,100],[0,100]] },
+    { "t": "muro-dx",    "pts": [[93,0],[100,0],[100,100],[96.2,100],[96.2,55],[93,25]] },
+    { "t": "muro-basso", "pts": [[0,96.5],[100,96.5],[100,100],[0,100]] },
+    { "t": "letto", "rx": 1.0,
+      "_note": "bordo alto y37 = corridoio calpestabile davanti al giradischi; bordo destro 40.2 + rx 1.0 = strettoia letto-tavolino larga",
+      "pts": [[3.5,31],[8,32],[8,37],[38.5,37.5],[40.2,37],[40.2,60.2],[15,60.8],[3.5,61.2]] },
+    { "t": "baule-giradischi", "rx": 1.4, "pts": [[13.4,19.5],[26.6,19.5],[26.6,24],[28.6,24],[28.6,32.2],[13,32.2],[13,26]] },
+    { "t": "tavolino", "rx": 1.0, "pts": [[44.7,29.5],[57.6,29.5],[57.6,40.3],[44.7,40.3]] },
+    { "t": "mobile-tv", "_note": "chiuso fino al muro: non si cammina dietro la TV",
+      "pts": [[66.3,25],[93,25],[92.5,46.5],[68.2,45.3]] },
+    { "t": "scrivania-rose", "pts": [[16.5,70.5],[25,70.5],[25,74.5],[43.5,73],[47,85.5],[21,89.5],[18,77],[16.5,77]] },
+    { "t": "sedia", "pts": [[25.5,87],[35.5,87],[35.5,97],[25.5,97]] }
+  ],
+  "dietroLetto": { "_note": "zona in cui il personaggio diventa semi-trasparente",
+    "pts": [[4,31.5],[41,33.5],[41,37.5],[4,35.5]] }
+}

@@ -237,48 +237,8 @@
 <div id="cine"><div id="cineText"></div></div>
 
 <div id="contratto"><div class="foglio">
-  <h2>Contratto Ufficiale di Fidanzamento Eterno, Romantico e Avventuroso</h2>
-  <div class="sub">Attenzione: questo documento, più che un contratto, vuole essere una dichiarazione d'amore. Pertanto è da considerarsi formale soltanto nella forma.</div>
-
-  <h3>Tra le Parti</h3>
-  <p><b>Emanuele</b>, da qui in avanti detto: «Manu», «Amore», «Amore mio grande», «Amore grande della mia vita»</p>
-  <p>e</p>
-  <p><b>Martina</b>, da qui in avanti detta: «Marti», «Amore mio», «Campionessa indiscussa», «Regina del mio cuore», «Forza della Natura», «Pietra», e nelle varianti: «Scoglio», «Pret».</p>
-
-  <h3>Articolo 1 – Oggetto del Contratto</h3>
-  <p>Le Parti dichiarano ufficialmente e senza via di scampo di essersi innamorate perdutamente, di essersi scelte con il cuore e di voler continuare a scegliersi ogni singolo giorno, anche quando uno dei due si sveglia con i capelli da Super Sayan o con la caviglia dolorante.</p>
-
-  <h3>Articolo 2 – Obblighi e Promesse Inamovibili</h3>
-  <p>Manu si impegna ufficialmente a far sentire Marti una campionessa (quale oggettivamente è) per tutta la durata del contratto, cioè per sempre e oltre.</p>
-  <p>Promette inoltre di non farla sentire mai sola, nemmeno nei momenti più bui o nelle giornate più lunghe.</p>
-  <p>Di sostenerla in ogni sogno, paura, slancio, caduta, vittoria e giornata no, con la stessa forza con cui si stringe la mano quando serve e si guarda negli occhi quando le parole non bastano.</p>
-  <p>E di amarla tanto, anzi di più, come se ogni bacio fosse il primo, come se ogni giorno fosse quello giusto per stare insieme.</p>
-  <p>Manu promette di mantenere un certo stile quando guarda Marti e di tenere a bada (almeno esternamente) la profondissima passione che lo pervade ogni volta che la guarda.</p>
-  <p class="nb"><b>Nota Bene:</b> Eventuali eccezioni, quali atti osceni in luogo pubblico, possono essere esenti dalla presente regola solo se entrambe le Parti sono d'accordo e magari dopo un calice di vino particolarmente buono.</p>
-
-  <h3>Articolo 3 – Vita come un'Avventura</h3>
-  <p>Entrambi, Manu e Marti, dichiarano e firmano con convinzione che:</p>
-  <p>Vivremo e faremo vivere la vita come fosse una prima volta, con l'incanto di chi scopre il mondo insieme, ogni giorno.</p>
-  <p>Ameremo con la passione, il fuoco e l'incoscienza dei giovani eterni, anche quando non tira un filo d'aria in piena estate perché, nonostante ciò, non potremo fare a meno di toccarci.</p>
-  <p>Costruiremo insieme una quotidianità che sa di magia, anche nei gesti più semplici: «Ti preparo il caffè.» «Cosa preferisci mangiare a colazione?» «Ti aspetto.» «Sei bellissima.»</p>
-  <p>Entrambi promettono di abbracciarsi ogni volta come se non si rivedessero da troppo tempo e, se proprio necessario, di salutarsi come prima di un lungo viaggio, con quella dolcezza intensa che fa venire voglia di tornare subito indietro.</p>
-
-  <h3>Articolo 4 – Clausole Speciali</h3>
-  <p>Si autorizzano baci imprevisti e carezze in ogni luogo e momento della giornata.</p>
-  <p>Si istituisce ufficialmente la serata «Vorrei andarci insieme a te».</p>
-  <p>È vietato smettere di guardarsi come se ci si vedesse per la prima volta.</p>
-  <p>In caso di crisi sarà obbligatorio chiudersi in camera e discutere finché non si fa la pace e poi rifarla fino a tardi anche se all'indomani c'è la sveglia presto.</p>
-
-  <h3>Articolo 5 – Durata del Contratto</h3>
-  <p>Il presente contratto entra retroattivamente in vigore alla firma ed è valido a tempo indeterminato, con rinnovo automatico in ogni bacio, abbraccio, messaggio e sogno condiviso.</p>
-  <div class="meta">
-    <p><b>Luogo:</b> Pepe in Grani</p>
-    <p><b>Data:</b> 06/07/2025 (ma valido dal giorno in cui ci siamo scelti)</p>
-    <p><b>Validità:</b> finché esisterà anche solo un «Ti amo» che valga la pena dire.</p>
-  </div>
-  <div class="firma">Emanuele Aiello<br><span style="font-size:13px;color:#8a6a48">(firma manoscritta)</span></div>
-
-  <button class="chiudi">Chiudi il contratto ❤</button>
+  <div class="contenuto"></div>
+  <button class="chiudi"></button>
 </div></div>
 
 <div id="splash"><div class="inner">
@@ -389,7 +349,72 @@ const CONFIG = {
     "durata": 15
   },
   "contratto": {
-    "intro": "C’è qualcosa qui…\nSembra molto importante."
+    "intro": "C’è qualcosa qui…\nSembra molto importante.",
+    "documento": {
+      "titolo": "Contratto Ufficiale di Fidanzamento Eterno, Romantico e Avventuroso",
+      "sotto": "Attenzione: questo documento, più che un contratto, vuole essere una dichiarazione d’amore. Pertanto è da considerarsi formale soltanto nella forma.",
+      "sezioni": [
+        {
+          "titolo": "Tra le Parti",
+          "paragrafi": [
+            "<b>Emanuele</b>, da qui in avanti detto: «Manu», «Amore», «Amore mio grande», «Amore grande della mia vita»",
+            "e",
+            "<b>Martina</b>, da qui in avanti detta: «Marti», «Amore mio», «Campionessa indiscussa», «Regina del mio cuore», «Forza della Natura», «Pietra», e nelle varianti: «Scoglio», «Pret»."
+          ]
+        },
+        {
+          "titolo": "Articolo 1 – Oggetto del Contratto",
+          "paragrafi": [
+            "Le Parti dichiarano ufficialmente e senza via di scampo di essersi innamorate perdutamente, di essersi scelte con il cuore e di voler continuare a scegliersi ogni singolo giorno, anche quando uno dei due si sveglia con i capelli da Super Sayan o con la caviglia dolorante."
+          ]
+        },
+        {
+          "titolo": "Articolo 2 – Obblighi e Promesse Inamovibili",
+          "paragrafi": [
+            "Manu si impegna ufficialmente a far sentire Marti una campionessa (quale oggettivamente è) per tutta la durata del contratto, cioè per sempre e oltre.",
+            "Promette inoltre di non farla sentire mai sola, nemmeno nei momenti più bui o nelle giornate più lunghe.",
+            "Di sostenerla in ogni sogno, paura, slancio, caduta, vittoria e giornata no, con la stessa forza con cui si stringe la mano quando serve e si guarda negli occhi quando le parole non bastano.",
+            "E di amarla tanto, anzi di più, come se ogni bacio fosse il primo, come se ogni giorno fosse quello giusto per stare insieme.",
+            "Manu promette di mantenere un certo stile quando guarda Marti e di tenere a bada (almeno esternamente) la profondissima passione che lo pervade ogni volta che la guarda.",
+            {
+              "nb": "<b>Nota Bene:</b> Eventuali eccezioni, quali atti osceni in luogo pubblico, possono essere esenti dalla presente regola solo se entrambe le Parti sono d’accordo e magari dopo un calice di vino particolarmente buono."
+            }
+          ]
+        },
+        {
+          "titolo": "Articolo 3 – Vita come un’Avventura",
+          "paragrafi": [
+            "Entrambi, Manu e Marti, dichiarano e firmano con convinzione che:",
+            "Vivremo e faremo vivere la vita come fosse una prima volta, con l’incanto di chi scopre il mondo insieme, ogni giorno.",
+            "Ameremo con la passione, il fuoco e l’incoscienza dei giovani eterni, anche quando non tira un filo d’aria in piena estate perché, nonostante ciò, non potremo fare a meno di toccarci.",
+            "Costruiremo insieme una quotidianità che sa di magia, anche nei gesti più semplici: «Ti preparo il caffè.» «Cosa preferisci mangiare a colazione?» «Ti aspetto.» «Sei bellissima.»",
+            "Entrambi promettono di abbracciarsi ogni volta come se non si rivedessero da troppo tempo e, se proprio necessario, di salutarsi come prima di un lungo viaggio, con quella dolcezza intensa che fa venire voglia di tornare subito indietro."
+          ]
+        },
+        {
+          "titolo": "Articolo 4 – Clausole Speciali",
+          "paragrafi": [
+            "Si autorizzano baci imprevisti e carezze in ogni luogo e momento della giornata.",
+            "Si istituisce ufficialmente la serata «Vorrei andarci insieme a te».",
+            "È vietato smettere di guardarsi come se ci si vedesse per la prima volta.",
+            "In caso di crisi sarà obbligatorio chiudersi in camera e discutere finché non si fa la pace e poi rifarla fino a tardi anche se all’indomani c’è la sveglia presto."
+          ]
+        },
+        {
+          "titolo": "Articolo 5 – Durata del Contratto",
+          "paragrafi": [
+            "Il presente contratto entra retroattivamente in vigore alla firma ed è valido a tempo indeterminato, con rinnovo automatico in ogni bacio, abbraccio, messaggio e sogno condiviso."
+          ]
+        }
+      ],
+      "meta": [
+        "<b>Luogo:</b> Pepe in Grani",
+        "<b>Data:</b> 06/07/2025 (ma valido dal giorno in cui ci siamo scelti)",
+        "<b>Validità:</b> finché esisterà anche solo un «Ti amo» che valga la pena dire."
+      ],
+      "firma": "Emanuele Aiello<br><span style=\"font-size:13px;color:#8a6a48\">(firma manoscritta)</span>",
+      "bottone": "Chiudi il contratto ❤"
+    }
   },
   "finale": {
     "titolo": "",
@@ -1722,6 +1747,7 @@ async function runCutscene(id){
       setState('idle'); camInit=false;
     }
     else if(p.documento){
+      renderDocumento(CONFIG.contratto.documento||{});
       contrattoEl.classList.add('show');
       contrattoEl.querySelector('.foglio').scrollTop=0;
       audio.sfx('item');
@@ -1734,6 +1760,25 @@ async function runCutscene(id){
     }
     else if(p.fine){ cinematic=false; frozen=false; maybeEnding(); }
   }
+}
+
+/* Il documento elegante (contratto/lettera/buono) è contenuto del pack:
+   CONFIG.contratto.documento = { titolo, sotto, sezioni[{titolo,paragrafi[]}],
+   meta[], firma, bottone }. I paragrafi possono contenere HTML dell'autore. */
+function renderDocumento(doc){
+  const h=[];
+  if(doc.titolo) h.push(`<h2>${doc.titolo}</h2>`);
+  if(doc.sotto)  h.push(`<div class="sub">${doc.sotto}</div>`);
+  for(const sez of (doc.sezioni||[])){
+    if(sez.titolo) h.push(`<h3>${sez.titolo}</h3>`);
+    for(const par of (sez.paragrafi||[]))
+      h.push(typeof par==='object' ? `<p class="nb">${par.nb}</p>` : `<p>${par}</p>`);
+  }
+  if(doc.meta && doc.meta.length)
+    h.push('<div class="meta">'+doc.meta.map(m=>`<p>${m}</p>`).join('')+'</div>');
+  if(doc.firma) h.push(`<div class="firma">${doc.firma}</div>`);
+  contrattoEl.querySelector('.contenuto').innerHTML=h.join('\n');
+  contrattoEl.querySelector('.chiudi').textContent=doc.bottone||'Chiudi ❤';
 }
 
 /* ---------- segreti a tocco diretto (nessun indicatore) ---------- */

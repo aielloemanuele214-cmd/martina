@@ -1,13 +1,14 @@
 {
   "_slug": "esempio",
-
   "titolo": "Una stanza tutta per voi",
-  "nomi": { "lei": "Marti", "lui": "Manu" },
+  "nomi": {
+    "lei": "Marti",
+    "lui": "Manu"
+  },
   "dataInizio": null,
   "musica": true,
   "salvaProgressi": true,
   "schermataIngresso": true,
-
   "dialoghi": [
     "Ciao amore mio… ti stavo aspettando. ❤",
     "Sei la cosa più bella che mi sia mai capitata.",
@@ -24,46 +25,112 @@
     "Ti amo più di ieri, meno di domani.",
     "Quando ridi, il mondo intero va a posto."
   ],
-
   "gatto": {
-    "nome": "Micio", "x": 19, "y": 46, "larghezza": 9.5,
+    "nome": "Micio",
+    "x": 19,
+    "y": 46,
+    "larghezza": 9.5,
     "messaggio": "Dicono che i gatti siano esseri magici: vegliano sulle case e su chi si ama. E se riesci a vederli davvero… splendono come stelle. ✨"
   },
-
   "finestra": {
     "testo": "Questo è un giorno importante, ma per noi ancora di più…\n\nSe è possibile essere felici nel posto più bello del mondo, noi stasera siamo i campioni."
   },
-
   "ballo": {
-    "x": 47, "y": 64,
+    "x": 47,
+    "y": 64,
     "introTesto": "Ho una sorpresa per te…",
     "outroTesto": "Nessuno aveva mai fatto niente di simile per me…\nTi amo.",
     "durata": 15
   },
-
   "sorprese": [
-    { "id": "vinile", "x": 20, "y": 26, "ax": 20, "ay": 34.5, "ri": 5.5,
+    {
+      "id": "vinile",
+      "x": 20,
+      "y": 26,
+      "ax": 20,
+      "ay": 34.5,
+      "ri": 5.5,
       "titolo": "La nostra canzone",
       "testo": "Ricordi la prima volta che l’abbiamo ballata?\nIl giradischi la suona ancora, solo per noi.",
       "img": "file:../assets/popup/pop_vinile.jpg",
-      "evento": "ballo" },
-    { "id": "tv", "x": 79, "y": 38.5, "ax": 78, "ay": 50, "ri": 4.5,
+      "evento": "ballo"
+    },
+    {
+      "id": "tv",
+      "x": 79,
+      "y": 38.5,
+      "ax": 78,
+      "ay": 50,
+      "ri": 4.5,
       "titolo": "Le nostre serate",
       "testo": "Film, coperta e divano.\nCon te anche il telecomando conteso è romantico.",
-      "img": "file:../assets/popup/pop_tv.jpg" },
-    { "id": "lettera", "x": 31, "y": 79, "ax": 41, "ay": 70, "ri": 5.5,
+      "img": "file:../assets/popup/pop_tv.jpg"
+    },
+    {
+      "id": "lettera",
+      "x": 31,
+      "y": 79,
+      "ax": 41,
+      "ay": 70,
+      "ri": 5.5,
       "titolo": "All’amore della mia vita",
       "testo": "All’amore della mia vita\n\nSono immensamente fiero di te.\n\nTuo,\nManu",
       "img": "file:../assets/popup/pop_scrivania.jpg",
-      "evento": "contratto" }
+      "evento": "contratto"
+    }
   ],
-
   "finale": {
     "titolo": "",
     "testo": "Ad oggi siamo un bellissimo miracolo.\n\nNon vedo l’ora di vedere cosa saremo domani…\n\nSei il mio mondo."
   },
-
-  "contratto": { "intro": "C’è qualcosa qui…\nSembra molto importante." },
-
-  "posizioni": { "lei": { "x": 50, "y": 75 }, "lui": { "x": 72, "y": 60 } }
+  "contratto": {
+    "intro": "C’è qualcosa qui…\nSembra molto importante.",
+    "documento": {
+      "titolo": "Contratto Ufficiale di Fidanzamento Eterno",
+      "sotto": "Attenzione: questo documento, più che un contratto, è una dichiarazione d’amore. È formale soltanto nella forma.",
+      "sezioni": [
+        {
+          "titolo": "Tra le Parti",
+          "paragrafi": [
+            "<b>Lui</b>, da qui in avanti detto: «Amore»,",
+            "e",
+            "<b>Lei</b>, da qui in avanti detta: «Amore mio»."
+          ]
+        },
+        {
+          "titolo": "Articolo 1 – Oggetto",
+          "paragrafi": [
+            "Le Parti dichiarano di essersi scelte con il cuore e di voler continuare a scegliersi ogni singolo giorno."
+          ]
+        },
+        {
+          "titolo": "Articolo 2 – Promesse",
+          "paragrafi": [
+            "Non lasciarsi mai soli, sostenersi in ogni sogno e giornata no, amarsi come se ogni bacio fosse il primo."
+          ]
+        },
+        {
+          "titolo": "Articolo 3 – Durata",
+          "paragrafi": [
+            "Valido a tempo indeterminato, con rinnovo automatico in ogni bacio, abbraccio, messaggio e sogno condiviso."
+          ]
+        }
+      ],
+      "meta": [
+        "<b>Validità:</b> finché esisterà anche solo un «Ti amo» che valga la pena dire."
+      ],
+      "firma": "Con tutto il cuore",
+      "bottone": "Chiudi il contratto ❤"
+    }
+  },
+  "posizioni": {
+    "lei": {
+      "x": 50,
+      "y": 75
+    },
+    "lui": {
+      "x": 72,
+      "y": 60
+    }
+  }
 }

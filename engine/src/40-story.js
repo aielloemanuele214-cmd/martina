@@ -137,6 +137,7 @@ async function runCutscene(id){
       setState('idle'); camInit=false;
     }
     else if(p.documento){
+      renderDocumento(CONFIG.contratto.documento||{});
       contrattoEl.classList.add('show');
       contrattoEl.querySelector('.foglio').scrollTop=0;
       audio.sfx('item');
@@ -149,6 +150,25 @@ async function runCutscene(id){
     }
     else if(p.fine){ cinematic=false; frozen=false; maybeEnding(); }
   }
+}
+
+/* Il documento elegante (contratto/lettera/buono) è contenuto del pack:
+   CONFIG.contratto.documento = { titolo, sotto, sezioni[{titolo,paragrafi[]}],
+   meta[], firma, bottone }. I paragrafi possono contenere HTML dell'autore. */
+function renderDocumento(doc){
+  const h=[];
+  if(doc.titolo) h.push(`<h2>${doc.titolo}</h2>`);
+  if(doc.sotto)  h.push(`<div class="sub">${doc.sotto}</div>`);
+  for(const sez of (doc.sezioni||[])){
+    if(sez.titolo) h.push(`<h3>${sez.titolo}</h3>`);
+    for(const par of (sez.paragrafi||[]))
+      h.push(typeof par==='object' ? `<p class="nb">${par.nb}</p>` : `<p>${par}</p>`);
+  }
+  if(doc.meta && doc.meta.length)
+    h.push('<div class="meta">'+doc.meta.map(m=>`<p>${m}</p>`).join('')+'</div>');
+  if(doc.firma) h.push(`<div class="firma">${doc.firma}</div>`);
+  contrattoEl.querySelector('.contenuto').innerHTML=h.join('\n');
+  contrattoEl.querySelector('.chiudi').textContent=doc.bottone||'Chiudi ❤';
 }
 
 /* ---------- segreti a tocco diretto (nessun indicatore) ---------- */

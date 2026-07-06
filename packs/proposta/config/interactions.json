@@ -1,0 +1,42 @@
+{
+  "sorprese": [
+    {
+      "id": "vinile",
+      "x": 20,
+      "y": 26,
+      "ax": 20,
+      "ay": 34.5,
+      "ri": 5.5,
+      "titolo": "La nostra canzone",
+      "testo": "La canzone del nostro primo ballo.\nTienila a mente: tra poco servirà.",
+      "img": "{{B64:pop_vinile}}",
+      "evento": "ballo"
+    },
+    {
+      "id": "tv",
+      "x": 79,
+      "y": 38.5,
+      "ax": 78,
+      "ay": 50,
+      "ri": 4.5,
+      "titolo": "I nostri ricordi",
+      "testo": "Ogni serata sul divano, ogni viaggio, ogni risata.\nTutto ci ha portati esattamente qui.",
+      "img": "{{B64:pop_tv}}"
+    },
+    {
+      "id": "lettera",
+      "x": 31,
+      "y": 79,
+      "ax": 41,
+      "ay": 70,
+      "ri": 5.5,
+      "titolo": "Una lettera per te",
+      "testo": "Alla persona con cui voglio invecchiare.\n\nQuesta è l’ultima lettera da fidanzati.\n\nTua/o, per sempre",
+      "img": "{{B64:pop_scrivania}}",
+      "evento": "contratto"
+    }
+  ],
+  "finestra": {
+    "testo": "Guarda i fuochi… il mondo sa già cosa sto per chiederti."
+  }
+}

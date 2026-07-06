@@ -1,0 +1,11 @@
+{
+  "titolo": "Ho una domanda per te…",
+  "nomi": {
+    "lei": "Lei",
+    "lui": "Lui"
+  },
+  "dataInizio": null,
+  "musica": true,
+  "salvaProgressi": true,
+  "schermataIngresso": true
+}

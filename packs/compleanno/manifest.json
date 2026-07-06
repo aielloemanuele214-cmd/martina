@@ -1,0 +1,16 @@
+{
+  "slug": "compleanno",
+  "nome": "Buon compleanno!",
+  "descrizione": "Template COMPLEANNO: sorprese a tema festa, buono regalo elegante, finale di auguri.",
+  "versione": "1.0.0",
+  "engine": "1.2.x",
+  "config": [
+    "settings.json",
+    "characters.json",
+    "dialogues.json",
+    "interactions.json",
+    "cutscenes.json",
+    "endings.json"
+  ],
+  "story": "story.json"
+}

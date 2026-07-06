@@ -1,0 +1,11 @@
+{
+  "titolo": "Buon compleanno, amore!",
+  "nomi": {
+    "lei": "Festeggiata",
+    "lui": "Lui"
+  },
+  "dataInizio": null,
+  "musica": true,
+  "salvaProgressi": true,
+  "schermataIngresso": true
+}
