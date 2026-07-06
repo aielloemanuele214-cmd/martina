@@ -1,5 +1,5 @@
 {
-  "_note": "fw/fh = dimensioni cella impacchettata (px), n = frame, alt = altezza in scena (% stanza). Rigenerare i fogli con: python3 tools/orbita_art.py all (riporta qui i valori stampati). embed/portraitsNpc/musiche dichiarano gli asset '@' e i ritratti dell'NPC di questo pack.",
+  "_note": "Stile chibi 16-bit. fw/fh/n vengono sincronizzati da tools/orbita_art.py (non modificarli a mano); alt = altezza in scena (% stanza). Personaggi: camminata 4 direzioni x4 frame, NPC 5 espressioni, coppia 5 pose di ballo rock.",
   "sheets": {
     "bg": {
       "asset": "bg"
@@ -9,45 +9,45 @@
     },
     "astroDown": {
       "asset": "astro_down",
-      "fw": 96,
-      "fh": 242,
-      "n": 1,
-      "alt": 27.5
+      "fw": 128,
+      "fh": 240,
+      "n": 4,
+      "alt": 26.7
     },
     "astroUp": {
       "asset": "astro_up",
-      "fw": 98,
-      "fh": 242,
-      "n": 1,
-      "alt": 27.5
+      "fw": 118,
+      "fh": 240,
+      "n": 4,
+      "alt": 26.7
     },
     "astroLeft": {
       "asset": "astro_left",
-      "fw": 120,
-      "fh": 242,
-      "n": 1,
-      "alt": 27.5
+      "fw": 122,
+      "fh": 240,
+      "n": 4,
+      "alt": 26.7
     },
     "astroRight": {
       "asset": "astro_right",
-      "fw": 120,
-      "fh": 242,
-      "n": 1,
-      "alt": 27.5
+      "fw": 124,
+      "fh": 240,
+      "n": 4,
+      "alt": 26.7
     },
     "astro2": {
       "asset": "astro2",
       "fw": 136,
-      "fh": 262,
+      "fh": 240,
       "n": 5,
-      "alt": 27.4
+      "alt": 26.4
     },
     "coppia": {
       "asset": "coppia",
-      "fw": 128,
-      "fh": 312,
+      "fw": 322,
+      "fh": 300,
       "n": 5,
-      "alt": 27.4
+      "alt": 32
     },
     "gatto": {
       "asset": "gatto",
@@ -58,7 +58,7 @@
   },
   "personaggi": {
     "player": {
-      "_note": "n=1 per direzione: idle e walk usano il 'respiro' (bob), niente ciclo di frame.",
+      "_note": "0=idle · 1=walk1 · 2=walk2 · 3=walk1, per ognuna delle 4 direzioni (art dedicata).",
       "fogli": {
         "down": "astroDown",
         "up": "astroUp",
@@ -68,13 +68,17 @@
       "stati": {
         "idle": {
           "frame": 0,
-          "bobFreq": 1.6,
-          "bobAmp": 1.0
+          "bobFreq": 1.7,
+          "bobAmp": 0.8
         },
         "walk": {
-          "frame": 0,
-          "bobFreq": 9,
-          "bobAmp": 2.4
+          "seq": [
+            1,
+            0,
+            3,
+            0
+          ],
+          "dur": 0.14
         },
         "interact": {
           "frame": 0
@@ -84,8 +88,8 @@
     "npc": {
       "foglio": "astro2",
       "bobFreq": 1.5,
-      "bobAmp": 1.0,
-      "_note": "0=idle · 1=imbarazzo · 2=parla · 3=pensa · 4=braccia conserte"
+      "bobAmp": 0.8,
+      "_note": "0=idle · 1=sorriso · 2=imbarazzo · 3=sguardo laterale · 4=interazione"
     },
     "gatto": {
       "foglio": "gatto",
@@ -93,7 +97,7 @@
     },
     "coppia": {
       "foglio": "coppia",
-      "bobFreq": 1.1,
+      "bobFreq": 2.4,
       "bobAmp": 2,
       "anim": {
         "seq": [
@@ -106,8 +110,9 @@
           2,
           1
         ],
-        "dur": 0.9
-      }
+        "dur": 0.14
+      },
+      "_note": "ballo rock: ping-pong veloce fra le 5 pose"
     }
   },
   "embed": [

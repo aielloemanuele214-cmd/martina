@@ -1,8 +1,15 @@
 #!/usr/bin/env python3
-"""Pipeline asset del pack 'ultima-orbita'.
-Affetta i fogli di riferimento AI (personaggi con etichette) in fogli-sprite
-pronti per il motore: scontorno (border-flood), packing a altezza uniforme,
-piedi centrati. Stampa le dimensioni esatte da riportare in sprites.json.
+"""Pipeline asset del pack 'ultima-orbita' (stile chibi 16-bit).
+Affetta i fogli di riferimento AI (con titoli, etichette, note, diamanti) in
+fogli-sprite puliti per il motore:
+  - walk16  : camminata 4 direzioni x 4 frame (front/back/left/right)
+  - expr16  : NPC, 5 espressioni (idle/sorriso/imbarazzo/sguardo/interazione)
+  - dance16 : coppia, 5 pose di ballo rock
+Metodo: si ritaglia la fascia dei titoli/etichette, si toglie lo sfondo navy
+(flood dal bordo, incl. le ombre a terra), si scartano i frammenti piccoli
+(testo, note musicali, diamanti), poi si tagliano le celle della griglia e si
+impacchetta a scala comune (piedi a terra). Sincronizza le dimensioni in
+sprites.json. Uso: python3 tools/orbita_art.py all
 """
 import os, numpy as np
 from PIL import Image
@@ -13,36 +20,28 @@ SRC = os.path.join(ROOT, 'packs', 'ultima-orbita', 'assets', '_src') + os.sep
 OUT = os.path.join(ROOT, 'packs', 'ultima-orbita', 'assets', 'sprites')
 DBG = os.path.join(ROOT, 'packs', 'ultima-orbita', 'assets', '_dbg')
 os.makedirs(OUT, exist_ok=True); os.makedirs(DBG, exist_ok=True)
+NAVY = np.array([2, 16, 34])       # colore di sfondo dei fogli chibi
 BLEED_IT = 10
 
 
-def key_bg(rgb, ref, dist, dist2=None, dark_neutral=None):
-    """alpha=0 per lo sfondo (pixel entro `dist` dal colore di riferimento `ref`):
-    - le regioni collegate al bordo (sfondo esterno, anche con gradiente);
-    - se `dist2` è dato, le SACCHE di sfondo INTRAPPOLATE il cui colore medio è
-      a meno di `dist2` dal riferimento;
-    - se `dark_neutral=(soglia, margine)` è dato (fogli su fondo scuro), anche i
-      pixel scuri e NEUTRI/bluastri (sfondo navy + ombre nere nei varchi fra
-      braccio e busto o fra i due corpi), preservando i capelli castani (R≫B).
-    Il resto resta opaco. Poi color-bleed per evitare frange al resize."""
+def key_navy(rgb, dist, minsize):
+    """alpha=0 per lo sfondo navy collegato al bordo (incluse le ombre a terra);
+    poi elimina i frammenti opachi piccoli (testo, note, diamanti). Color-bleed
+    dei colori nei pixel trasparenti (niente frange al resize)."""
     a = rgb.astype(np.int32)
-    d = np.sqrt(((a - np.array(ref)) ** 2).sum(axis=2))
-    target = d <= dist
-    lbl, n = ndimage.label(target)
+    d = np.sqrt(((a - NAVY) ** 2).sum(axis=2))
+    m = d <= dist
+    lbl, _ = ndimage.label(m)
     border = set(lbl[0, :]) | set(lbl[-1, :]) | set(lbl[:, 0]) | set(lbl[:, -1])
     border.discard(0)
     bg = np.isin(lbl, list(border))
-    if dist2 is not None and n:
-        meand = ndimage.mean(d, lbl, range(1, n + 1))
-        trapped = [i + 1 for i, m in enumerate(meand) if m < dist2]
-        if trapped:
-            bg = bg | np.isin(lbl, trapped)
-    if dark_neutral is not None:
-        soglia, margine = dark_neutral
-        somma = a.sum(axis=2)
-        neutro = (somma < soglia) & ((a[:, :, 0] - a[:, :, 2]) < margine)
-        bg = bg | neutro
-    rgba = np.dstack([a.astype(np.uint8), np.where(bg, 0, 255).astype(np.uint8)])
+    op = ~bg
+    ol, n = ndimage.label(op)
+    if n:
+        sz = ndimage.sum(np.ones_like(ol), ol, range(1, n + 1))
+        keep = [i + 1 for i, s in enumerate(sz) if s >= minsize]
+        op = np.isin(ol, keep)
+    rgba = np.dstack([a.astype(np.uint8), np.where(op, 255, 0).astype(np.uint8)])
     rgbf = rgba[:, :, :3].astype(np.float32)
     known = rgba[:, :, 3] > 0
     for _ in range(BLEED_IT):
@@ -57,57 +56,41 @@ def key_bg(rgb, ref, dist, dist2=None, dark_neutral=None):
                     continue
                 sh = np.roll(np.roll(rgbf, dy, 0), dx, 1)
                 shk = np.roll(np.roll(known, dy, 0), dx, 1)
-                m = ring & shk
-                acc[m] += sh[m]; cnt[m] += 1
-        m = ring & (cnt > 0)
-        rgbf[m] = acc[m] / cnt[m][:, None]
-        known |= m
+                mm = ring & shk
+                acc[mm] += sh[mm]; cnt[mm] += 1
+        mm = ring & (cnt > 0)
+        rgbf[mm] = acc[mm] / cnt[mm][:, None]
+        known |= mm
     rgba[:, :, :3] = np.clip(rgbf, 0, 255).astype(np.uint8)
     return rgba
 
 
-def despeckle(rgba, minsize=550):
-    """Elimina i granelli opachi isolati (scintille, rumore) più piccoli di minsize."""
-    op = rgba[:, :, 3] > 0
-    lbl, n = ndimage.label(op)
-    if n <= 1:
-        return rgba
-    sizes = ndimage.sum(np.ones_like(lbl), lbl, range(1, n + 1))
-    keep = {i + 1 for i, s in enumerate(sizes) if s >= minsize}
-    mask = np.isin(lbl, list(keep))
-    rgba = rgba.copy()
-    rgba[~mask, 3] = 0
-    return rgba
-
-
-def columns(rgba, gap=22, minw=25, mincol=18):
-    """Segmenti di colonne con pixel opachi (celle affiancate).
-    Una colonna 'conta' solo se ha almeno `mincol` pixel opachi (ignora il rumore)."""
-    op = rgba[:, :, 3] > 0
-    colmask = op.sum(axis=0) >= mincol
-    segs = []; ins = False; s = 0
-    for i, v in enumerate(colmask):
-        if v and not ins:
-            s = i; ins = True
-        elif not v and ins:
-            if i - s >= minw and (i - s) and (colmask[s:i].mean() > .3 or i-s>minw):
-                segs.append((s, i - 1))
-            ins = False
-    if ins:
-        segs.append((s, len(colmask) - 1))
-    # unisci segmenti separati da micro-gap
+def bands(occ, gap, minlen):
+    """Segmenti dove occ>0, unendo i buchi <= gap; scarta i segmenti < minlen."""
+    on = occ > 0
+    segs = []; s = None
+    for i, v in enumerate(on):
+        if v and s is None:
+            s = i
+        elif not v and s is not None:
+            segs.append((s, i - 1)); s = None
+    if s is not None:
+        segs.append((s, len(on) - 1))
     merged = []
     for a0, b0 in segs:
         if merged and a0 - merged[-1][1] <= gap:
             merged[-1] = (merged[-1][0], b0)
         else:
             merged.append((a0, b0))
-    return [(a0, b0) for a0, b0 in merged if b0 - a0 >= minw]
+    return [(a0, b0) for a0, b0 in merged if b0 - a0 >= minlen]
 
 
-def cell_crop(rgba, x0, x1):
-    sub = rgba[:, x0:x1 + 1]
+def cell(rgba, x0, x1, y0, y1):
+    """Ritaglia la regione [x0:x1, y0:y1] stretta sui pixel opachi (una figura)."""
+    sub = rgba[y0:y1, x0:x1]
     op = sub[:, :, 3] > 0
+    if not op.any():
+        return None
     ys, xs = np.where(op)
     return Image.fromarray(sub[ys.min():ys.max() + 1, xs.min():xs.max() + 1])
 
@@ -121,6 +104,9 @@ def footcx(im):
 
 
 def pack(cells, fh, name, quantize=True):
+    """Impacchetta a SCALA COMUNE (il frame più alto riempie fh): il corpo resta
+    della stessa dimensione in tutti i frame (le braccia alzate escono in alto).
+    Piedi a terra, centro-piedi al centro cella."""
     hmax = max(c.size[1] for c in cells)
     sc = (fh - 4) / hmax
     scaled = []
@@ -136,39 +122,37 @@ def pack(cells, fh, name, quantize=True):
         x = max(i * fw, min(x, (i + 1) * fw - s.size[0]))
         y = fh - 2 - s.size[1]
         sheet.paste(s, (x, y), s)
-    arr = np.array(sheet)[:, :, 3]
-    bad = sum(1 for i in range(len(scaled))
-              if arr[:, i*fw].any() or arr[:, (i+1)*fw-1].any() or arr[0, i*fw:(i+1)*fw].any())
     if quantize:
-        # quantizza SOLO i canali RGB e riattacca l'alpha originale: la
-        # quantize su RGBA di Pillow bucava le tute chiare (trasparenze spurie).
+        # quantizza solo RGB, riattacca l'alpha originale (niente trasparenze spurie)
         alpha = sheet.split()[3]
         rgb = sheet.convert('RGB').quantize(255, method=Image.FASTOCTREE).convert('RGB')
         sheet = Image.merge('RGBA', (*rgb.split(), alpha))
     path = os.path.join(OUT, name + '.png')
     sheet.save(path)
-    print(f'{name}: n={len(scaled)} fw={fw} fh={fh} '
-          f'{os.path.getsize(path)//1024}KB  bordi-toccati={bad}')
+    print(f'{name}: n={len(scaled)} fw={fw} fh={fh} {os.path.getsize(path)//1024}KB')
     return {'fw': fw, 'fh': fh, 'n': len(scaled)}
 
 
-def process(name, ref, dist, crop, expect, fh, out, dist2=None, dark_neutral=None):
-    im = Image.open(SRC + name + '.png').convert('RGB')
-    rgb = np.array(im)
-    if crop:
-        rgb = rgb[crop[1]:crop[3], crop[0]:crop[2]]
-    rgba = key_bg(rgb, ref, dist, dist2, dark_neutral)
-    rgba = despeckle(rgba)
-    # anteprima keyed su fondo magenta per il controllo visivo
+def keyed(name, crop, dist, minsize):
+    a = np.array(Image.open(SRC + name + '.png').convert('RGB'))[crop[1]:crop[3], crop[0]:crop[2]]
+    rgba = key_navy(a, dist, minsize)
     prev = Image.new('RGBA', (rgba.shape[1], rgba.shape[0]), (255, 0, 255, 255))
     prev.alpha_composite(Image.fromarray(rgba))
     prev.convert('RGB').save(os.path.join(DBG, name + '_keyed.png'))
-    segs = columns(rgba)
-    print(f'{name}: colonne trovate = {len(segs)} -> {segs}')
-    if len(segs) != expect:
-        print(f'  ⚠ attese {expect} colonne')
-    cells = [cell_crop(rgba, a0, b0) for a0, b0 in segs]
-    return cells, rgba
+    return rgba
+
+
+def dance_bounds():
+    """5 pose del ballo: confini di cella dai marker rosa numerati (1..5)."""
+    a = np.array(Image.open(SRC + 'dance16.png').convert('RGB')).astype(np.int32)
+    top = a[250:360]
+    R, G, B = top[:, :, 0], top[:, :, 1], top[:, :, 2]
+    pink = (R > 200) & (G > 120) & (G < 200) & (B > 150) & (B < 220)
+    lbl, n = ndimage.label(pink)
+    sz = ndimage.sum(np.ones_like(lbl), lbl, range(1, n + 1))
+    cx = sorted(int(np.where(lbl == i + 1)[1].mean()) for i, s in enumerate(sz) if s > 200)
+    assert len(cx) == 5, f'attesi 5 marker, trovati {len(cx)}: {cx}'
+    return [0] + [(cx[i] + cx[i + 1]) // 2 for i in range(4)] + [a.shape[1]]
 
 
 def derivati():
@@ -182,66 +166,62 @@ def derivati():
     side = int(w * 0.82); cx = w // 2; cy = int(h * 0.62)
     d.crop((cx - side // 2, min(cy - side // 2, h - side),
             cx + side // 2, min(cy + side // 2, h))).save(POP + 'pop_diario.jpg', quality=90)
-    # ritratti npc (astro2) 128x128
-    sheet = Image.open(OUT + os.sep + 'astro2.png').convert('RGBA'); FW, FH, N = 136, 262, 5
-    for i in range(N):
+    # ritratti npc dal foglio astro2 impacchettato (testa di ogni frame)
+    sheet = Image.open(OUT + os.sep + 'astro2.png').convert('RGBA')
+    FW = sheet.width // 5; FH = sheet.height
+    for i in range(5):
         fr = sheet.crop((i * FW, 0, (i + 1) * FW, FH)); al = np.array(fr)[:, :, 3]
         ys, xs = np.where(al > 10); top = ys.min(); s = min(FW, FH - top)
         hx = np.where(al[top:top + s // 2].any(axis=0))[0]; cxh = (hx.min() + hx.max()) // 2
         x0 = max(0, min(FW - s, cxh - s // 2))
         fr.crop((x0, top, x0 + s, top + s)).resize((128, 128), Image.LANCZOS).save(OUT + os.sep + f'pt_astro_{i}.png')
-    # ritratto gatto (frame sveglio)
-    g = Image.open(OUT + os.sep + 'gatto.png').convert('RGBA'); GFW = 376
-    fr = g.crop((GFW, 0, 2 * GFW, 240)); al = np.array(fr)[:, :, 3]
+    # ritratto gatto (frame sveglio) dal vecchio foglio gatto
+    g = Image.open(OUT + os.sep + 'gatto.png').convert('RGBA'); GFW = g.width // 2
+    fr = g.crop((GFW, 0, 2 * GFW, g.height)); al = np.array(fr)[:, :, 3]
     ys, xs = np.where(al > 10); s = min(max(xs.max() - xs.min(), ys.max() - ys.min()) + 8, GFW)
-    cxh = (xs.min() + xs.max()) // 2; ax = max(0, min(GFW - s, cxh - s // 2)); ay = max(0, min(240 - s, ys.min() - 4))
+    cxh = (xs.min() + xs.max()) // 2; ax = max(0, min(GFW - s, cxh - s // 2)); ay = max(0, min(g.height - s, ys.min() - 4))
     fr.crop((ax, ay, ax + s, ay + s)).resize((128, 128), Image.LANCZOS).save(OUT + os.sep + 'pt_gatto.png')
     print('sfondo, popup e ritratti generati')
 
 
 DIMS = {}
 if __name__ == '__main__':
-    import sys
+    import sys, json
     only = sys.argv[1] if len(sys.argv) > 1 else 'all'
 
-    if only in ('all', 'cat'):
-        cells, _ = process('cat', (1, 1, 1), 45, (0, 280, 1408, 704), 2, 240, 'gatto', dist2=30)
-        if len(cells) == 2:
-            DIMS['gatto'] = pack(cells, 240, 'gatto')
+    if only in ('all', 'walk'):
+        rgba = keyed('walk16', (175, 165, 1254, 1254), 88, 700)
+        rb = bands(rgba[:, :, 3].sum(1), 20, 40)
+        cb = bands(rgba[:, :, 3].sum(0), 20, 25)
+        assert len(rb) == 4 and len(cb) == 4, f'walk: griglia {len(rb)}x{len(cb)}'
+        dirs = ['astro_down', 'astro_up', 'astro_left', 'astro_right']
+        for r, dname in enumerate(dirs):
+            frames = [cell(rgba, cb[c][0], cb[c][1] + 1, rb[r][0], rb[r][1] + 1) for c in range(4)]
+            DIMS[dname] = pack([f for f in frames if f], 240, dname)
 
-    if only in ('all', 'lui'):
-        cells, _ = process('lui_emo', (25, 29, 36), 92, (0, 30, 1408, 698), 5, 262, 'astro2',
-                           dist2=34, dark_neutral=(150, 18))
-        if len(cells) == 5:
-            DIMS['astro2'] = pack(cells, 262, 'astro2')
+    if only in ('all', 'expr'):
+        rgba = keyed('expr16', (0, 410, 1536, 860), 88, 900)
+        cb = bands(rgba[:, :, 3].sum(0), 30, 40)
+        assert len(cb) == 5, f'expr: colonne {len(cb)}'
+        ry = np.where((rgba[:, :, 3] > 0).any(axis=1))[0]
+        frames = [cell(rgba, cb[c][0], cb[c][1] + 1, ry.min(), ry.max() + 1) for c in range(5)]
+        DIMS['astro2'] = pack(frames, 240, 'astro2')
 
-    if only in ('all', 'ballo'):
-        cells, _ = process('ballo', (26, 29, 35), 92, (0, 30, 1408, 698), 5, 312, 'coppia',
-                           dist2=34, dark_neutral=(150, 18))
-        if len(cells) == 5:
-            DIMS['coppia'] = pack(cells, 312, 'coppia')
-
-    if only in ('all', 'lei'):
-        # lei: fondo bianco, 4 pose (avanti A=fronte, avanti B=lato, dietro A, dietro B)
-        cells, _ = process('lei_walk', (254, 254, 254), 42, (0, 95, 1408, 702), 4, 242, 'astro', dist2=24)
-        if len(cells) == 4:
-            front, side, back, back2 = cells
-            DIMS['astro_down'] = pack([front], 242, 'astro_down')
-            DIMS['astro_up'] = pack([back], 242, 'astro_up')
-            DIMS['astro_right'] = pack([side], 242, 'astro_right')       # profilo verso destra
-            DIMS['astro_left'] = pack([side.transpose(Image.FLIP_LEFT_RIGHT)], 242, 'astro_left')
+    if only in ('all', 'dance'):
+        rgba = keyed('dance16', (0, 360, 1536, 800), 90, 700)
+        xb = dance_bounds()
+        ry = np.where((rgba[:, :, 3] > 0).any(axis=1))[0]
+        frames = [cell(rgba, xb[c], xb[c + 1], ry.min(), ry.max() + 1) for c in range(5)]
+        DIMS['coppia'] = pack([f for f in frames if f], 300, 'coppia')
 
     if only in ('all', 'extra'):
         derivati()
 
     if only == 'all':
-        # sincronizza fw/fh/n dentro sprites.json (preservando alt/asset): mai più
-        # dimensioni sfasate rispetto ai PNG effettivi (QA: check dimensioni fogli).
-        import json
         spath = os.path.join(ROOT, 'packs', 'ultima-orbita', 'config', 'sprites.json')
         sp = json.load(open(spath, encoding='utf-8'))
         keymap = {'astroDown': 'astro_down', 'astroUp': 'astro_up', 'astroLeft': 'astro_left',
-                  'astroRight': 'astro_right', 'astro2': 'astro2', 'coppia': 'coppia', 'gatto': 'gatto'}
+                  'astroRight': 'astro_right', 'astro2': 'astro2', 'coppia': 'coppia'}
         for sk, dk in keymap.items():
             if sk in sp['sheets'] and dk in DIMS:
                 for f in ('fw', 'fh', 'n'):
