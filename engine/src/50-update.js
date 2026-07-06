@@ -71,11 +71,11 @@ function update(dt){
     parts.push({x:(player.x+npc.x)/2+(Math.random()-.5)*3, y:Math.min(player.y,npc.y)-20,
       vy:-(2.5+Math.random()*2), sway:Math.random()*Math.PI*2, life:1});
 
-  // durante il ballo: cuoricini che salgono ogni tanto
-  if(dance.on){
-    dance.t+=dt;
+  // durante una scena di coppia (es. ballo): cuoricini che salgono ogni tanto
+  if(cine.scene){
+    cine.scene.t+=dt;
     if(Math.random()<dt*1.1)
-      parts.push({x:CONFIG.ballo.x+(Math.random()-.5)*7, y:CONFIG.ballo.y-8-Math.random()*8,
+      parts.push({x:cine.scene.x+(Math.random()-.5)*7, y:cine.scene.y-8-Math.random()*8,
         vy:-(3+Math.random()*3), sway:Math.random()*Math.PI*2, life:1});
   }
 

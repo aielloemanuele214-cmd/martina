@@ -52,10 +52,7 @@ function goTo(x,y,inter){
   tapFx={x, y, t:0};
   audio.sfx('click');
 }
-function dispatchInter(it){
-  if(it.tipo==='sorpresa') interactClue(it.i);
-  else if(it.tipo==='npc') openDialog();
-}
+function dispatchInter(it){ trigger(it.evento); }
 
 /* ---------- interattivi (lista costruita una volta) ---------- */
 let INTER=[];
@@ -63,9 +60,9 @@ function buildInter(){
   // solo i 3 indizi principali + Manu (gatto e finestra sono segreti a tocco diretto)
   // x,y = marker sull'oggetto · ax,ay = punto d'arrivo calpestabile · ri = raggio d'apertura
   INTER=[
-    ...CONFIG.sorprese.map((s,i)=>({tipo:'sorpresa', i, x:s.x, y:s.y,
+    ...CONFIG.sorprese.map(s=>({tipo:'sorpresa', evento:'interagisci:'+s.id, x:s.x, y:s.y,
         ax:s.ax??s.x, ay:s.ay??s.y, ri:s.ri??5})),
-    {tipo:'npc', x:npc.x, y:npc.y, ax:npc.x, ay:npc.y, ri:5.5, icona:'💬'},
+    {tipo:'npc', evento:'interagisci:npc', x:npc.x, y:npc.y, ax:npc.x, ay:npc.y, ri:5.5, icona:'💬'},
   ];
 }
 function nearestTarget(){

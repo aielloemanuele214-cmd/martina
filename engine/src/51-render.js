@@ -12,9 +12,9 @@ function rebuildCache(){
     CACHE[k]=c;
   }
   // spritesheet pre-scalati alla loro altezza in scena (tutte le direzioni di lei = stessa altezza)
-  const alt={leiDown:H_LEI, leiRight:H_LEI, leiUp:H_LEI, leiLeft:H_LEI,
-             luiEmo:H_LUI, ballo:H_LUI*1.16,
-             gatto:ASSETS.gatto.fh*(cat.larghezza*PCT/ASSETS.gatto.fw)};
+  const alt={};
+  for(const k in ASSETS) if(ASSETS[k].alt) alt[k]=ASSETS[k].alt*PCT;
+  alt[SPR.gatto.foglio]=ASSETS[SPR.gatto.foglio].fh*(cat.larghezza*PCT/ASSETS[SPR.gatto.foglio].fw);
   for(const k in alt){
     const sp=ASSETS[k], f=alt[k]*PS/sp.fh;
     const c=mk(sp.fw*sp.n*f, sp.fh*f);
@@ -62,16 +62,18 @@ function glyph(ch,xPct,yPct,sizeWorld,alpha,dyCanvas){
   ctx.drawImage(CACHE.glyphs[ch], cvx(xPct*PCT)-d/2, cvy(yPct*PCT)-d/2+(dyCanvas||0), d, d);
   ctx.globalAlpha=1;
 }
-// Frame di lei dalla macchina a stati (nessun flip: art dedicata per ogni direzione)
+// Frame del giocatore dalla macchina a stati + stati dichiarati nel pack
+// (nessun flip: art dedicata per ogni direzione)
 function playerFrame(){
-  const key=DIR_SHEET[player.dir];
-  if(player.state==='walk'){
-    const i=Math.floor(player.animT/WALK_FRAME_DUR)%WALK_SEQ.length;
-    return {key, frame:WALK_SEQ[i], dy:0};
+  const P=SPR.player, key=P.fogli[player.dir];
+  const st=P.stati[player.state]||P.stati.idle;
+  if(st.seq){
+    const i=Math.floor(player.animT/st.dur)%st.seq.length;
+    return {key, frame:st.seq[i], dy:0};
   }
-  if(player.state==='interact') return {key, frame:FR_INTERACT, dy:0};
-  // idle: frame fisso + respiro (movimento verticale, non cambio frame)
-  return {key, frame:FR_IDLE, dy:Math.sin(clock*1.7)*-1.0};
+  // frame fisso + eventuale respiro (movimento verticale, non cambio frame)
+  const dy=st.bobFreq?Math.sin(clock*st.bobFreq)*-(st.bobAmp??1):0;
+  return {key, frame:st.frame||0, dy};
 }
 
 function render(){
@@ -103,11 +105,11 @@ function render(){
 
   // guida discreta: un ✨ solo sugli indizi principali ancora da scoprire
   // (gatto e finestra sono segreti: NESSUN indicatore)
-  const scena=dance.on;
+  const scena=!!cine.scene;
   if(!scena){
     for(let i=0;i<CONFIG.sorprese.length;i++){
-      if(found[i]) continue;
       const s=CONFIG.sorprese[i];
+      if(flag('trovato.'+s.id)) continue;
       const a=.55+.3*Math.sin(clock*3+i);
       const size=26+Math.sin(clock*3+i)*3;
       glyph('✨', s.x, s.y, size, a, -Math.sin(clock*2+i)*3*PS);
@@ -119,15 +121,16 @@ function render(){
   const ents=[
     {y:cat.y, draw(){          // gatto: semplice elemento decorativo, nessun effetto
       blitShadow(cat.x, cat.y, cat.larghezza*PCT*.8, .8);
-      blit('gatto', catFrame, cat.x, cat.y, false, 1, 0);
+      blit(SPR.gatto.foglio, catFrame, cat.x, cat.y, false, 1, 0);
     }},
   ];
   if(!scena){
     ents.push({y:npc.y, draw(){          // lui: idle=frame0, durante i dialoghi cicla i frame emotivi
       const a=inBehind(npc.x,npc.y)?.45:1;
       blitShadow(npc.x, npc.y, H_LUI*.42, a);
-      blit('luiEmo', npc.frame||0, npc.x, npc.y, false, a, Math.sin(clock*1.6)*-1.0);
-      if(!npc.talked)
+      blit(SPR.npc.foglio, npc.frame||0, npc.x, npc.y, false, a,
+           Math.sin(clock*(SPR.npc.bobFreq||1.6))*-(SPR.npc.bobAmp??1));
+      if(!flag('npcParlato'))
         glyph('💬', npc.x, npc.y, 27, .9, -(H_LUI*1.12)*PS - Math.sin(clock*2.5)*4*PS);
     }});
     ents.push({y:player.y, draw(){
@@ -139,13 +142,15 @@ function render(){
   }
   ents.sort((a,b)=>a.y-b.y).forEach(e=>e.draw());
 
-  // scena del ballo: vignetta + coppia animata (ping-pong 1→2→3→4→5→4→3→2)
-  if(dance.on){
+  // scena di coppia (es. ballo): vignetta + sprite animato secondo il pack
+  if(cine.scene){
     ctx.fillStyle='rgba(8,4,6,.45)';
     ctx.fillRect(0,0,canvas.width,canvas.height);
-    const fr=DANCE_SEQ[Math.floor(dance.t/DANCE_FRAME_DUR)%DANCE_SEQ.length];
-    blitShadow(CONFIG.ballo.x, CONFIG.ballo.y, H_LUI*.7, 1);
-    blit('ballo', fr, CONFIG.ballo.x, CONFIG.ballo.y, false, 1, Math.sin(dance.t*1.2)*-2);
+    const pers=SPR[cine.scene.pers], an=pers.anim;
+    const fr=an?an.seq[Math.floor(cine.scene.t/an.dur)%an.seq.length]:0;
+    blitShadow(cine.scene.x, cine.scene.y, H_LUI*.7, 1);
+    blit(pers.foglio, fr, cine.scene.x, cine.scene.y, false, 1,
+         Math.sin(cine.scene.t*(pers.bobFreq||1))*-(pers.bobAmp??1));
   }
 
   // particelle (cuori e scintille)

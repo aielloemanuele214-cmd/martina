@@ -1,14 +1,31 @@
 {
-  "_note": "fw/fh = dimensioni cella in px del foglio impacchettato, n = numero frame. Rigenerare con: python3 tools/sprites.py (aggiorna qui i valori stampati).",
+  "_note": "fw/fh = dimensioni cella in px del foglio impacchettato, n = numero frame, alt = altezza in scena (% stanza). Rigenerare i fogli con: python3 tools/sprites.py (aggiorna qui i valori stampati).",
   "sheets": {
     "bg":       { "asset": "bg" },
     "bg2":      { "asset": "bg2", "_note": "secondo frame: candele/fiamme/vinile animati" },
-    "leiDown":  { "asset": "lei_down",  "fw": 192, "fh": 242, "n": 4 },
-    "leiRight": { "asset": "lei_right", "fw": 160, "fh": 242, "n": 4 },
-    "leiUp":    { "asset": "lei_up",    "fw": 190, "fh": 242, "n": 4 },
-    "leiLeft":  { "asset": "lei_left",  "fw": 162, "fh": 242, "n": 4 },
-    "luiEmo":   { "asset": "lui_emo",   "fw": 156, "fh": 262, "n": 5 },
+    "leiDown":  { "asset": "lei_down",  "fw": 192, "fh": 242, "n": 4, "alt": 23.56 },
+    "leiRight": { "asset": "lei_right", "fw": 160, "fh": 242, "n": 4, "alt": 23.56 },
+    "leiUp":    { "asset": "lei_up",    "fw": 190, "fh": 242, "n": 4, "alt": 23.56 },
+    "leiLeft":  { "asset": "lei_left",  "fw": 162, "fh": 242, "n": 4, "alt": 23.56 },
+    "luiEmo":   { "asset": "lui_emo",   "fw": 156, "fh": 262, "n": 5, "alt": 24.8 },
     "gatto":    { "asset": "gatto",     "fw": 433, "fh": 240, "n": 2 },
-    "ballo":    { "asset": "ballo5",    "fw": 206, "fh": 312, "n": 5 }
+    "ballo":    { "asset": "ballo5",    "fw": 206, "fh": 312, "n": 5, "alt": 28.768 }
+  },
+  "personaggi": {
+    "player": {
+      "_note": "0=idle · 1=walkA · 2=walkB · 3=interazione, per ognuna delle 4 direzioni",
+      "fogli": { "down": "leiDown", "up": "leiUp", "left": "leiLeft", "right": "leiRight" },
+      "stati": {
+        "idle":     { "frame": 0, "bobFreq": 1.7, "bobAmp": 1.0 },
+        "walk":     { "seq": [1, 0, 2, 0], "dur": 0.18 },
+        "interact": { "frame": 3 }
+      }
+    },
+    "npc":    { "foglio": "luiEmo", "bobFreq": 1.6, "bobAmp": 1.0,
+                "_note": "0=idle · 1=imbarazzo · 2=parla · 3=pensa · 4=conserte" },
+    "gatto":  { "foglio": "gatto", "_note": "0=dorme · 1=sveglio" },
+    "coppia": { "foglio": "ballo", "bobFreq": 1.2, "bobAmp": 2,
+                "anim": { "seq": [0, 1, 2, 3, 4, 3, 2, 1], "dur": 0.9 },
+                "_note": "ping-pong 1→2→3→4→5→4→3→2, mai 5→1; dur 0.9s = lento romantico" }
   }
 }

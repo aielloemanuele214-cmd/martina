@@ -1,5 +1,28 @@
 # Engine — changelog
 
+## 1.2.0 (F2 — sistemi generici: il motore è un interprete)
+- **State bag**: tutto lo stato di partita è un sacchetto di flag con chiavi
+  decise dal pack ('trovato.vinile', 'segreto.gatto', 'fatto.ballo'…);
+  salvataggio v4 = serializzazione del sacchetto. Ricomincia lo azzera intero.
+- **Eventi dichiarativi** (STORY.eventi): quando/se/fai/altrimenti con
+  condizioni ('!x', 'trovato.*', all/any, 'prima_interazione') e azioni
+  (set, sorpresa, popup, dialogo, scena, sfx, vibra, cuori, verso, se annidato).
+- **Cutscene DSL** (STORY.scene): scene a passi — inizio, nero, scrivi,
+  attesa, coppia, synth, documento, posiziona, musica, fine. Ballo, contratto
+  e fusa del gatto sono ora DATI del pack, non funzioni del motore.
+- **Animazioni data-driven**: stati del giocatore (idle/walk/interact) e
+  sequenza del ballo dichiarati in sprites.json (seq, dur, bob); altezze in
+  scena per foglio. Rimossi WALK_SEQ/DANCE_SEQ/DIR_SHEET dal motore.
+- **Segreti generici** (STORY.segreti): flag + eventuale ricompensa HUD;
+  contatore del finale calcolato dalla lista.
+- **Finali a regole** (STORY.finali): la prima condizione vera sceglie il
+  finale → finali multipli/nascosti pronti senza codice.
+- **Dialoghi dichiarati** (STORY.dialoghi): modo "sacchetto" (mai due volte
+  la stessa battuta di fila) o righe fisse; riferimenti '$config' e '@asset'.
+- Golden test: comportamento identico alla 1.1.0 (indizi, gatto con fusa,
+  finestra, ballo lento 0.9s/frame, contratto, finale 3/4 segreti,
+  Ricomincia, salvataggio-roundtrip, 61 fps, 0 errori JS).
+
 ## 1.1.0 (F1 — engine a moduli + pack)
 - Il monolite `stanza_template.html` è stato spaccato in 17 moduli ordinati
   in `engine/src/` (css, markup, audio, motore, collisioni, stato, camera,

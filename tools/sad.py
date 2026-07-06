@@ -92,7 +92,8 @@ def load_pack(pack):
         merge(config, strip_notes(json.load(open(os.path.join(pdir, 'config', f), encoding='utf-8'))))
     room = strip_notes(json.load(open(os.path.join(pdir, 'config', 'room.json'), encoding='utf-8')))
     sprites = strip_notes(json.load(open(os.path.join(pdir, 'config', 'sprites.json'), encoding='utf-8')))
-    return manifest, config, room, sprites
+    story = strip_notes(json.load(open(os.path.join(pdir, 'config', manifest.get('story', 'story.json')), encoding='utf-8')))
+    return manifest, config, room, sprites, story
 
 
 def gen_config_js(config):
@@ -108,27 +109,32 @@ def gen_room_js(room):
             'const BEHIND_BED = ROOM.dietroLetto.pts;\n')
 
 
-def gen_assets_js(sprites):
+def gen_assets_js(sprites, story):
     rows = []
     for key, sh in sprites['sheets'].items():
-        dims = ''.join(f', {d}:{sh[d]}' for d in ('fw', 'fh', 'n') if d in sh)
+        dims = ''.join(f', {d}:{sh[d]}' for d in ('fw', 'fh', 'n', 'alt') if d in sh)
         rows.append(f"  {key}: {{ src:'{{{{B64:{sh['asset']}}}}}'{dims} }},")
+    # asset referenziabili dalla STORY con '@nome' (ritratti, immagini dei popup)
+    uri_names = ['pt_gatto', 'pop_finestra'] + [f'pt_lui_{i}' for i in range(5)]
+    uris = '\n'.join(f"  {n}: '{{{{B64:{n}}}}}'," for n in uri_names)
     return ('\n/* ====== ASSET (da packs/<pack>/config/sprites.json, incorporati in base64) ====== */\n'
             'const ASSETS = {\n' + '\n'.join(rows) + '\n};\n'
-            "/* Direzione → foglio sprite di lei */\n"
-            "const DIR_SHEET = { down:'leiDown', up:'leiUp', left:'leiLeft', right:'leiRight' };\n"
-            "/* Indici frame di lei */\n"
-            "const FR_IDLE=0, FR_WALK_A=1, FR_WALK_B=2, FR_INTERACT=3;\n"
-            "/* Ritratti dei dialoghi */\n"
-            "const PORTRAITS_LUI = ['{{B64:pt_lui_0}}','{{B64:pt_lui_1}}','{{B64:pt_lui_2}}','{{B64:pt_lui_3}}','{{B64:pt_lui_4}}'];\n"
-            "const PORTRAIT_GATTO = '{{B64:pt_gatto}}';\n"
+            '/* Personaggi: fogli, stati di animazione, altezze (data-driven) */\n'
+            'const SPR = ' + jsdump(sprites['personaggi']) + ';\n'
+            '/* Asset referenziabili con "@nome" da STORY */\n'
+            'const ASSET_URI = {\n' + uris + '\n};\n'
+            "const PORTRAITS_LUI = [ASSET_URI.pt_lui_0, ASSET_URI.pt_lui_1, ASSET_URI.pt_lui_2, ASSET_URI.pt_lui_3, ASSET_URI.pt_lui_4];\n"
             "/* Colonna sonora (mp3 incorporati) */\n"
             "const MUSICHE = {\n"
             "  gioco: '{{B64:mus_gioco}}',\n"
             "  menu:  '{{B64:mus_menu}}',\n"
-            "};\n"
-            "/* Immagine del segreto finestra */\n"
-            "const IMG_FINESTRA = '{{B64:pop_finestra}}';\n")
+            "};\n")
+
+
+def gen_story_js(story):
+    return ('\n/* ====== STORY (da packs/<pack>/config/story.json): eventi, scene, dialoghi,\n'
+            '   segreti e finali — il comportamento della partita, 100% dati ====== */\n'
+            'const STORY = ' + jsdump(story) + ';\n')
 
 
 def modules():
@@ -138,7 +144,7 @@ def modules():
 
 
 def build_base(pack=DEFAULT_PACK):
-    manifest, config, room, sprites = load_pack(pack)
+    manifest, config, room, sprites, story = load_pack(pack)
     frags = modules()
     parts = []
     for f in frags:
@@ -146,7 +152,8 @@ def build_base(pack=DEFAULT_PACK):
         if f == '02-corpo.html':        # dopo il banner CONFIG dello script
             parts.append(gen_config_js(config))
             parts.append(gen_room_js(room))
-            parts.append(gen_assets_js(sprites))
+            parts.append(gen_assets_js(sprites, story))
+            parts.append(gen_story_js(story))
     html = ''.join(parts)
     # incorpora gli asset
     for name, (rel, mime) in ASSET_MAP.items():
@@ -193,13 +200,18 @@ def build_client(json_path):
 def check(pack=DEFAULT_PACK):
     ok = True
     try:
-        _, config, room, sprites = load_pack(pack)
+        _, config, room, sprites, story = load_pack(pack)
         for k in ('nomi', 'dialoghi', 'sorprese', 'finale', 'posizioni'):
             if k not in config:
                 print(f'config del pack incompleta: manca "{k}"'); ok = False
         for k in ('bounds', 'colliders', 'dietroLetto'):
             if k not in room:
                 print(f'room.json incompleta: manca "{k}"'); ok = False
+        for k in ('eventi', 'scene', 'dialoghi', 'segreti', 'finali', 'ui'):
+            if k not in story:
+                print(f'story.json incompleta: manca "{k}"'); ok = False
+        if 'personaggi' not in sprites:
+            print('sprites.json incompleta: manca "personaggi"'); ok = False
     except Exception as e:
         print(f'pack "{pack}" illeggibile: {e}'); ok = False
     for name, (rel, _) in ASSET_MAP.items():

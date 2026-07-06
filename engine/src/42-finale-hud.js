@@ -1,28 +1,26 @@
-/* ---------- finale ---------- */
+/* ---------- finale (a regole: STORY.finali) ---------- */
 const finaleEl=document.getElementById('finale');
-function showFinale(){
+function showFinale(regola){
+  regola = regola || matchEnding();
+  if(!regola) return;
   if(diagOpen) closeDialog();
-  finaleShown=true; frozen=true; save(); vibra([60,60,120]);
+  setFlag('finaleMostrato'); frozen=true; vibra([60,60,120]);
   finaleEl.querySelectorAll('.fh').forEach(h=>h.remove());
-  finaleEl.querySelector('h2').textContent=CONFIG.finale.titolo;
-  finaleEl.querySelector('.testo').textContent=CONFIG.finale.testo;
+  finaleEl.querySelector('h2').textContent=String(risolvi(regola.titolo)??'');
+  finaleEl.querySelector('.testo').textContent=String(risolvi(regola.testo)??'');
   // contatore "insieme da X giorni"
   const gEl=finaleEl.querySelector('.giorni');
   if(CONFIG.dataInizio){
     const g=Math.max(0, Math.floor((Date.now()-new Date(CONFIG.dataInizio+'T00:00:00'))/864e5));
-    gEl.textContent=`INSIEME DA ${g.toLocaleString('it-IT')} GIORNI ❤`;
+    gEl.textContent=STORY.ui.giorni.replace('{g}', g.toLocaleString('it-IT'));
   } else gEl.textContent='';
-  // contatore segreti (gatto, finestra, ballo, contratto): X/4
-  const trovati=[cat.trovato, windowSeen, danceDone, contractDone].filter(Boolean).length;
+  // contatore segreti (dichiarati in STORY.segreti)
+  const tot=STORY.segreti.length;
+  const trovati=STORY.segreti.filter(s=>flag(s.flag)).length;
   const segEl=finaleEl.querySelector('.segreti');
-  if(trovati>=SEGRETI_TOTALE){
-    segEl.innerHTML=`<span class="cnt">SEGRETI ${trovati}/${SEGRETI_TOTALE}</span>`+
-      'Complimenti!\nHai scoperto tutti i segreti di questa avventura. ❤️';
-  } else {
-    segEl.innerHTML=`<span class="cnt">SEGRETI ${trovati}/${SEGRETI_TOTALE}</span>`+
-      `Hai trovato ${trovati}/${SEGRETI_TOTALE} segreti.\nRicomincia per scoprirli tutti.\n`+
-      '💡 Indizio: prova a modificare l’ordine delle interazioni.';
-  }
+  const msg=(trovati>=tot?STORY.ui.segretiCompleti:STORY.ui.segretiParziali)
+    .replaceAll('{n}',trovati).replaceAll('{tot}',tot);
+  segEl.innerHTML=`<span class="cnt">SEGRETI ${trovati}/${tot}</span>`+msg;
   // pioggia di cuori
   for(let i=0;i<26;i++){
     const h=document.createElement('div');
@@ -36,23 +34,21 @@ function showFinale(){
   finaleEl.classList.add('show');
   audio.sfx('fanfare');
 }
-const SEGRETI_TOTALE=4;
 finaleEl.querySelector('.resta').addEventListener('click', ()=>{
   finaleEl.classList.remove('show'); frozen=false; setState('idle'); audio.sfx('click');
 });
 finaleEl.querySelector('.ricomincia').addEventListener('click', ()=>{ audio.sfx('click'); resetRun(); });
-// Ricomincia: riavvia la partita SENZA ricaricare — TUTTO torna allo stato iniziale,
-// segreti compresi (gatto 💛, finestra, ballo, contratto): contatore da 0
+// Ricomincia: riavvia la partita SENZA ricaricare — l'intero state-bag torna vuoto
+// (indizi, segreti, eventi una-tantum), e il salvataggio viene azzerato
 function resetRun(){
   finaleEl.classList.remove('show');
   finaleEl.querySelectorAll('.fh').forEach(h=>h.remove());
   if(modalOpen) closePopup(); if(diagOpen) closeDialog();
-  for(let i=0;i<found.length;i++) found[i]=false;
-  npc.talked=false; finaleShown=false; interacted=false;
-  cat.trovato=false; cat.purrDone=false; cat.awakeUntil=0;
-  windowSeen=false; danceDone=false; contractDone=false;
+  clearBag();
+  cat.awakeUntil=0;
   npc.frame=0; diagEmo=0;
-  percorso.length=0; pendInter=null; parts.length=0; luiBag=[]; luiLast=-1;
+  for(const k in bags) delete bags[k];
+  percorso.length=0; pendInter=null; parts.length=0;
   player.x=CONFIG.posizioni.lei.x; player.y=CONFIG.posizioni.lei.y; player.dir='down';
   setState('idle'); camInit=false;
   frozen=false;
@@ -61,16 +57,16 @@ function resetRun(){
   setTimeout(()=>document.getElementById('hint').classList.add('hide'), 6000);
 }
 
-/* ---------- HUD ---------- */
+/* ---------- HUD: un cuore per sorpresa + le ricompense dei segreti ---------- */
 function updateHearts(){
   const el=document.getElementById('hearts');
-  el.innerHTML=CONFIG.sorprese.map((s,i)=>`<span class="${found[i]?'':'off'}">❤️</span>`).join('')
-    + (cat.trovato?'<span class="oro">💛</span>':'');
+  el.innerHTML=CONFIG.sorprese.map(s=>`<span class="${flag('trovato.'+s.id)?'':'off'}">❤️</span>`).join('')
+    + STORY.segreti.filter(s=>s.hud && flag(s.flag)).map(s=>`<span class="oro">${s.hud}</span>`).join('');
 }
 // col gioco completato, un tocco sul contatore rivede il finale
 document.getElementById('hearts').addEventListener('pointerdown', e=>{
   e.stopPropagation();
-  if(found.every(Boolean) && !frozen) showFinale();
+  if(!frozen){ const r=matchEnding(); if(r) showFinale(r); }
 });
 // audio in pausa quando la pagina va in background
 document.addEventListener('visibilitychange', ()=>{
@@ -111,4 +107,3 @@ function firstGesture(){
   if(started) return; started=true;
   audio.init();                       // sblocca l'audio su iOS dentro il gesto
 }
-

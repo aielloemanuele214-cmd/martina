@@ -17,7 +17,7 @@ addEventListener('resize', resize);
 // iOS Safari: la barra degli indirizzi cambia il viewport senza evento resize classico
 if(window.visualViewport) visualViewport.addEventListener('resize', resize);
 function camFocus(){
-  if(dance.on)  return {x:CONFIG.ballo.x, y:CONFIG.ballo.y-8};
+  if(cine.scene) return {x:cine.scene.x, y:cine.scene.y-8};
   return player;
 }
 function camTarget(axis){
