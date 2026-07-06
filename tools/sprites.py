@@ -9,8 +9,10 @@ from PIL import Image
 import numpy as np
 from scipy import ndimage
 
-U = '/root/.claude/uploads/850a0be0-9e3d-57fd-88d9-49299fd6fe8c/'
-OUT = 'assets_out'
+import os
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+U = os.path.join(ROOT, 'assets', '_src') + os.sep
+OUT = os.path.join(ROOT, 'assets', 'sprites')
 THR = 10          # somma RGB massima per "nero di sfondo"
 BLEED_IT = 10     # iterazioni di color-bleed
 
@@ -122,7 +124,7 @@ def pack(cells, fh, name):
     return fw
 
 # ---- LEI: 4 righe x 4 colonne ----
-rgba = load_rgba_keyed(U+'4b79458b-file_000000007afc720ab14ee0b6089f7171.png')
+rgba = load_rgba_keyed(U+'lei_sheet.png')
 cells = cells_grid(rgba)
 assert len(cells) == 16, f'attese 16 celle lei, trovate {len(cells)}'
 dims = {}
@@ -130,7 +132,7 @@ for row, nome in enumerate(['lei_down', 'lei_right', 'lei_up', 'lei_left']):
     dims[nome] = pack(cells[row*4:(row+1)*4], 242, nome)
 
 # ---- LUI: 5 frame emotivi ----
-rgba = load_rgba_keyed(U+'4dcc489a-file_00000000cd0471f4b7b62d876a488578.png')
+rgba = load_rgba_keyed(U+'lui_sheet.png')
 cells = cells_grid(rgba)
 assert len(cells) == 5, f'attese 5 celle lui, trovate {len(cells)}'
 dims['lui_emo'] = pack(cells, 262, 'lui_emo')
@@ -140,9 +142,26 @@ dims['lui_emo'] = pack(cells, 262, 'lui_emo')
 BALLO_SEEDS = [(160,360),(160,470),(160,630),   # frame 1: colonna fra i corpi
                (760,370),(760,600),             # frame 3: colonna fra i corpi
                (1300,700)]                      # frame 5: varco fra le gambe
-rgba = load_rgba_keyed(U+'4ffb0c2e-file_000000005f6c71f4b83a07f52e38fc33.png', seeds=BALLO_SEEDS)
+rgba = load_rgba_keyed(U+'ballo_sheet.png', seeds=BALLO_SEEDS)
 cells = cells_grid(rgba)
 assert len(cells) == 5, f'attese 5 celle ballo, trovate {len(cells)}'
 dims['ballo5'] = pack(cells, 312, 'ballo5')
 
 print('DIMS =', dims)
+
+# ---- RITRATTI di lui (dal foglio appena impacchettato) ----
+sheet = Image.open(f'{OUT}/lui_emo.png').convert('RGBA')
+FW, FH, N = dims['lui_emo'], 262, 5
+for i in range(N):
+    fr = sheet.crop((i*FW, 0, (i+1)*FW, FH))
+    al = np.array(fr)[:, :, 3]
+    ys, xs = np.where(al > 10)
+    top = ys.min()
+    side = min(FW, FH - top)
+    head = al[top:top + side//2]
+    hx = np.where(head.any(axis=0))[0]
+    cx = (hx.min() + hx.max()) // 2
+    x0 = max(0, min(FW - side, cx - side//2))
+    fr.crop((x0, top, x0 + side, top + side)).resize((128, 128), Image.LANCZOS)\
+      .save(f'{OUT}/pt_lui_{i}.png')
+print('ritratti pt_lui_0..4 rigenerati')
