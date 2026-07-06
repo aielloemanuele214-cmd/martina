@@ -9,8 +9,7 @@
       "ri": 6,
       "titolo": "La Fontana dei Desideri",
       "testo": "Si dice che chi esprime un desiderio qui, nella notte del suo compleanno, lo veda avverarsi prima dell'alba.\n\nChiudi gli occhi, Lyra. Esprimine uno.",
-      "img": "{{B64:pop_fontana}}",
-      "evento": "ballo"
+      "img": "{{B64:pop_fontana}}"
     },
     {
       "id": "bacheca",

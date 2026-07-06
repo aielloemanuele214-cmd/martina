@@ -1,11 +1,9 @@
 {
-  "_note": "STORY = comportamento dell'avventura fantasy, 100% dati (stesso interprete del pack martina). 'fontana' e 'pergamena' sono le due sorprese 'finali' (si sbloccano a vicenda, chi delle due si visita per ultima innesca la propria scena); 'bacheca' è libera. 'ballo' e 'contratto' restano i nomi tecnici delle due scene (coerenti con lo schema CONFIG), ma qui raccontano il desiderio alla fontana e il decreto reale.",
+  "_note": "STORY = comportamento dell'avventura fantasy, 100% dati (stesso interprete del pack martina). 'fontana' e 'bacheca' sono sorprese semplici (nessuna scena); 'pergamena' resta quella 'finale' che, visitata per ultima dopo le altre due, apre il Decreto Reale. 'contratto' resta il nome tecnico della scena (coerente con lo schema CONFIG). CONFIG.ballo esiste solo perché lo schema lo richiede: nessuna scena lo usa più.",
 
   "eventi": [
     { "id": "fontana", "quando": "interagisci:fontana",
-      "se": { "all": ["!trovato.fontana", "trovato.bacheca", "trovato.pergamena", "!fatto.ballo"] },
-      "fai": [ { "set": "trovato.fontana" }, { "scena": "ballo" } ],
-      "altrimenti": [ { "sorpresa": "fontana" } ] },
+      "fai": [ { "sorpresa": "fontana" } ] },
 
     { "id": "bacheca", "quando": "interagisci:bacheca",
       "fai": [ { "sorpresa": "bacheca" } ] },
@@ -32,28 +30,6 @@
   ],
 
   "scene": {
-    "ballo": { "passi": [
-      { "inizio": true },
-      { "set": "fatto.ballo" },
-      { "suggerimento": false },
-      { "musicaSfuma": 1.4 },
-      { "nero": true },
-      { "scrivi": { "testo": "$ballo.introTesto", "pausa": 1.4 } },
-      { "posiziona": { "riferimento": "ballo", "dx": -4, "dy": 1, "dir": "right" } },
-      { "statoGiocatore": "interact" },
-      { "synth": true },
-      { "nero": false },
-      { "cuori": { "su": "npc", "n": 14 } },
-      { "attesa": 1.6 },
-      { "cuori": { "su": "npc", "n": 10 } },
-      { "attesa": "$ballo.durata" },
-      { "nero": true },
-      { "synthStop": true },
-      { "scrivi": { "testo": "$ballo.outroTesto", "pausa": 1.8 } },
-      { "nero": false },
-      { "musicaRiprendi": true },
-      { "fine": true } ] },
-
     "contratto": { "passi": [
       { "inizio": true },
       { "set": "fatto.contratto" },

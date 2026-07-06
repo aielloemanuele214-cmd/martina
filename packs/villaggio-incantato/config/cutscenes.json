@@ -1,10 +1,11 @@
 {
+  "_note": "'ballo' resta qui solo perché lo schema CONFIG condiviso lo richiede sempre (x/y/introTesto/outroTesto/durata): nessuna scena in story.json lo usa più, la fontana è una sorpresa semplice senza cinematica.",
   "ballo": {
     "x": 42,
     "y": 58,
-    "introTesto": "Chiudi gli occhi, Lyra… lascia che il villaggio ti faccia il suo regalo.",
-    "outroTesto": "Ogni desiderio espresso sotto questa luna, oggi, è già stato esaudito: sei qui, ed è già una fortuna.\nBuon compleanno, amore mio.",
-    "durata": 14
+    "introTesto": "",
+    "outroTesto": "",
+    "durata": 1
   },
   "contratto": {
     "intro": "La ceralacca si rompe da sola, come se avesse aspettato solo te…\nÈ un decreto reale.",
