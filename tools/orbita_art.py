@@ -21,7 +21,7 @@ OUT = os.path.join(ROOT, 'packs', 'ultima-orbita', 'assets', 'sprites')
 DBG = os.path.join(ROOT, 'packs', 'ultima-orbita', 'assets', '_dbg')
 os.makedirs(OUT, exist_ok=True); os.makedirs(DBG, exist_ok=True)
 NAVY = np.array([2, 16, 34])       # colore di sfondo dei fogli chibi
-BLEED_IT = 10
+BLEED_IT = 26          # abbastanza da riempire di colore anche i buchi tappati
 
 
 def key_navy(rgb, dist, minsize):
@@ -46,9 +46,20 @@ def key_navy(rgb, dist, minsize):
         sz = ndimage.sum(np.ones_like(ol), ol, range(1, n + 1))
         keep = [i + 1 for i, s in enumerate(sz) if s >= minsize]
         op = np.isin(ol, keep)
-    rgba = np.dstack([a.astype(np.uint8), np.where(op, 255, 0).astype(np.uint8)])
-    rgbf = rgba[:, :, :3].astype(np.float32)
-    known = rgba[:, :, 3] > 0
+    return np.dstack([a.astype(np.uint8), np.where(op, 255, 0).astype(np.uint8)])
+
+
+def refine(sub):
+    """Su una singola figura ritagliata: tappa i buchi RACCHIUSI (varchi scuri
+    fra testa e casco, ecc.) e fa il color-bleed dei colori veri nei pixel
+    trasparenti (buchi + bordo) → silhouette piena, niente frange né buchi."""
+    op = sub[:, :, 3] > 0
+    # chiude i varchi trasparenti SOTTILI interni (contorni scuri rimossi, l'anello
+    # fra testa e casco) senza saldare i varchi larghi (gambe, spazio fra i due
+    # ballerini), poi tappa tutto ciò che resta racchiuso.
+    filled = ndimage.binary_fill_holes(ndimage.binary_closing(op, iterations=2))
+    rgbf = sub[:, :, :3].astype(np.float32)
+    known = op.copy()
     for _ in range(BLEED_IT):
         grown = ndimage.binary_dilation(known)
         ring = grown & ~known
@@ -66,8 +77,10 @@ def key_navy(rgb, dist, minsize):
         mm = ring & (cnt > 0)
         rgbf[mm] = acc[mm] / cnt[mm][:, None]
         known |= mm
-    rgba[:, :, :3] = np.clip(rgbf, 0, 255).astype(np.uint8)
-    return rgba
+    out = sub.copy()
+    out[:, :, :3] = np.clip(rgbf, 0, 255).astype(np.uint8)
+    out[:, :, 3] = np.where(filled, 255, 0).astype(np.uint8)
+    return out
 
 
 def bands(occ, gap, minlen):
@@ -91,13 +104,15 @@ def bands(occ, gap, minlen):
 
 
 def cell(rgba, x0, x1, y0, y1):
-    """Ritaglia la regione [x0:x1, y0:y1] stretta sui pixel opachi (una figura)."""
+    """Ritaglia la regione [x0:x1, y0:y1] stretta sui pixel opachi (una figura),
+    poi ne rifinisce lo scontorno (tappa buchi + color-bleed)."""
     sub = rgba[y0:y1, x0:x1]
     op = sub[:, :, 3] > 0
     if not op.any():
         return None
     ys, xs = np.where(op)
-    return Image.fromarray(sub[ys.min():ys.max() + 1, xs.min():xs.max() + 1])
+    tight = sub[ys.min():ys.max() + 1, xs.min():xs.max() + 1].copy()
+    return Image.fromarray(refine(tight))
 
 
 def footcx(im):
