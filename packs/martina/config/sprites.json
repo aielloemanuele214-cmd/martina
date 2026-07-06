@@ -1,0 +1,14 @@
+{
+  "_note": "fw/fh = dimensioni cella in px del foglio impacchettato, n = numero frame. Rigenerare con: python3 tools/sprites.py (aggiorna qui i valori stampati).",
+  "sheets": {
+    "bg":       { "asset": "bg" },
+    "bg2":      { "asset": "bg2", "_note": "secondo frame: candele/fiamme/vinile animati" },
+    "leiDown":  { "asset": "lei_down",  "fw": 192, "fh": 242, "n": 4 },
+    "leiRight": { "asset": "lei_right", "fw": 160, "fh": 242, "n": 4 },
+    "leiUp":    { "asset": "lei_up",    "fw": 190, "fh": 242, "n": 4 },
+    "leiLeft":  { "asset": "lei_left",  "fw": 162, "fh": 242, "n": 4 },
+    "luiEmo":   { "asset": "lui_emo",   "fw": 156, "fh": 262, "n": 5 },
+    "gatto":    { "asset": "gatto",     "fw": 433, "fh": 240, "n": 2 },
+    "ballo":    { "asset": "ballo5",    "fw": 206, "fh": 312, "n": 5 }
+  }
+}

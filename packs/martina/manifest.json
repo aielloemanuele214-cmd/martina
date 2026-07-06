@@ -1,0 +1,9 @@
+{
+  "slug": "martina",
+  "nome": "Una stanza tutta per voi",
+  "descrizione": "Il pack originale: avventura romantica nella stanza dei ricordi.",
+  "versione": "1.0.0",
+  "engine": "1.1.x",
+  "config": ["settings.json", "characters.json", "dialogues.json",
+             "interactions.json", "cutscenes.json", "endings.json"]
+}

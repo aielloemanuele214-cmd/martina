@@ -3,14 +3,24 @@
 Il prodotto è **un solo file**: `stanza.html`. Contiene motore, grafica e
 audio incorporati (base64), funziona offline e su qualunque hosting statico.
 
-## Struttura del repo (dopo F0 — ricostruibile da zero)
+## Struttura del repo (dopo F1 — engine a moduli + pack)
 
 ```
-engine/stanza_template.html   modello con i placeholder {{B64:*}} (il "sorgente" del gioco)
+engine/src/                   17 moduli ordinati del motore (css, motore, story, render…)
+engine/CHANGELOG.md           versioni del motore (semver)
+packs/martina/                IL CONTENUTO: manifest + config/*.json
+  config/settings.json          nomi, data, musica, salvataggio
+  config/characters.json        posizioni, gatto
+  config/dialogues.json         battute di lui, messaggio del gatto
+  config/interactions.json      i 3 indizi (posizioni, arrivo, testi) + finestra
+  config/cutscenes.json         ballo, contratto
+  config/endings.json           finale
+  config/room.json              collisioni, limiti, zona dietro-letto
+  config/sprites.json           dimensioni dei fogli sprite
 assets/                       asset finali (sprites/ rooms/ popup/ audio/) + _src/ (fogli grezzi)
-tools/sad.py                  CLI unica: build-base · build <cliente> · check
+tools/sad.py                  CLI unica: build-base [pack] · build <cliente> · check [pack]
 tools/sprites.py              pipeline: scontorno + packing + ritratti da assets/_src/
-clienti/*.json                configurazioni dei clienti
+clienti/*.json                personalizzazioni per cliente (sostituiscono il CONFIG)
 dist/                         file consegnabili
 legacy/prototipo/             primo prototipo (non più usato)
 ```
@@ -18,13 +28,16 @@ legacy/prototipo/             primo prototipo (non più usato)
 Comandi:
 
 ```bash
-python3 tools/sad.py build-base                  # assets + template → stanza.html
-python3 tools/sad.py build clienti/<slug>.json   # stanza.html + JSON → dist/
-python3 tools/sad.py check                       # verifica asset e placeholder
+python3 tools/sad.py build-base                  # moduli engine + pack + asset → stanza.html
+python3 tools/sad.py build clienti/<slug>.json   # stanza.html + JSON cliente → dist/
+python3 tools/sad.py check                       # verifica pack, asset e placeholder
 python3 tools/sprites.py                         # rigenera gli sprite da assets/_src/
 ```
 
 (`python3 build.py clienti/<slug>.json` continua a funzionare: delega a `sad.py`.)
+
+Il motore non contiene alcun contenuto: per cambiare stanza, collisioni,
+testi, indizi o sprite si toccano SOLO i JSON del pack e gli asset.
 
 ## Flusso per ogni ordine (5 minuti)
 

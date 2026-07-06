@@ -1,0 +1,166 @@
+/* ---------- disegno: tutto da cache pre-scalate (niente riscalature per frame) ---------- */
+let PS=1;                              // px mondo -> px canvas
+const CACHE={glyphs:{}};
+function rebuildCache(){
+  PS=S*dpr;
+  const mk=(w,h)=>{ const c=document.createElement('canvas');
+    c.width=Math.max(1,Math.round(w)); c.height=Math.max(1,Math.round(h)); return c; };
+  // sfondi pre-scalati alla risoluzione di disegno
+  for(const k of ['bg','bg2']){
+    const c=mk(W*PS, W*PS);
+    c.getContext('2d').drawImage(IMG[k],0,0,c.width,c.height);
+    CACHE[k]=c;
+  }
+  // spritesheet pre-scalati alla loro altezza in scena (tutte le direzioni di lei = stessa altezza)
+  const alt={leiDown:H_LEI, leiRight:H_LEI, leiUp:H_LEI, leiLeft:H_LEI,
+             luiEmo:H_LUI, ballo:H_LUI*1.16,
+             gatto:ASSETS.gatto.fh*(cat.larghezza*PCT/ASSETS.gatto.fw)};
+  for(const k in alt){
+    const sp=ASSETS[k], f=alt[k]*PS/sp.fh;
+    const c=mk(sp.fw*sp.n*f, sp.fh*f);
+    c.getContext('2d').drawImage(IMG[k],0,0,c.width,c.height);
+    CACHE[k]={c, fw:c.width/sp.n, fh:c.height, n:sp.n};
+  }
+  // ombra morbida (un solo gradiente, riusato)
+  const sh=mk(128,128), g=sh.getContext('2d');
+  const rg=g.createRadialGradient(64,64,0,64,64,64);
+  rg.addColorStop(0,'rgba(0,0,0,.42)'); rg.addColorStop(1,'rgba(0,0,0,0)');
+  g.fillStyle=rg; g.fillRect(0,0,128,128);
+  CACHE.shadow=sh;
+  // glifi emoji rasterizzati una volta
+  for(const ch of ['✨','💬','❤️']){
+    const gc=mk(64,64), cg=gc.getContext('2d');
+    cg.font='50px serif'; cg.textAlign='center'; cg.textBaseline='middle';
+    cg.fillText(ch,32,36);
+    CACHE.glyphs[ch]=gc;
+  }
+}
+const cvx = wx=>(wx-camX)*PS;          // px mondo -> px canvas
+const cvy = wy=>(wy-camY)*PS;
+function blit(key,frame,xPct,yPct,flip,alpha,dyWorld){
+  const s=CACHE[key];
+  const X=cvx(xPct*PCT), Y=cvy(yPct*PCT)+(dyWorld||0)*PS;
+  ctx.globalAlpha=alpha;
+  if(flip){
+    ctx.save(); ctx.translate(X,0); ctx.scale(-1,1);
+    ctx.drawImage(s.c, frame*s.fw,0,s.fw,s.fh, -s.fw/2, Y-s.fh, s.fw, s.fh);
+    ctx.restore();
+  } else {
+    ctx.drawImage(s.c, frame*s.fw,0,s.fw,s.fh, X-s.fw/2, Y-s.fh, s.fw, s.fh);
+  }
+  ctx.globalAlpha=1;
+}
+function blitShadow(xPct,yPct,wWorld,alpha){
+  const rx=wWorld*.38*PS, ry=rx*.32;
+  ctx.globalAlpha=alpha;
+  ctx.drawImage(CACHE.shadow, cvx(xPct*PCT)-rx, cvy(yPct*PCT)-ry, rx*2, ry*2);
+  ctx.globalAlpha=1;
+}
+function glyph(ch,xPct,yPct,sizeWorld,alpha,dyCanvas){
+  const d=sizeWorld*PS;
+  ctx.globalAlpha=alpha;
+  ctx.drawImage(CACHE.glyphs[ch], cvx(xPct*PCT)-d/2, cvy(yPct*PCT)-d/2+(dyCanvas||0), d, d);
+  ctx.globalAlpha=1;
+}
+// Frame di lei dalla macchina a stati (nessun flip: art dedicata per ogni direzione)
+function playerFrame(){
+  const key=DIR_SHEET[player.dir];
+  if(player.state==='walk'){
+    const i=Math.floor(player.animT/WALK_FRAME_DUR)%WALK_SEQ.length;
+    return {key, frame:WALK_SEQ[i], dy:0};
+  }
+  if(player.state==='interact') return {key, frame:FR_INTERACT, dy:0};
+  // idle: frame fisso + respiro (movimento verticale, non cambio frame)
+  return {key, frame:FR_IDLE, dy:Math.sin(clock*1.7)*-1.0};
+}
+
+function render(){
+  ctx.setTransform(1,0,0,1,0,0);
+  ctx.fillStyle='#0a0708'; ctx.fillRect(0,0,canvas.width,canvas.height);
+
+  // stanza (due frame alternati irregolarmente: candele/fiamme/vinile animati)
+  const flick=(Math.sin(clock*6.3)+Math.sin(clock*11.7+2))>0;
+  ctx.drawImage(flick?CACHE.bg:CACHE.bg2, Math.round(-camX*PS), Math.round(-camY*PS));
+
+  // debug hitbox
+  if(DEBUG){
+    ctx.lineWidth=1.5*dpr;
+    for(const c of COLLIDERS){
+      ctx.beginPath();
+      c.pts.forEach((p,i)=>i?ctx.lineTo(cvx(p[0]*PCT),cvy(p[1]*PCT)):ctx.moveTo(cvx(p[0]*PCT),cvy(p[1]*PCT)));
+      ctx.closePath(); ctx.fillStyle='rgba(255,80,80,.22)'; ctx.fill();
+      ctx.strokeStyle='rgba(255,120,120,.8)'; ctx.stroke();
+    }
+    ctx.beginPath();
+    BEHIND_BED.forEach((p,i)=>i?ctx.lineTo(cvx(p[0]*PCT),cvy(p[1]*PCT)):ctx.moveTo(cvx(p[0]*PCT),cvy(p[1]*PCT)));
+    ctx.closePath(); ctx.fillStyle='rgba(80,140,255,.25)'; ctx.fill();
+    for(const it of INTER){
+      ctx.beginPath(); ctx.arc(cvx(it.x*PCT),cvy(it.y*PCT),it.r*PCT*PS,0,Math.PI*2);
+      ctx.strokeStyle='rgba(120,255,120,.5)'; ctx.stroke();
+    }
+    document.getElementById('dbg-pos').style.display='block';
+  }
+
+  // guida discreta: un ✨ solo sugli indizi principali ancora da scoprire
+  // (gatto e finestra sono segreti: NESSUN indicatore)
+  const scena=dance.on;
+  if(!scena){
+    for(let i=0;i<CONFIG.sorprese.length;i++){
+      if(found[i]) continue;
+      const s=CONFIG.sorprese[i];
+      const a=.55+.3*Math.sin(clock*3+i);
+      const size=26+Math.sin(clock*3+i)*3;
+      glyph('✨', s.x, s.y, size, a, -Math.sin(clock*2+i)*3*PS);
+    }
+  }
+
+  // entità ordinate per profondità (piedi più in basso = davanti)
+  const catFrame=clock<cat.awakeUntil?1:0;
+  const ents=[
+    {y:cat.y, draw(){          // gatto: semplice elemento decorativo, nessun effetto
+      blitShadow(cat.x, cat.y, cat.larghezza*PCT*.8, .8);
+      blit('gatto', catFrame, cat.x, cat.y, false, 1, 0);
+    }},
+  ];
+  if(!scena){
+    ents.push({y:npc.y, draw(){          // lui: idle=frame0, durante i dialoghi cicla i frame emotivi
+      const a=inBehind(npc.x,npc.y)?.45:1;
+      blitShadow(npc.x, npc.y, H_LUI*.42, a);
+      blit('luiEmo', npc.frame||0, npc.x, npc.y, false, a, Math.sin(clock*1.6)*-1.0);
+      if(!npc.talked)
+        glyph('💬', npc.x, npc.y, 27, .9, -(H_LUI*1.12)*PS - Math.sin(clock*2.5)*4*PS);
+    }});
+    ents.push({y:player.y, draw(){
+      const a=inBehind(player.x,player.y)?.45:1;
+      const pf=playerFrame();
+      blitShadow(player.x, player.y, H_LEI*.45, a);
+      blit(pf.key, pf.frame, player.x, player.y, false, a, pf.dy);
+    }});
+  }
+  ents.sort((a,b)=>a.y-b.y).forEach(e=>e.draw());
+
+  // scena del ballo: vignetta + coppia animata (ping-pong 1→2→3→4→5→4→3→2)
+  if(dance.on){
+    ctx.fillStyle='rgba(8,4,6,.45)';
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+    const fr=DANCE_SEQ[Math.floor(dance.t/DANCE_FRAME_DUR)%DANCE_SEQ.length];
+    blitShadow(CONFIG.ballo.x, CONFIG.ballo.y, H_LUI*.7, 1);
+    blit('ballo', fr, CONFIG.ballo.x, CONFIG.ballo.y, false, 1, Math.sin(dance.t*1.2)*-2);
+  }
+
+  // particelle (cuori e scintille)
+  for(const p of parts) glyph(p.ch||'❤️', p.x, p.y, p.size||20, Math.max(0,p.life), 0);
+
+  // anello di conferma del tocco (dove hai puntato)
+  if(tapFx){
+    const k=tapFx.t/.55;
+    ctx.globalAlpha=(1-k)*.8;
+    ctx.strokeStyle='#FBF3E9';
+    ctx.lineWidth=2*dpr;
+    ctx.beginPath();
+    ctx.arc(cvx(tapFx.x*PCT), cvy(tapFx.y*PCT), (10+k*26)*dpr, 0, Math.PI*2);
+    ctx.stroke();
+    ctx.globalAlpha=1;
+  }
+}
+

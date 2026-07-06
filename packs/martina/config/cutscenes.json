@@ -1,0 +1,12 @@
+{
+  "ballo": {
+    "x": 47,
+    "y": 64,
+    "introTesto": "Ho una sorpresa per te…",
+    "outroTesto": "Nessuno aveva mai fatto niente di simile per me…\nTi amo.",
+    "durata": 15
+  },
+  "contratto": {
+    "intro": "C’è qualcosa qui…\nSembra molto importante."
+  }
+}
