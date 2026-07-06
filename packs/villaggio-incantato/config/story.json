@@ -83,7 +83,6 @@
   "segreti": [
     { "id": "gatto",     "flag": "segreto.gatto", "hud": "🐾" },
     { "id": "finestra",  "flag": "segreto.finestra" },
-    { "id": "ballo",     "flag": "fatto.ballo" },
     { "id": "contratto", "flag": "fatto.contratto" }
   ],
 
