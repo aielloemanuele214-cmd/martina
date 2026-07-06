@@ -1,0 +1,109 @@
+{
+  "_note": "Comportamento dell'avventura, 100% dati. 3 oggetti (oblò, diario, lettore) + 3 segreti (gatto, stella, abbraccio). '$x' legge da CONFIG, '@x' un asset incorporato. I flag vivono nello stato salvato.",
+
+  "eventi": [
+    { "id": "oblo", "quando": "interagisci:oblo",
+      "fai": [ { "sorpresa": "oblo" } ] },
+
+    { "id": "diario", "quando": "interagisci:diario",
+      "fai": [ { "sorpresa": "diario" } ] },
+
+    { "id": "lettore", "quando": "interagisci:lettore",
+      "se": "!trovato.lettore",
+      "fai": [ { "scena": "musica" } ],
+      "altrimenti": [ { "sorpresa": "lettore" } ] },
+
+    { "id": "npc", "quando": "interagisci:npc",
+      "fai": [ { "set": "npcParlato" }, { "dialogo": "sofia" } ] },
+
+    { "id": "gatto", "quando": "interagisci:gatto",
+      "fai": [
+        { "sveglia": "gatto" }, { "verso": "gatto" }, { "sfx": "meow" },
+        { "se": "!segreto.gatto", "fai": [ { "set": "segreto.gatto" }, { "vibra": 40 } ] },
+        { "se": "!fatto.fusa",
+          "fai": [ { "set": "fatto.fusa" }, { "scena": "fusa" }, { "dialogo": "gatto" } ],
+          "altrimenti": [ { "dialogo": "gatto" } ] } ] },
+
+    { "id": "stella", "quando": "interagisci:stella",
+      "fai": [ { "scena": "stella" } ] },
+
+    { "id": "abbraccio", "quando": "interagisci:abbraccio",
+      "fai": [ { "scena": "abbraccio" } ] }
+  ],
+
+  "scene": {
+    "musica": { "passi": [
+      { "inizio": true },
+      { "set": "trovato.lettore" },
+      { "suggerimento": false },
+      { "statoGiocatore": "idle" },
+      { "nero": true },
+      { "coppia": { "foglio": "coppia", "x": 50, "y": 52 } },
+      { "nero": false },
+      { "attesa": 5.5 },
+      { "nero": true },
+      { "coppiaFine": true },
+      { "scrivi": { "testo": "Qualunque sarà il nostro prossimo viaggio…\nsarà insieme.", "pausa": 2.4 } },
+      { "nero": false },
+      { "fine": true } ] },
+
+    "abbraccio": { "passi": [
+      { "inizio": true },
+      { "set": "segreto.abbraccio" },
+      { "suggerimento": false },
+      { "nero": true },
+      { "coppia": { "foglio": "coppia", "x": 50, "y": 74 } },
+      { "nero": false },
+      { "attesa": 4.5 },
+      { "nero": true },
+      { "coppiaFine": true },
+      { "scrivi": { "testo": "Non importa quanto sia grande l'universo.\nCasa sarà sempre dove ci sei tu.", "pausa": 3 } },
+      { "nero": false },
+      { "fine": true } ] },
+
+    "stella": { "passi": [
+      { "inizio": true },
+      { "set": "segreto.stella" },
+      { "suggerimento": false },
+      { "stella": { "durata": 1.9 } },
+      { "nero": true },
+      { "scrivi": { "testo": "Esprimi un desiderio…\nanche se si è già avverato.", "pausa": 2.6 } },
+      { "nero": false },
+      { "fine": true } ] },
+
+    "fusa": { "passi": [
+      { "inizio": true },
+      { "statoGiocatore": "interact" },
+      { "cuori": { "su": "gatto", "n": 14 } },
+      { "attesa": 0.38 },
+      { "cuori": { "su": "gatto", "n": 8 } },
+      { "attesa": 0.6 },
+      { "fine": true } ] }
+  },
+
+  "dialoghi": {
+    "sofia": { "nome": "$nomi.lui", "modo": "sacchetto", "fonte": "$dialoghi",
+               "emotivo": true, "verso": "npc" },
+    "gatto": { "nome": "$gatto.nome", "righe": ["$gatto.messaggio"],
+               "ritratto": "@pt_gatto", "verso": "gatto" }
+  },
+
+  "segreti": [
+    { "id": "gatto",     "flag": "segreto.gatto",     "hud": "💛" },
+    { "id": "stella",    "flag": "segreto.stella",    "hud": "⭐" },
+    { "id": "abbraccio", "flag": "segreto.abbraccio", "hud": "🤍" }
+  ],
+
+  "finali": [
+    { "id": "completa",
+      "se": { "all": ["trovato.oblo", "trovato.diario", "trovato.lettore",
+                       "segreto.gatto", "segreto.stella", "segreto.abbraccio"] },
+      "titolo": "$finale.titolo", "testo": "$finale.testo" }
+  ],
+
+  "ui": {
+    "giorni": "IN ORBITA INSIEME DA {g} GIORNI 🚀",
+    "segretiCompleti": "Hai trovato tutti i segreti di questa orbita. 💫",
+    "segretiParziali": "Segreti trovati: {n}/{tot}.\nResta ancora qualcosa da scoprire là fuori…"
+  }
+}

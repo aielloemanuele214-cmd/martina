@@ -47,6 +47,7 @@ function resetRun(){
   clearBag();
   cat.awakeUntil=0;
   npc.frame=0; diagEmo=0;
+  starFx=null; player.fermoT=0; cine.scene=null; audio.stopDance();
   for(const k in bags) delete bags[k];
   percorso.length=0; pendInter=null; parts.length=0;
   player.x=CONFIG.posizioni.lei.x; player.y=CONFIG.posizioni.lei.y; player.dir='down';

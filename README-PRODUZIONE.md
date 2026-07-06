@@ -56,6 +56,11 @@ testi, indizi o sprite si toccano SOLO i JSON del pack e gli asset.
 - **romantica** — base neutra: anniversari, dediche, regali di coppia
 - **compleanno** — sorprese a tema festa + Buono Regalo elegante
 - **proposta** — la lettera apre la Richiesta Ufficiale di Matrimonio 💍
+- **ultima-orbita** — ambientazione dedicata (shuttle attorno a Saturno, due
+  astronaute) con asset propri in `packs/ultima-orbita/assets/`: 3 oggetti
+  (oblò, diario, lettore) e 3 segreti (gatto a vicinanza, stella cadente a
+  inattività, abbraccio a hotspot). Richiede motore ≥1.4.0. Rigenerare gli
+  sprite: `python3 tools/orbita_art.py all`.
 
 `python3 tools/sad.py build-base <template>` → `dist/base-<template>.html` per provarli.
 Un ordine parte dal template dell'occasione: copia i suoi testi in `ordine.json`.

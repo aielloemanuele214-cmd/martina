@@ -1,0 +1,11 @@
+{
+  "titolo": "L'Ultima Orbita",
+  "nomi": {
+    "lei": "Elena",
+    "lui": "Sofia"
+  },
+  "dataInizio": null,
+  "musica": true,
+  "salvaProgressi": true,
+  "schermataIngresso": true
+}

@@ -110,26 +110,35 @@ def gen_room_js(room):
             'const BEHIND_BED = ROOM.dietroLetto.pts;\n')
 
 
+# Asset e ruoli di default (pack "camera romantica"); un pack può ridefinirli
+# in sprites.json con 'embed', 'portraitsNpc' e 'musiche' senza toccare il motore.
+DEF_EMBED = ['pt_gatto', 'pop_finestra'] + [f'pt_lui_{i}' for i in range(5)]
+DEF_PORTRAITS = [f'pt_lui_{i}' for i in range(5)]
+DEF_MUSICHE = {'gioco': 'mus_gioco', 'menu': 'mus_menu'}
+
+
 def gen_assets_js(sprites, story):
     rows = []
     for key, sh in sprites['sheets'].items():
         dims = ''.join(f', {d}:{sh[d]}' for d in ('fw', 'fh', 'n', 'alt') if d in sh)
         rows.append(f"  {key}: {{ src:'{{{{B64:{sh['asset']}}}}}'{dims} }},")
-    # asset referenziabili dalla STORY con '@nome' (ritratti, immagini dei popup)
-    uri_names = ['pt_gatto', 'pop_finestra'] + [f'pt_lui_{i}' for i in range(5)]
+    # asset referenziabili dalla STORY con '@nome' (ritratti, popup) + ritratti NPC
+    embed = list(sprites.get('embed', DEF_EMBED))
+    portraits = list(sprites.get('portraitsNpc', DEF_PORTRAITS))
+    musiche = sprites.get('musiche', DEF_MUSICHE)
+    uri_names = list(dict.fromkeys(embed + portraits))     # unione, ordine stabile
     uris = '\n'.join(f"  {n}: '{{{{B64:{n}}}}}'," for n in uri_names)
+    portr = ', '.join(f'ASSET_URI.{n}' for n in portraits)
+    mus = ''.join(f"  {role}: '{{{{B64:{name}}}}}',\n" for role, name in musiche.items())
     return ('\n/* ====== ASSET (da packs/<pack>/config/sprites.json, incorporati in base64) ====== */\n'
             'const ASSETS = {\n' + '\n'.join(rows) + '\n};\n'
             '/* Personaggi: fogli, stati di animazione, altezze (data-driven) */\n'
             'const SPR = ' + jsdump(sprites['personaggi']) + ';\n'
             '/* Asset referenziabili con "@nome" da STORY */\n'
             'const ASSET_URI = {\n' + uris + '\n};\n'
-            "const PORTRAITS_LUI = [ASSET_URI.pt_lui_0, ASSET_URI.pt_lui_1, ASSET_URI.pt_lui_2, ASSET_URI.pt_lui_3, ASSET_URI.pt_lui_4];\n"
+            f"const PORTRAITS_LUI = [{portr}];\n"
             "/* Colonna sonora (mp3 incorporati) */\n"
-            "const MUSICHE = {\n"
-            "  gioco: '{{B64:mus_gioco}}',\n"
-            "  menu:  '{{B64:mus_menu}}',\n"
-            "};\n")
+            "const MUSICHE = {\n" + mus + "};\n")
 
 
 def gen_story_js(story):
@@ -223,7 +232,7 @@ def validate_pack(pack=DEFAULT_PACK, silenzioso=False):
         for k in r.split('.'):
             o = o.get(k) if isinstance(o, dict) else None
         if o is None: errs.append(f"story.json: '${r}' non risolve nella config del pack")
-    noti = {'pt_gatto', 'pop_finestra'} | {f'pt_lui_{i}' for i in range(5)}
+    noti = set(sprites.get('embed', DEF_EMBED)) | set(sprites.get('portraitsNpc', DEF_PORTRAITS))
     for r in set(ref_asset):
         if r not in noti: errs.append(f"story.json: '@{r}' non è un asset incorporato noto")
     # 4. i flag usati nelle condizioni sono impostabili da qualche azione
@@ -291,6 +300,18 @@ def validate_cliente(json_path, pack=DEFAULT_PACK):
     print(f'✓ {json_path} valido')
 
 
+def pack_asset_map(pack, manifest):
+    """Mappa nome→(path,mime) per un pack: gli asset del pack (manifest.assets,
+    relativi a packs/<pack>/assets/) sovrascrivono i default globali ASSET_MAP.
+    Così ogni pack porta la propria grafica senza toccare il motore."""
+    amap = dict(ASSET_MAP)
+    for name, rel in (manifest.get('assets') or {}).items():
+        p = os.path.join('packs', pack, 'assets', rel)
+        mime = mimetypes.guess_type(rel)[0] or 'application/octet-stream'
+        amap[name] = (p, mime)
+    return amap
+
+
 def build_base(pack=DEFAULT_PACK):
     validate_pack(pack, silenzioso=True)
     manifest, config, room, sprites, story = load_pack(pack)
@@ -304,12 +325,12 @@ def build_base(pack=DEFAULT_PACK):
             parts.append(gen_assets_js(sprites, story))
             parts.append(gen_story_js(story))
     html = ''.join(parts)
-    # incorpora gli asset
-    for name, (rel, mime) in ASSET_MAP.items():
+    # incorpora gli asset effettivamente usati (asset del pack + fallback globali)
+    for name, (rel, mime) in pack_asset_map(pack, manifest).items():
         ph = '{{B64:%s}}' % name
-        path = os.path.join(ROOT, rel)
-        assert os.path.exists(path), f'asset mancante: {rel}'
         if ph in html:
+            path = os.path.join(ROOT, rel)
+            assert os.path.exists(path), f'asset mancante: {rel} (per "{name}")'
             html = html.replace(ph, b64(path, mime))
     left = re.findall(r'\{\{[^}]+\}\}', html)
     assert not left, f'placeholder residui: {sorted(set(left))}'

@@ -127,6 +127,12 @@ async function runCutscene(id){
       camInit=false;
     }
     else if(p.coppiaFine){ cine.scene=null; }
+    else if(p.stella!==undefined){                 // stella cadente attraverso l'oblò
+      const s=(typeof p.stella==='object')?p.stella:{};
+      starFx={ t:0, dur:s.durata||1.7, arco:s.arco||(CONFIG.stella&&CONFIG.stella.arco)||[30,8,72,22] };
+      audio.sfx('item');
+      await wait((s.durata||1.7)*1000);
+    }
     else if(p.synth!==undefined){ if(p.synth) audio.startDance(); }
     else if(p.synthStop){ audio.stopDance(); }
     else if(p.posiziona!==undefined){
@@ -173,11 +179,23 @@ function renderDocumento(doc){
 
 /* ---------- segreti a tocco diretto (nessun indicatore) ---------- */
 function tryWindow(cssX,cssY){
+  // gestita solo se il pack la vuole (CONFIG.finestra.attiva!==false); zona
+  // personalizzabile (CONFIG.finestra.zona=[x0,x1,y0,y1]) o default in alto al centro
+  if(CONFIG.finestra && CONFIG.finestra.attiva===false) return false;
+  const z=(CONFIG.finestra && CONFIG.finestra.zona) || [41,60,2,27];
   const wx=(cssX/S+camX)/PCT, wy=(cssY/S+camY)/PCT;
-  if(wx>41 && wx<60 && wy>2 && wy<27){ trigger('interagisci:finestra'); return true; }
+  if(wx>z[0] && wx<z[1] && wy>z[2] && wy<z[3]){ trigger('interagisci:finestra'); return true; }
   return false;
 }
+// Il gatto può essere "rivelato per vicinanza": se cat.rivelaVicino è impostato,
+// prima di sbloccarlo è visibile e cliccabile solo entro quel raggio.
+function catVisibile(){
+  if(!cat.rivelaVicino) return true;
+  if(flag('segreto.gatto')) return true;
+  return Math.hypot(player.x-cat.x, player.y-cat.y) < cat.rivelaVicino;
+}
 function tryCat(cssX,cssY){
+  if(!catVisibile()) return false;
   const wx=(cssX/S+camX)/PCT, wy=(cssY/S+camY)/PCT;
   const w=cat.larghezza, h=w*ASSETS.gatto.fh/ASSETS.gatto.fw;
   if(wx>cat.x-w/2-1.5 && wx<cat.x+w/2+1.5 && wy>cat.y-h-2 && wy<cat.y+1.5){
@@ -185,6 +203,18 @@ function tryCat(cssX,cssY){
   }
   return false;
 }
+// Punti segreti invisibili (es. l'abbraccio vicino alla porta): tocco diretto.
+function tryPuntiSegreti(cssX,cssY){
+  if(!CONFIG.puntiSegreti) return false;
+  const wx=(cssX/S+camX)/PCT, wy=(cssY/S+camY)/PCT;
+  for(const ps of CONFIG.puntiSegreti){
+    const z=ps.zona;
+    if(wx>z[0] && wx<z[1] && wy>z[2] && wy<z[3]){ trigger(ps.evento); return true; }
+  }
+  return false;
+}
+/* stella cadente: streak animato che attraversa l'oblò (impostato da una scena) */
+let starFx=null;
 
 /* ---------- finali a regole: la prima che si avvera vince ---------- */
 function matchEnding(){ return STORY.finali.find(f=>cond(f.se)); }

@@ -64,6 +64,7 @@ function closeDialog(){
   npc.frame=0;                                     // fine dialogo → subito primo frame Idle
   dialogEl.classList.remove('show');
   setState('idle');
+  maybeEnding();          // un'interazione conclusa da un dialogo può completare la missione
 }
 dialogEl.addEventListener('pointerdown', e=>{ e.stopPropagation(); if(!cinematic) advanceDialog(); });
 

@@ -34,6 +34,7 @@ function handleTap(cssX,cssY){
   // segreti: rispondono al tocco diretto da qualsiasi distanza, senza indicatori
   if(tryCat(cssX,cssY)) return;
   if(tryWindow(cssX,cssY)) return;
+  if(tryPuntiSegreti(cssX,cssY)) return;
   // tocco vicino a un interattivo (sull'oggetto): cammina al punto d'arrivo e apri LÌ
   let best=null, bd=1e9;
   for(const it of INTER){

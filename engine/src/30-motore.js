@@ -1,7 +1,7 @@
 /* ============================================================
    MOTORE
    ============================================================ */
-const ENGINE_V = '1.3.0';
+const ENGINE_V = '1.4.0';
 console.log('Sempreaddue · stanza v'+ENGINE_V);
 const W = 1254;                       // lato stanza in px mondo
 const PCT = W/100;                    // 1% in px mondo

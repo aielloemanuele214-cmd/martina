@@ -1,0 +1,33 @@
+{
+  "_note": "fw/fh = dimensioni cella impacchettata (px), n = frame, alt = altezza in scena (% stanza). Rigenerare i fogli con: python3 tools/orbita_art.py all (riporta qui i valori stampati). embed/portraitsNpc/musiche dichiarano gli asset '@' e i ritratti dell'NPC di questo pack.",
+  "sheets": {
+    "bg":         { "asset": "bg" },
+    "bg2":        { "asset": "bg2" },
+    "astroDown":  { "asset": "astro_down",  "fw": 96,  "fh": 242, "n": 1, "alt": 21 },
+    "astroUp":    { "asset": "astro_up",    "fw": 98,  "fh": 242, "n": 1, "alt": 21 },
+    "astroLeft":  { "asset": "astro_left",  "fw": 120, "fh": 242, "n": 1, "alt": 21 },
+    "astroRight": { "asset": "astro_right", "fw": 120, "fh": 242, "n": 1, "alt": 21 },
+    "astro2":     { "asset": "astro2",      "fw": 136, "fh": 262, "n": 5, "alt": 22 },
+    "coppia":     { "asset": "coppia",      "fw": 124, "fh": 312, "n": 5, "alt": 27 },
+    "gatto":      { "asset": "gatto",       "fw": 376, "fh": 240, "n": 2 }
+  },
+  "personaggi": {
+    "player": {
+      "_note": "n=1 per direzione: idle e walk usano il 'respiro' (bob), niente ciclo di frame.",
+      "fogli": { "down": "astroDown", "up": "astroUp", "left": "astroLeft", "right": "astroRight" },
+      "stati": {
+        "idle":     { "frame": 0, "bobFreq": 1.6, "bobAmp": 1.0 },
+        "walk":     { "frame": 0, "bobFreq": 9,   "bobAmp": 2.4 },
+        "interact": { "frame": 0 }
+      }
+    },
+    "npc": { "foglio": "astro2", "bobFreq": 1.5, "bobAmp": 1.0,
+             "_note": "0=idle · 1=imbarazzo · 2=parla · 3=pensa · 4=braccia conserte" },
+    "gatto": { "foglio": "gatto", "_note": "0=dorme · 1=sveglio (con tuta)" },
+    "coppia": { "foglio": "coppia", "bobFreq": 1.1, "bobAmp": 2,
+                "anim": { "seq": [0, 1, 2, 3, 4, 3, 2, 1], "dur": 0.9 } }
+  },
+  "embed": ["pt_gatto"],
+  "portraitsNpc": ["pt_astro_0", "pt_astro_1", "pt_astro_2", "pt_astro_3", "pt_astro_4"],
+  "musiche": { "gioco": "mus_gioco", "menu": "mus_menu" }
+}
