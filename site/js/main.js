@@ -121,10 +121,9 @@
 
   /* ---------- Popup founder: −5% col codice FOUNDER26 ---------- */
   const overlay = $('#promoOverlay');
-  if (overlay && !localStorage.getItem('sad-promo-vista')) {
+  if (overlay && !localStorage.getItem('sad-promo-iscritta')) {
     const close = () => {
       overlay.hidden = true;
-      localStorage.setItem('sad-promo-vista', '1');
       document.removeEventListener('keydown', onKey);
     };
     const onKey = (e) => { if (e.key === 'Escape') close(); };
@@ -148,9 +147,9 @@
           body: new URLSearchParams(new FormData(form)).toString()
         });
         if (!res.ok) throw new Error(res.status);
-        form.outerHTML = '<p class="promo-ok">💌 Fatto! Il codice <strong>FOUNDER26</strong> ' +
+        form.outerHTML = '<p class="promo-ok">💌 Fatto! Il tuo codice founder ' +
           'sta arrivando nella tua casella email.</p>';
-        localStorage.setItem('sad-promo-vista', '1');
+        localStorage.setItem('sad-promo-iscritta', '1');
       } catch {
         btn.disabled = false;
         $('.promo-err', form)?.remove();
