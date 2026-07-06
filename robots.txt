@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /dist/
+
+Sitemap: https://sempreaddue.netlify.app/sitemap.xml
