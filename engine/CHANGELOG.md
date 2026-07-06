@@ -1,5 +1,23 @@
 # Engine — changelog
 
+## 1.4.0 (nuove meccaniche additive per pack diversi — es. "L'Ultima Orbita")
+Tutte le aggiunte sono **opzionali e attivate dalla config del pack**: se un
+pack non le usa, il comportamento è identico alla 1.3.0 (martina: QA 13/13).
+- **Asset per-pack**: `manifest.assets` mappa i nomi asset ai file dentro
+  `packs/<slug>/assets/`, sovrascrivendo i default globali. sprites.json può
+  dichiarare `embed` (asset '@'), `portraitsNpc` (ritratti dell'NPC) e
+  `musiche`. Il motore non ha più grafica cablata a un solo pack.
+- **Finestra opzionale**: la finestra-segreto si disattiva con
+  `finestra.attiva:false` e la sua zona è configurabile (`finestra.zona`).
+- **Gatto a rivelazione per vicinanza**: `gatto.rivelaVicino` (raggio) —
+  il gatto compare (fade) e diventa cliccabile solo avvicinandosi.
+- **Trigger a inattività** (`CONFIG.stella`): resta fermi in una zona per N
+  secondi → evento. Passo scena `stella` = scia luminosa (stella cadente).
+- **Punti segreti invisibili** (`CONFIG.puntiSegreti`): hotspot a tocco
+  diretto che lanciano un evento (es. l'abbraccio vicino alla porta).
+- `closeDialog` verifica il finale: un'interazione conclusa da un dialogo può
+  completare la missione (no-op sui pack che concludono già via popup/scena).
+
 ## 1.3.0 (F5 — editor di produzione in-gioco)
 - Modalità `?editor`: disegno di poligoni di collisione a tocchi (chiudi/
   annulla vertice), spostamento dei marker degli indizi (oggetto ● e punto

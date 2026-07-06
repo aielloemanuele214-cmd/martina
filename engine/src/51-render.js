@@ -118,12 +118,18 @@ function render(){
 
   // entità ordinate per profondità (piedi più in basso = davanti)
   const catFrame=clock<cat.awakeUntil?1:0;
-  const ents=[
-    {y:cat.y, draw(){          // gatto: semplice elemento decorativo, nessun effetto
-      blitShadow(cat.x, cat.y, cat.larghezza*PCT*.8, .8);
-      blit(SPR.gatto.foglio, catFrame, cat.x, cat.y, false, 1, 0);
+  // rivelazione morbida del gatto per vicinanza (se cat.rivelaVicino è impostato)
+  let catA=1;
+  if(cat.rivelaVicino && !flag('segreto.gatto')){
+    const d=Math.hypot(player.x-cat.x, player.y-cat.y);
+    catA=Math.max(0, Math.min(1, (cat.rivelaVicino - d)/2.5));
+  }
+  const ents = catA>0.01 ? [
+    {y:cat.y, draw(){          // gatto: elemento decorativo (eventuale fade di rivelazione)
+      blitShadow(cat.x, cat.y, cat.larghezza*PCT*.8, .8*catA);
+      blit(SPR.gatto.foglio, catFrame, cat.x, cat.y, false, catA, 0);
     }},
-  ];
+  ] : [];
   if(!scena){
     ents.push({y:npc.y, draw(){          // lui: idle=frame0, durante i dialoghi cicla i frame emotivi
       const a=inBehind(npc.x,npc.y)?.45:1;
@@ -156,6 +162,8 @@ function render(){
   // particelle (cuori e scintille)
   for(const p of parts) glyph(p.ch||'❤️', p.x, p.y, p.size||20, Math.max(0,p.life), 0);
 
+  if(starFx) drawStar();                 // stella cadente attraverso l'oblò
+
   edDraw();                              // overlay dell'editor (?editor)
 
   // anello di conferma del tocco (dove hai puntato)
@@ -169,5 +177,26 @@ function render(){
     ctx.stroke();
     ctx.globalAlpha=1;
   }
+}
+
+/* Stella cadente: una scia luminosa che attraversa l'oblò (arco=[x0,y0,x1,y1] in %). */
+function drawStar(){
+  const [ax,ay,bx,by]=starFx.arco;
+  const k=Math.min(1, starFx.t/starFx.dur);
+  const x=ax+(bx-ax)*k, y=ay+(by-ay)*k;
+  const a=Math.sin(k*Math.PI);                 // dissolve in entrata/uscita
+  const hx=cvx(x*PCT), hy=cvy(y*PCT);
+  const tx=cvx((x-(bx-ax)*.16)*PCT), ty=cvy((y-(by-ay)*.16)*PCT);
+  ctx.save();
+  ctx.globalAlpha=a;
+  const g=ctx.createLinearGradient(tx,ty,hx,hy);
+  g.addColorStop(0,'rgba(255,246,210,0)'); g.addColorStop(1,'rgba(255,248,225,1)');
+  ctx.strokeStyle=g; ctx.lineWidth=3*dpr; ctx.lineCap='round';
+  ctx.beginPath(); ctx.moveTo(tx,ty); ctx.lineTo(hx,hy); ctx.stroke();
+  ctx.fillStyle='rgba(255,252,235,'+a+')';
+  ctx.beginPath(); ctx.arc(hx,hy,3.4*dpr,0,Math.PI*2); ctx.fill();
+  ctx.globalAlpha=a*.5;
+  ctx.beginPath(); ctx.arc(hx,hy,7*dpr,0,Math.PI*2); ctx.fillStyle='rgba(255,240,190,.5)'; ctx.fill();
+  ctx.restore();
 }
 

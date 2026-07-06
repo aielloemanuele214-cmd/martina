@@ -1,0 +1,35 @@
+{
+  "slug": "ultima-orbita",
+  "nome": "L'Ultima Orbita",
+  "descrizione": "Due astronaute, un'ultima orbita attorno a Saturno: oggetti, ricordi e segreti d'amore tra le stelle.",
+  "versione": "1.0.0",
+  "engine": "1.4.x",
+  "config": [
+    "settings.json",
+    "characters.json",
+    "dialogues.json",
+    "interactions.json",
+    "cutscenes.json",
+    "endings.json"
+  ],
+  "story": "story.json",
+  "assets": {
+    "bg": "rooms/orbita.jpg",
+    "bg2": "rooms/orbita.jpg",
+    "astro_down": "sprites/astro_down.png",
+    "astro_up": "sprites/astro_up.png",
+    "astro_left": "sprites/astro_left.png",
+    "astro_right": "sprites/astro_right.png",
+    "astro2": "sprites/astro2.png",
+    "coppia": "sprites/coppia.png",
+    "gatto": "sprites/gatto.png",
+    "pop_oblo": "popup/pop_oblo.jpg",
+    "pop_diario": "popup/pop_diario.jpg",
+    "pt_gatto": "sprites/pt_gatto.png",
+    "pt_astro_0": "sprites/pt_astro_0.png",
+    "pt_astro_1": "sprites/pt_astro_1.png",
+    "pt_astro_2": "sprites/pt_astro_2.png",
+    "pt_astro_3": "sprites/pt_astro_3.png",
+    "pt_astro_4": "sprites/pt_astro_4.png"
+  }
+}
