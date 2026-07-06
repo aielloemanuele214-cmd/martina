@@ -3,6 +3,15 @@
 Handle unico: **@sempreaddue** (Instagram + TikTok)
 Contatti: sito **sempreaddue.netlify.app** · **DM** · **sempreaddue@gmail.com**
 
+### File pronti in `social/`
+| File | Uso | Formato |
+|---|---|---|
+| `sempreaddue-avatar.png` | **immagine profilo** (IG + TikTok) | 1080×1080 |
+| `sempreaddue-logo-wordmark.png` | logo con scritta per cover Reel / Storie / highlight | 1080×1080 |
+| `post-1-cos-e.png` | grafica Post 1 | 1080×1350 |
+| `post-2-come-funziona.png` | grafica Post 2 | 1080×1350 |
+| `post-3-promo.png` | grafica Post 3 (promo) | 1080×1350 |
+
 ---
 
 ## 1) Immagine del profilo
