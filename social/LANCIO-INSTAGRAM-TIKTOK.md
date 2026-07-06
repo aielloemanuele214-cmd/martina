@@ -1,179 +1,131 @@
 # Sempreaddue — Kit di lancio Instagram & TikTok
 
-Handle unico: **@sempreaddue** (Instagram + TikTok)
-Contatti: sito **sempreaddue.netlify.app** · **DM** · **sempreaddue@gmail.com**
+> Rielaborato secondo la **Brand Identity V1**: sfondo crema, cuore rosa, testi
+> prugna, font ufficiali, tono caldo e mai gridato.
 
-### File pronti in `social/`
+Handle unico: **@sempreaddue** (Instagram + TikTok)
+Payoff: **Un posto a due. Per sempre.**
+Contatti: **sempreaddue.it** · **DM**
+
+---
+
+## Regole del brand (da rispettare in ogni grafica)
+
+**Palette** — sfondo chiaro, tanto respiro, *un solo accento forte per volta*:
+| Colore | HEX | Uso |
+|---|---|---|
+| Crema | `#FBF3E9` | sfondi |
+| Prugna | `#5E2A47` | testi e "Addue" |
+| Corallo | `#E8896B` | accenti caldi |
+| Pesca | `#F6C9A8` | accenti / card |
+| Rosa antico | `#C65B7C` | corpo del cuore |
+| Rosa luce | `#E890A8` | luce del cuore |
+
+**Font**
+- **Press Start 2P** → solo "sempre" e piccoli tocchi pixel (corallo, con parsimonia)
+- **Baloo 2 ExtraBold** → nome, titoli, frasi d'impatto (prugna)
+- **Nunito** → tutto il testo lungo, caption, email
+
+**Tono** — caldo, sincero, dà del tu, mai sdolcinato. Parla del *momento*, non del
+prodotto. Piccola nostalgia (il pixel come ricordo d'infanzia).
+❌ evita: freddo/tecnico, gergo marketing, **maiuscole urlate e mille emoji**, promesse finte.
+
+**Frasi firma** (payoff alternativi): *L'amore, in pixel.* · *Una stanza tutta vostra.*
+· *Fatto a due, per voi due.* · *Il vostro per sempre, in 8-bit.* · *Piccoli mondi per grandi amori.*
+
+---
+
+## File pronti in `social/`
 | File | Uso | Formato |
 |---|---|---|
-| `sempreaddue-avatar.png` | **immagine profilo** (IG + TikTok) | 1080×1080 |
-| `sempreaddue-logo-wordmark.png` | logo con scritta per cover Reel / Storie / highlight | 1080×1080 |
+| `sempreaddue-avatar.png` | **immagine profilo** (IG + TikTok) — cuore rosa su crema | 1080×1080 |
+| `sempreaddue-logo-wordmark.png` | lockup *sempre ♥ Addue* per cover Reel / Storie / highlight | 1080×1080 |
 | `post-1-cos-e.png` | grafica Post 1 | 1080×1350 |
 | `post-2-come-funziona.png` | grafica Post 2 | 1080×1350 |
 | `post-3-promo.png` | grafica Post 3 (promo) | 1080×1350 |
 
 ---
 
-## 1) Immagine del profilo
+## Bio
 
-File: `social/sempreaddue-avatar.png` (1080×1080)
-Cuore pixel corallo su fondo prugna scuro — colori ufficiali del brand
-(`#E8896B` su `#1b0f17`). Pensato per restare leggibile nel ritaglio
-circolare di Instagram/TikTok: il cuore è centrato e dentro l'area sicura.
-
-> Carica lo **stesso** file su entrambe le piattaforme: profilo coerente = brand riconoscibile.
-
----
-
-## 2) Bio
-
-### Instagram (max ~150 caratteri + campo sito + campo azioni)
-
-**Testo bio:**
+### Instagram
+- **Nome profilo** (campo "Nome", non l'@): `Sempreaddue · Regali d'amore in pixel`
+- **Bio:**
 ```
-🎮 La vostra storia diventa un videogioco
-Mini-avventure pixel art da regalare a chi ami 💛
-📩 DM · ✉️ sempreaddue@gmail.com
-👇 Crea il vostro regalo
+Regali d'amore fatti di pixel
+Una stanza tutta vostra, da aprire in due
+Messaggi nascosti + musica 8-bit
+Crea il vostro per sempre
 ```
-- **Nome profilo** (il campo ricercabile, diverso dall'@): `Sempreaddue · Regali pixel art`
-- **Sito** (link in bio): `https://sempreaddue.netlify.app`
-- **Categoria** consigliata: *Prodotto/Servizio* o *Regali e articoli da regalo*
+- **Link:** `sempreaddue.it` *(se il dominio .it non è ancora attivo, usa il link
+  funzionante `sempreaddue.netlify.app`)*
 
 ### TikTok (max 80 caratteri)
-
-**Testo bio:**
 ```
-🎮 La vostra storia diventa un videogioco
-Regali pixel art 💛 DM per il tuo
+Regali d'amore fatti di pixel
+Una stanza tutta vostra, da aprire in due
 ```
-- **Link sito** (nel campo apposito): `https://sempreaddue.netlify.app`
-- **Email business**: `sempreaddue@gmail.com`
+- Link: `sempreaddue.it` · Email business: `sempreaddue@gmail.com`
 
 ---
 
-## 3) Primi 3 post informativi di lancio
+## Primi 3 post di lancio
 
-Ordine consigliato di pubblicazione: **Post 1 → Post 2 → Post 3**,
-uno al giorno (o a giorni alterni) nella prima settimana.
-Ogni post funziona sia come **carosello** su Instagram sia come **video/Reel**
-su TikTok: per TikTok riusa lo screen-recording del gioco
-(`site/img/gameplay.webm`) con il testo a schermo indicato.
+Ordine: **1 → 2 → 3**, uno al giorno nella prima settimana. Ogni grafica funziona
+sia come post/carosello IG sia come Reel/video TikTok (per il video riusa
+`site/img/gameplay.webm` con il logo lockup come cover).
 
----
-
-### 📌 POST 1 — "Cos'è Sempreaddue" (presentazione)
-
-**Obiettivo:** far capire in 3 secondi di cosa si tratta.
-**Formato:** Reel/video breve (7–12s) con il gameplay, oppure carosello 3 slide.
-
-**Testo a schermo (hook):**
-> E se il tuo regalo… si potesse *giocare*?
-
-**Slide/scene:**
-1. La stanza pixel art che si apre (hook sopra).
-2. "Una mini-avventura dove i protagonisti siete **voi due**."
-3. "La aprite da un semplice link. Sul telefono. In 2 minuti."
-
-**Caption:**
+### Post 1 — *Regali d'amore, fatti di pixel.*
 ```
-Benvenuti su Sempreaddue 💛🎮
+Regali d'amore, fatti di pixel. 🕹️
 
-Trasformiamo la vostra storia in una piccola avventura pixel art:
-una stanza da esplorare, i vostri nomi, la vostra data, le vostre sorprese.
-Un regalo che non si mette in un cassetto — si gioca.
+Sempreaddue è una piccola stanza digitale tutta vostra: musica 8-bit,
+messaggi nascosti e i vostri ricordi, da aprire in due.
 
-Niente app da scaricare: si apre da un link (o da un QR) direttamente sul telefono.
+Non vendiamo un file: regaliamo un momento — la sorpresa negli occhi
+di chi lo riceve, il cuore che batte mentre scopre il messaggio nascosto.
 
-Seguiteci: nei prossimi giorni vi mostriamo com'è fatta dentro 👀
-
-📩 Curiosi? Scriveteci in DM.
+Nei prossimi giorni vi mostriamo com'è fatto dentro.
+Un posto a due. Per sempre.
 ```
+Hashtag: `#sempreaddue #regalidamore #regalopersonalizzato #pixelart #ideeregalo #nostalgia #8bit #regalodicoppia`
 
-**Hashtag:**
-`#sempreaddue #regalopersonalizzato #ideeregalo #pixelart #regalooriginale #regaloperlui #regaloperlei #ideeregalooriginali #videogioco #coppia`
-
----
-
-### 📌 POST 2 — "Come funziona / cosa c'è dentro"
-
-**Obiettivo:** mostrare la personalizzazione e come si ordina.
-**Formato:** carosello 4–5 slide (o Reel con voice-over).
-
-**Slide:**
-1. "Dentro c'è **la vostra** storia" (titolo).
-2. 👫 I vostri nomi e la vostra data ("insieme da 734 giorni").
-3. 🎁 3 sorprese nascoste da scoprire nella stanza.
-4. 💃 Un ballo, una dedica finale, e — se volete — le vostre foto vere.
-5. "Come si ordina: scegli l'occasione → ci mandi nomi e testi → ricevi il link + QR."
-
-**Caption:**
+### Post 2 — *In quattro passi*
 ```
-Come funziona Sempreaddue? 🎮
+Come nasce il vostro Sempreaddue, in quattro passi 💌
 
-1️⃣ Scegli l'occasione: anniversario, compleanno, proposta… o nessun motivo 💛
-2️⃣ Ci mandi i vostri nomi, la data e le sorprese che vuoi nascondere
-3️⃣ Noi costruiamo la vostra stanza pixel art
-4️⃣ Ricevi un link + un QR: lo regali quando e come vuoi
+1 · Scegli l'occasione — un anniversario, un compleanno... o nessun motivo
+2 · Raccontaci di voi — nomi, la vostra data, le sorprese da nascondere
+3 · Lo costruiamo a mano — una stanza in pixel, pensata su di voi
+4 · Lo regali quando vuoi — arriva con un link e un QR, si apre dal telefono
 
-Dentro: 3 sorprese da scoprire, un ballo, una dedica finale e la possibilità
-di aggiungere le vostre foto vere 📸
-
-Si gioca dal telefono, senza scaricare niente.
-
-📩 Vuoi il tuo? DM o sempreaddue@gmail.com
-🔗 Tutto sul sito (link in bio)
+Semplice da regalare, difficile da dimenticare.
+sempreaddue.it
 ```
+Hashtag: `#sempreaddue #comefunziona #regalopersonalizzato #ideeregalo #pixelart #anniversario #propostadimatrimonio #fattoamano`
 
-**Hashtag:**
-`#sempreaddue #regalopersonalizzato #anniversario #regalodicoppia #ideeregalo #pixelart #propostadimatrimonio #compleanno #regalifatticonamore #madeinitaly`
-
----
-
-### 📌 POST 3 — "Lancio + promo founder −50%" 🚀
-
-**Obiettivo:** convertire con l'offerta di lancio a tempo.
-**Formato:** grafica singola forte + Reel breve. Testo a schermo grande e leggibile.
-
-**Testo a schermo:**
-> 🚀 SIAMO ONLINE
-> −50% per i primi clienti
-> Codice **FOUNDER26**
-
-**Caption:**
+### Post 3 — *Siamo nati oggi* (promo lancio)
 ```
-È ufficiale: Sempreaddue è online 🎉💛
+Siamo nati oggi. E vogliamo festeggiare con voi 🤍
 
-Per festeggiare il lancio, ai primi clienti regaliamo il codice founder:
+Per i primi, il vostro Sempreaddue costa la metà:
+con il codice FOUNDER26 passa da 19,50 € a 9,75 €.
+Valido fino al 6 ottobre 2026.
 
-🎟️ FOUNDER26 → −50% sul tuo regalo
-🕐 Solo fino al 6 ottobre 2026
+Il regalo giusto per un anniversario, un compleanno, una proposta...
+o semplicemente per dire "ci sono".
 
-Una mini-avventura pixel art personalizzata parte da 19,50 € —
-con il codice founder la paghi la metà.
-
-Il regalo perfetto per un anniversario, un compleanno, una proposta…
-o semplicemente per dire "ci sono" 💛
-
-📩 Scrivici in DM o a sempreaddue@gmail.com
-🔗 Richiedi il tuo codice dal sito (link in bio)
+Scrivici in DM per il tuo.
 ```
-
-**Hashtag:**
-`#sempreaddue #promo #regalopersonalizzato #ideeregalo #pixelart #offertalancio #regalooriginale #regaloperlui #regaloperlei #anniversario`
+Hashtag: `#sempreaddue #regalidamore #promo #ideeregalo #pixelart #regalopersonalizzato #offertalancio #regalodicoppia`
 
 ---
 
 ## Note operative
-
-- **Coerenza visiva:** usa sempre i due colori del brand (corallo `#E8896B`,
-  fondo prugna `#1b0f17`) nelle grafiche e nelle cover dei Reel.
-- **Materiale pronto nel repo:** `site/img/gameplay.webm` (screen-recording del
-  gioco), `site/img/room-1600.webp` e `room2-900.webp` (la stanza),
-  `site/img/ballo.webp` (il ballo), `og.jpg` (immagine sociale).
-- **Prima cover del profilo (griglia):** i 3 post insieme devono raccontare
-  *cos'è → come funziona → offerta*. Chi arriva capisce tutto scorrendo i primi 3.
-- **CTA ripetuta:** ogni post chiude con DM + email + link in bio: abbassa
-  l'attrito per chi vuole ordinare subito.
-- La promo −50% è **a tempo** (6 ottobre 2026): rilanciala in Storie con il
-  countdown negli ultimi giorni.
+- **Massimo respiro:** sfondo crema, un solo accento forte per grafica. Non riempire.
+- **Emoji col contagocce:** al massimo una per caption. Mai raffiche.
+- **Materiale nel repo:** `site/img/gameplay.webm` (screen del gioco),
+  `room-1600.webp` / `room2-900.webp` (la stanza), `ballo.webp` (il ballo).
+- **Storie:** rilancia la promo negli ultimi giorni con il countdown, usando il
+  logo lockup come sfondo.
+- I font ufficiali (Press Start 2P, Baloo 2, Nunito) sono tutti su Google Fonts (gratuiti).
