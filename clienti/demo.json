@@ -1,58 +1,106 @@
 {
   "_slug": "demo",
-
   "titolo": "Una stanza tutta per voi",
-  "nomi": { "lei": "Lei", "lui": "Lui" },
+  "nomi": {
+    "lei": "Lei",
+    "lui": "Lui"
+  },
   "dataInizio": null,
   "musica": true,
   "salvaProgressi": false,
   "schermataIngresso": true,
-
   "dialoghi": [
     "Ciao! Benvenuti nella stanza demo di Sempreaddue. ❤",
     "Ogni stanza è unica: nomi, frasi, sorprese e foto della coppia.",
     "Cerca i luccichii ✨, accarezza il gatto, guarda dalla finestra…",
     "Vi piacerebbe una stanza tutta vostra? Scriveteci su @sempreaddue!"
   ],
-
   "gatto": {
-    "nome": "Micio", "x": 19, "y": 46, "larghezza": 9.5,
+    "nome": "Micio",
+    "x": 19,
+    "y": 46,
+    "larghezza": 9.5,
     "messaggio": "Dicono che i gatti siano esseri magici: vegliano sulle case e su chi si ama. E se riesci a vederli davvero… splendono come stelle. ✨"
   },
-
   "finestra": {
     "testo": "Ogni segreto può nascondere un ricordo, una foto, una dedica.\nQuesta è solo una demo… la vostra stanza sarà tutta vostra."
   },
-
   "ballo": {
-    "x": 47, "y": 64,
+    "x": 47,
+    "y": 64,
     "introTesto": "Ho una sorpresa per te…",
     "outroTesto": "Una piccola scena tutta per voi…\nnella vostra stanza sarà personalizzata. ❤",
     "durata": 12
   },
-
   "sorprese": [
-    { "id": "vinile", "x": 20, "y": 26, "ax": 20, "ay": 34.5, "ri": 5.5,
+    {
+      "id": "vinile",
+      "x": 20,
+      "y": 26,
+      "ax": 20,
+      "ay": 34.5,
+      "ri": 5.5,
       "titolo": "La vostra canzone",
       "testo": "Qui va il ricordo della vostra canzone.\nScoprilo per ultimo… e guarda cosa succede.",
       "img": "file:../assets/popup/pop_vinile.jpg",
-      "evento": "ballo" },
-    { "id": "tv", "x": 79, "y": 38.5, "ax": 78, "ay": 50, "ri": 4.5,
+      "evento": "ballo"
+    },
+    {
+      "id": "tv",
+      "x": 79,
+      "y": 38.5,
+      "ax": 78,
+      "ay": 50,
+      "ri": 4.5,
       "titolo": "Le vostre serate",
       "testo": "Ogni sorpresa può avere un testo personale e una vostra foto vera.",
-      "img": "file:../assets/popup/pop_tv.jpg" },
-    { "id": "lettera", "x": 31, "y": 79, "ax": 41, "ay": 70, "ri": 5.5,
+      "img": "file:../assets/popup/pop_tv.jpg"
+    },
+    {
+      "id": "lettera",
+      "x": 31,
+      "y": 79,
+      "ax": 41,
+      "ay": 70,
+      "ri": 5.5,
       "titolo": "Una lettera per te",
       "testo": "Immagina qui le parole che vorresti dirle.\nQuesta è la sorpresa più amata.",
-      "img": "file:../assets/popup/pop_scrivania.jpg" }
+      "img": "file:../assets/popup/pop_scrivania.jpg"
+    }
   ],
-
   "finale": {
     "titolo": "",
     "testo": "Questa era la demo.\nLa vostra stanza avrà i vostri nomi, i vostri ricordi,\nle vostre foto e la vostra dedica.\n\n@sempreaddue"
   },
-
-  "contratto": { "intro": "C’è qualcosa qui…" },
-
-  "posizioni": { "lei": { "x": 50, "y": 75 }, "lui": { "x": 72, "y": 60 } }
+  "contratto": {
+    "intro": "C’è qualcosa qui…",
+    "documento": {
+      "titolo": "Documento della Demo",
+      "sotto": "Nella vostra stanza qui ci sarà il VOSTRO documento: contratto scherzoso, lettera, buono regalo… scritto su misura.",
+      "sezioni": [
+        {
+          "titolo": "Come funziona",
+          "paragrafi": [
+            "Questo foglio elegante e scorrevole è completamente personalizzabile: titolo, articoli, note, firma.",
+            "Scriveteci su @sempreaddue per la vostra stanza."
+          ]
+        }
+      ],
+      "meta": [
+        "<b>Demo</b> — testo dimostrativo."
+      ],
+      "firma": "@sempreaddue",
+      "bottone": "Chiudi il contratto ❤"
+    }
+  },
+  "posizioni": {
+    "lei": {
+      "x": 50,
+      "y": 75
+    },
+    "lui": {
+      "x": 72,
+      "y": 60
+    }
+  }
 }

@@ -1,0 +1,99 @@
+{
+  "_note": "STORY = comportamento dell'avventura, 100% dati. Il motore è un interprete: eventi (quando/se/fai), scene a passi (DSL cinematiche), dialoghi, segreti e finali a regole. '$percorso' legge da CONFIG (testi del cliente), '@nome' legge un asset incorporato. I flag ('trovato.vinile', 'fatto.ballo'…) vivono nello stato di partita salvato.",
+
+  "eventi": [
+    { "id": "vinile", "quando": "interagisci:vinile",
+      "se": { "all": ["!trovato.vinile", "trovato.tv", "trovato.lettera", "!fatto.ballo"] },
+      "fai": [ { "set": "trovato.vinile" }, { "scena": "ballo" } ],
+      "altrimenti": [ { "sorpresa": "vinile" } ] },
+
+    { "id": "tv", "quando": "interagisci:tv",
+      "fai": [ { "sorpresa": "tv" } ] },
+
+    { "id": "lettera", "quando": "interagisci:lettera",
+      "se": { "all": ["!trovato.lettera", "trovato.vinile", "trovato.tv", "!fatto.contratto"] },
+      "fai": [ { "set": "trovato.lettera" }, { "scena": "contratto" } ],
+      "altrimenti": [ { "sorpresa": "lettera" } ] },
+
+    { "id": "manu", "quando": "interagisci:npc",
+      "fai": [ { "set": "npcParlato" }, { "dialogo": "manu" } ] },
+
+    { "id": "gatto", "quando": "interagisci:gatto",
+      "fai": [
+        { "sveglia": "gatto" }, { "verso": "gatto" }, { "sfx": "meow" },
+        { "se": "!segreto.gatto", "fai": [ { "set": "segreto.gatto" }, { "vibra": 40 } ] },
+        { "se": { "all": ["prima_interazione", "!fatto.fusa"] },
+          "fai": [ { "set": "fatto.fusa" }, { "scena": "fusa" }, { "dialogo": "gatto" } ],
+          "altrimenti": [ { "dialogo": "gatto" } ] } ] },
+
+    { "id": "finestra", "quando": "interagisci:finestra",
+      "fai": [ { "set": "segreto.finestra" },
+               { "popup": { "img": "@pop_finestra", "testo": "$finestra.testo", "verso": [50, 14] } } ] }
+  ],
+
+  "scene": {
+    "ballo": { "passi": [
+      { "inizio": true },
+      { "set": "fatto.ballo" },
+      { "statoGiocatore": "dance" },
+      { "suggerimento": false },
+      { "musicaSfuma": 1.4 },
+      { "nero": true },
+      { "scrivi": { "testo": "$ballo.introTesto", "pausa": 1.4 } },
+      { "coppia": { "foglio": "coppia", "riferimento": "ballo" } },
+      { "synth": true },
+      { "nero": false },
+      { "attesa": "$ballo.durata" },
+      { "nero": true },
+      { "coppiaFine": true },
+      { "synthStop": true },
+      { "scrivi": { "testo": "$ballo.outroTesto", "pausa": 1.8 } },
+      { "posiziona": { "riferimento": "ballo", "dx": -5, "dy": 2, "dir": "down" } },
+      { "nero": false },
+      { "musicaRiprendi": true },
+      { "fine": true } ] },
+
+    "contratto": { "passi": [
+      { "inizio": true },
+      { "set": "fatto.contratto" },
+      { "suggerimento": false },
+      { "nero": true },
+      { "scrivi": { "testo": "$contratto.intro", "pausa": 1.4 } },
+      { "documento": true },
+      { "fine": true } ] },
+
+    "fusa": { "passi": [
+      { "inizio": true },
+      { "statoGiocatore": "interact" },
+      { "cuori": { "su": "gatto", "n": 14 } },
+      { "attesa": 0.38 },
+      { "cuori": { "su": "gatto", "n": 8 } },
+      { "attesa": 0.57 },
+      { "fine": true } ] }
+  },
+
+  "dialoghi": {
+    "manu":  { "nome": "$nomi.lui", "modo": "sacchetto", "fonte": "$dialoghi",
+               "emotivo": true, "verso": "npc" },
+    "gatto": { "nome": "$gatto.nome", "righe": ["$gatto.messaggio"],
+               "ritratto": "@pt_gatto", "verso": "gatto" }
+  },
+
+  "segreti": [
+    { "id": "gatto",     "flag": "segreto.gatto", "hud": "💛" },
+    { "id": "finestra",  "flag": "segreto.finestra" },
+    { "id": "ballo",     "flag": "fatto.ballo" },
+    { "id": "contratto", "flag": "fatto.contratto" }
+  ],
+
+  "finali": [
+    { "id": "principale", "se": "trovato.*",
+      "titolo": "$finale.titolo", "testo": "$finale.testo" }
+  ],
+
+  "ui": {
+    "giorni": "INSIEME DA {g} GIORNI ❤",
+    "segretiCompleti": "Complimenti!\nHai scoperto tutti i segreti di questa avventura. ❤️",
+    "segretiParziali": "Hai trovato {n}/{tot} segreti.\nRicomincia per scoprirli tutti.\n💡 Indizio: prova a modificare l’ordine delle interazioni."
+  }
+}

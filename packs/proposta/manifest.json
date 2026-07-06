@@ -1,0 +1,16 @@
+{
+  "slug": "proposta",
+  "nome": "Ho una domanda per te…",
+  "descrizione": "Template PROPOSTA: la lettera finale diventa la richiesta di matrimonio, con documento elegante e chiusura da brividi.",
+  "versione": "1.0.0",
+  "engine": "1.2.x",
+  "config": [
+    "settings.json",
+    "characters.json",
+    "dialogues.json",
+    "interactions.json",
+    "cutscenes.json",
+    "endings.json"
+  ],
+  "story": "story.json"
+}

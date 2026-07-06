@@ -1,0 +1,42 @@
+{
+  "sorprese": [
+    {
+      "id": "vinile",
+      "x": 20,
+      "y": 26,
+      "ax": 20,
+      "ay": 34.5,
+      "ri": 5.5,
+      "titolo": "La nostra canzone",
+      "testo": "Ricordi la prima volta che l’abbiamo ballata?\nIl giradischi la suona ancora, solo per noi.",
+      "img": "{{B64:pop_vinile}}",
+      "evento": "ballo"
+    },
+    {
+      "id": "tv",
+      "x": 79,
+      "y": 38.5,
+      "ax": 78,
+      "ay": 50,
+      "ri": 4.5,
+      "titolo": "Le nostre serate",
+      "testo": "Film, coperta e divano.\nCon te anche il telecomando conteso è romantico.",
+      "img": "{{B64:pop_tv}}"
+    },
+    {
+      "id": "lettera",
+      "x": 31,
+      "y": 79,
+      "ax": 41,
+      "ay": 70,
+      "ri": 5.5,
+      "titolo": "All’amore della mia vita",
+      "testo": "All’amore della mia vita\n\nSono immensamente fiero di te.\n\nTuo,\nManu",
+      "img": "{{B64:pop_scrivania}}",
+      "evento": "contratto"
+    }
+  ],
+  "finestra": {
+    "testo": "Questo è un giorno importante, ma per noi ancora di più…\n\nSe è possibile essere felici nel posto più bello del mondo, noi stasera siamo i campioni."
+  }
+}

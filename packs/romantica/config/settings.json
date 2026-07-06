@@ -1,0 +1,11 @@
+{
+  "titolo": "Una stanza tutta per voi",
+  "nomi": {
+    "lei": "Marti",
+    "lui": "Manu"
+  },
+  "dataInizio": null,
+  "musica": true,
+  "salvaProgressi": true,
+  "schermataIngresso": true
+}

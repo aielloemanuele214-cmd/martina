@@ -1,0 +1,16 @@
+{
+  "slug": "romantica",
+  "nome": "Una stanza tutta per voi",
+  "descrizione": "Template ROMANTICA: anniversari, dediche, regali di coppia. Testi neutri da personalizzare.",
+  "versione": "1.0.0",
+  "engine": "1.2.x",
+  "config": [
+    "settings.json",
+    "characters.json",
+    "dialogues.json",
+    "interactions.json",
+    "cutscenes.json",
+    "endings.json"
+  ],
+  "story": "story.json"
+}

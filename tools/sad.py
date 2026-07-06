@@ -310,9 +310,14 @@ def build_base(pack=DEFAULT_PACK):
             html = html.replace(ph, b64(path, mime))
     left = re.findall(r'\{\{[^}]+\}\}', html)
     assert not left, f'placeholder residui: {sorted(set(left))}'
-    open(BASE_OUT, 'w', encoding='utf-8').write(html)
-    print(f"stanza.html assemblato (pack '{pack}', {len(frags)} moduli): "
-          f"{os.path.getsize(BASE_OUT)//1024} KB")
+    if pack == DEFAULT_PACK:
+        out = BASE_OUT
+    else:
+        os.makedirs(os.path.join(ROOT, 'dist'), exist_ok=True)
+        out = os.path.join(ROOT, 'dist', f'base-{pack}.html')
+    open(out, 'w', encoding='utf-8').write(html)
+    print(f"{os.path.relpath(out, ROOT)} assemblato (pack '{pack}', {len(frags)} moduli): "
+          f"{os.path.getsize(out)//1024} KB")
 
 
 def _inline(v, basedir):

@@ -1,0 +1,47 @@
+{
+  "ballo": {
+    "x": 47,
+    "y": 64,
+    "introTesto": "Balla con me… un’ultima volta da fidanzati.",
+    "outroTesto": "Ora lo sai: ogni ballo con te\nè il posto in cui voglio stare per sempre.",
+    "durata": 15
+  },
+  "contratto": {
+    "intro": "C'è una scatolina qui…\nE un foglio che trema tra le mani.",
+    "documento": {
+      "titolo": "Richiesta Ufficiale (e Irrevocabile) di Matrimonio",
+      "sotto": "Documento redatto col cuore in gola e con la più totale, felice certezza.",
+      "sezioni": [
+        {
+          "titolo": "Premesso che",
+          "paragrafi": [
+            "Ti ho scelta ogni giorno da quando ti ho incontrata, e ogni giorno la scelta è stata più facile.",
+            "Ogni ricordo in questa stanza è un motivo in più per questa domanda."
+          ]
+        },
+        {
+          "titolo": "Articolo Unico – La Domanda",
+          "paragrafi": [
+            "Con il presente documento, con le mani che tremano e il cuore che batte fortissimo, ti chiedo ufficialmente:",
+            "<b>Vuoi sposarmi?</b> 💍",
+            {
+              "nb": "<b>Nota Bene:</b> è ammessa una sola risposta, ed è quella che i tuoi occhi hanno già dato."
+            }
+          ]
+        },
+        {
+          "titolo": "Validità",
+          "paragrafi": [
+            "Questa domanda vale per sempre: da oggi, ogni «sì» sarà il nostro."
+          ]
+        }
+      ],
+      "meta": [
+        "<b>Luogo:</b> il nostro piccolo mondo",
+        "<b>Data:</b> il giorno più importante"
+      ],
+      "firma": "Chi ti ama da sempre… e per sempre",
+      "bottone": "Girati… 💍"
+    }
+  }
+}

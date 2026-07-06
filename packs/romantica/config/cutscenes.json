@@ -1,0 +1,49 @@
+{
+  "ballo": {
+    "x": 47,
+    "y": 64,
+    "introTesto": "Ho una sorpresa per te…",
+    "outroTesto": "Nessuno aveva mai fatto niente di simile per me…\nTi amo.",
+    "durata": 15
+  },
+  "contratto": {
+    "intro": "C’è qualcosa qui…\nSembra molto importante.",
+    "documento": {
+      "titolo": "Contratto Ufficiale di Fidanzamento Eterno",
+      "sotto": "Attenzione: questo documento, più che un contratto, è una dichiarazione d’amore. È formale soltanto nella forma.",
+      "sezioni": [
+        {
+          "titolo": "Tra le Parti",
+          "paragrafi": [
+            "<b>Lui</b>, da qui in avanti detto: «Amore»,",
+            "e",
+            "<b>Lei</b>, da qui in avanti detta: «Amore mio»."
+          ]
+        },
+        {
+          "titolo": "Articolo 1 – Oggetto",
+          "paragrafi": [
+            "Le Parti dichiarano di essersi scelte con il cuore e di voler continuare a scegliersi ogni singolo giorno."
+          ]
+        },
+        {
+          "titolo": "Articolo 2 – Promesse",
+          "paragrafi": [
+            "Non lasciarsi mai soli, sostenersi in ogni sogno e giornata no, amarsi come se ogni bacio fosse il primo."
+          ]
+        },
+        {
+          "titolo": "Articolo 3 – Durata",
+          "paragrafi": [
+            "Valido a tempo indeterminato, con rinnovo automatico in ogni bacio, abbraccio, messaggio e sogno condiviso."
+          ]
+        }
+      ],
+      "meta": [
+        "<b>Validità:</b> finché esisterà anche solo un «Ti amo» che valga la pena dire."
+      ],
+      "firma": "Con tutto il cuore",
+      "bottone": "Chiudi il contratto ❤"
+    }
+  }
+}
