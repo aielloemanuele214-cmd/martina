@@ -1,4 +1,23 @@
-# Checklist di Validazione — Specifica Ufficiale (v1.0.0-rc3)
+# Checklist di Validazione — Specifica Ufficiale (v1.0.0-rc4)
+
+## Bug Fix rc4 — Pulizia sprite, gameplay e rifinitura animazioni
+- ✅ **P1 Sprite**: tutti e 6 gli sheet (lei ×4 direzioni, lui emotivo, ballo) ri-estratti con
+  scontorno flood-fill dal bordo (i pixel scuri interni restano opachi) e celle a larghezza
+  garantita: **0 frame che toccano il bordo cella**, nessun frammento di frame adiacenti,
+  nessun artefatto di trasparenza. Dimensioni verificate a runtime (`fw·n == larghezza reale`).
+- ✅ **P2 Segreto gatto**: chiave di salvataggio versionata (`sempreaddue-save-v3`, la legacy viene
+  rimossa) → partita nuova SENZA cuore dorato e con tutti i segreti a zero. **Ricomincia**
+  azzera anche gatto 💛, fusa, finestra, ballo, contratto e il salvataggio su disco.
+- ✅ **P3 Giradischi**: corridoio letto↔tavolino allargato (bordo letto 41→40.2, rx 1.0) e punto
+  d'arrivo (20, 34.5) con raggio 5.5. Verificato da **8 origini diverse**: si arriva sempre
+  (1.3–3.3 s) e il popup si apre **solo dopo l'arrivo**, identico agli altri oggetti.
+- ✅ **P4 Espressioni di lui**: niente più timer — il frame avanza **solo a ogni interazione**
+  (tocco su Manu / avanzamento dialogo), cicla tutte le espressioni senza ripetizioni immediate
+  e resta fermo nel tempo; alla chiusura del dialogo torna subito al primo frame Idle.
+- ✅ **P5 Ballo lento**: durata frame 0.34 s → **0.9 s** (~7 s per giro completo), sequenza
+  1→2→3→4→5→4→3→2 invariata, mai 5→1. Misurato a runtime: 0.88–0.92 s per frame.
+- ✅ Regressioni: 0 errori JS, 61 fps su mobile, ballo→finale, contratto, salvataggio ok.
+
 
 Ogni voce è stata verificata automaticamente con Playwright (`test_rc.js`) e/o
 visivamente con screenshot. Legenda: ✅ verificato · 👁️ verificato a schermo.
