@@ -147,9 +147,7 @@
           body: new URLSearchParams(new FormData(form)).toString()
         });
         if (!res.ok) throw new Error(res.status);
-        const nome = (form.elements['nome']?.value || '').trim()
-          .replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-        form.outerHTML = `<p class="promo-ok">💌 Fatto${nome ? ', ' + nome : ''}! Il tuo codice founder ` +
+        form.outerHTML = '<p class="promo-ok">💌 Fatto! Il tuo codice founder ' +
           'sta arrivando nella tua casella email.</p>';
         localStorage.setItem('sad-promo-iscritta', '1');
       } catch {
