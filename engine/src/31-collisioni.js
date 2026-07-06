@@ -19,10 +19,14 @@ function nearPoly(px,py,pts,m){
   return false;
 }
 // poligoni pre-schiacciati per la distanza ellittica (rx personalizzabile per collider)
-COLLIDERS.forEach(c=>{
-  c.sqz=RY/(c.rx||RX);
-  c.spts=c.pts.map(p=>[p[0]*c.sqz, p[1]]);
-});
+// (funzione richiamabile: l'editor la riesegue dopo ogni modifica ai poligoni)
+function prepColliders(){
+  COLLIDERS.forEach(c=>{
+    c.sqz=RY/(c.rx||RX);
+    c.spts=c.pts.map(p=>[p[0]*c.sqz, p[1]]);
+  });
+}
+prepColliders();
 function blocked(px,py){
   for(const c of COLLIDERS){
     if(pointInPoly(px,py,c.pts)) return true;
