@@ -1,0 +1,284 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "required": [
+    "_slug",
+    "titolo",
+    "nomi",
+    "musica",
+    "salvaProgressi",
+    "schermataIngresso",
+    "dialoghi",
+    "gatto",
+    "finestra",
+    "ballo",
+    "sorprese",
+    "finale",
+    "contratto",
+    "posizioni"
+  ],
+  "properties": {
+    "_slug": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]+$"
+    },
+    "titolo": {
+      "type": "string",
+      "minLength": 1
+    },
+    "nomi": {
+      "type": "object",
+      "required": [
+        "lei",
+        "lui"
+      ],
+      "properties": {
+        "lei": {
+          "type": "string",
+          "minLength": 1
+        },
+        "lui": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "dataInizio": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+    },
+    "musica": {
+      "type": "boolean"
+    },
+    "salvaProgressi": {
+      "type": "boolean"
+    },
+    "schermataIngresso": {
+      "type": "boolean"
+    },
+    "dialoghi": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "gatto": {
+      "type": "object",
+      "required": [
+        "nome",
+        "x",
+        "y",
+        "larghezza",
+        "messaggio"
+      ],
+      "properties": {
+        "nome": {
+          "type": "string"
+        },
+        "x": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "y": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "larghezza": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "messaggio": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "finestra": {
+      "type": "object",
+      "required": [
+        "testo"
+      ],
+      "properties": {
+        "testo": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "ballo": {
+      "type": "object",
+      "required": [
+        "x",
+        "y",
+        "introTesto",
+        "outroTesto",
+        "durata"
+      ],
+      "properties": {
+        "x": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "y": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "introTesto": {
+          "type": "string"
+        },
+        "outroTesto": {
+          "type": "string"
+        },
+        "durata": {
+          "type": "number",
+          "minimum": 1,
+          "maximum": 120
+        }
+      }
+    },
+    "sorprese": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "x",
+          "y",
+          "titolo",
+          "testo",
+          "img"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z0-9_-]+$"
+          },
+          "x": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "y": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "ax": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "ay": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "ri": {
+            "type": "number",
+            "exclusiveMinimum": 0,
+            "maximum": 30
+          },
+          "titolo": {
+            "type": "string"
+          },
+          "testo": {
+            "type": "string",
+            "minLength": 1
+          },
+          "img": {
+            "type": "string",
+            "minLength": 1
+          },
+          "evento": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "finale": {
+      "type": "object",
+      "required": [
+        "titolo",
+        "testo"
+      ],
+      "properties": {
+        "titolo": {
+          "type": "string"
+        },
+        "testo": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "contratto": {
+      "type": "object",
+      "required": [
+        "intro"
+      ],
+      "properties": {
+        "intro": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "posizioni": {
+      "type": "object",
+      "required": [
+        "lei",
+        "lui"
+      ],
+      "properties": {
+        "lei": {
+          "type": "object",
+          "required": [
+            "x",
+            "y"
+          ],
+          "properties": {
+            "x": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 100
+            },
+            "y": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 100
+            }
+          }
+        },
+        "lui": {
+          "type": "object",
+          "required": [
+            "x",
+            "y"
+          ],
+          "properties": {
+            "x": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 100
+            },
+            "y": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 100
+            }
+          }
+        }
+      }
+    }
+  }
+}

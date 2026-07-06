@@ -28,33 +28,48 @@ dist/                         file consegnabili
 legacy/prototipo/             primo prototipo (non più usato)
 ```
 
-Comandi:
+Comandi (CLI unica `tools/sad.py`):
 
 ```bash
-python3 tools/sad.py build-base                  # moduli engine + pack + asset → stanza.html
-python3 tools/sad.py build clienti/<slug>.json   # stanza.html + JSON cliente → dist/
-python3 tools/sad.py check                       # verifica pack, asset e placeholder
-python3 tools/sprites.py                         # rigenera gli sprite da assets/_src/
+python3 tools/sad.py ordine <slug>          # nuovo ordine: crea clienti/<slug>/ (json+foto+note)
+python3 tools/sad.py validate clienti/<slug>/ordine.json   # schema + lint (id, file, limiti)
+python3 tools/sad.py build clienti/<slug>/ordine.json      # → dist/stanza-<slug>.html (valida prima)
+python3 tools/sad.py qa [dist/stanza-<slug>.html]          # suite QA Playwright (13 verifiche)
+python3 tools/sad.py build-base [pack]      # moduli engine + pack + asset → stanza.html
+python3 tools/sad.py validate [pack]        # schema + lint dell'intero pack
+python3 tools/sad.py new <slug> --da martina# nuovo pack (copia da uno esistente)
+python3 tools/sad.py preview                # server locale per provare base e dist/
+python3 tools/sad.py art                    # rigenera gli sprite da assets/_src/
+python3 tools/sad.py music in.mp3 out.mp3 --strumentale    # loop senza stacco
 ```
 
-(`python3 build.py clienti/<slug>.json` continua a funzionare: delega a `sad.py`.)
+Dipendenze di build: `pip install -r tools/requirements.txt` (+ `npm i playwright` per la QA).
+(`python3 build.py …` continua a funzionare: delega a `sad.py`.)
 
 Il motore non contiene alcun contenuto: per cambiare stanza, collisioni,
 testi, indizi o sprite si toccano SOLO i JSON del pack e gli asset.
 
-## Flusso per ogni ordine (5 minuti)
+## Flusso per ogni ordine (5 minuti + QA automatica)
 
-1. **Copia** `clienti/esempio.json` → `clienti/nome-cliente.json`
-2. **Compila** i campi col materiale del cliente (nomi, dialoghi, testi
-   delle sorprese, data di inizio, dedica finale). Per le foto nelle
-   sorprese usa `"foto": "file:foto/nomefile.jpg"` (percorso relativo al
-   JSON — le immagini vengono incorporate in automatico).
-3. **Genera**: `python3 build.py clienti/nome-cliente.json`
-   → esce `dist/stanza-nome-cliente.html`
-4. **Verifica** aprendo il file nel browser (anche da telefono) e con
-   `?debug=1` se hai spostato hotspot/posizioni.
+**Un ordine = una cartella** `clienti/<slug>/` — dentro ci sta TUTTO il
+materiale di quel cliente (mai file sparsi):
+
+```
+clienti/anna-marco/
+├── ordine.json      la configurazione (nomi, testi, sorprese, finale)
+├── foto/            le foto del cliente → "img": "file:foto/nome.jpg"
+└── NOTE.md          contatto, tier, data, link di consegna
+```
+
+1. **Scaffolding**: `python3 tools/sad.py ordine anna-marco`
+2. **Compila** `ordine.json` col materiale del cliente e metti le foto in `foto/`
+3. **Genera**: `python3 tools/sad.py build clienti/anna-marco/ordine.json`
+   (la validazione parte da sola: campi mancanti, id sbagliati, foto
+   inesistenti e coordinate fuori scala vengono bloccati PRIMA della build)
+4. **QA**: `python3 tools/sad.py qa dist/stanza-anna-marco.html` — 13 verifiche
+   automatiche (raggiungibilità, apertura all'arrivo, finali, reset, save, fps)
 5. **Pubblica**: trascina il file su [Netlify Drop](https://app.netlify.com/drop)
-   (gratis) e genera il QR del link da regalare.
+   (gratis), genera il QR, segna il link in `NOTE.md`, **committa la cartella**.
 
 ## Cosa si personalizza dal JSON (senza toccare il codice)
 
