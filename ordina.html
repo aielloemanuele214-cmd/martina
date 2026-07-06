@@ -72,9 +72,9 @@
         </div>
 
         <div class="order-base">
-          <span class="order-base-body"><b>L'Avventura · <s>39,80&nbsp;€</s> 19,90&nbsp;€</b>
-            <i>prezzo founder (−50% per i primi 3 mesi) — avventura completa con gli sprite
-            di voi due, 3 sorprese personalizzate, finale, link privato + QR Code</i></span>
+          <span class="order-base-body"><b>L'Avventura · 19,50&nbsp;€</b>
+            <i>tutto incluso — avventura completa con gli sprite di voi due,
+            3 sorprese personalizzate, finale, link privato + QR Code</i></span>
         </div>
       </fieldset>
 
@@ -102,7 +102,7 @@
       <fieldset class="step" data-step="3" hidden>
         <legend class="sr-only">I dettagli dell'avventura</legend>
 
-        <p class="field-label">Vuoi renderla ancora più vostra? <small style="font-weight:400;font-family:var(--font-body);color:var(--testo-soft)">(extra facoltativi, prezzo founder −50%)</small></p>
+        <p class="field-label">Vuoi renderla ancora più vostra? <small style="font-weight:400;font-family:var(--font-body);color:var(--testo-soft)">(extra facoltativi a prezzo founder)</small></p>
         <div class="extra-list" role="group" aria-label="Extra facoltativi">
           <label class="extra-row">
             <span class="extra-body"><b>📷 Le vostre foto reali</b><i><s>1&nbsp;€</s> 0,50&nbsp;€ l'una, dentro le sorprese</i></span>
@@ -151,6 +151,11 @@
           <span>Ho letto l'<a href="privacy.html" target="_blank" rel="noopener">informativa privacy</a>:
           foto e ricordi verranno usati solo per creare la nostra avventura.</span>
         </label>
+        <label class="field">Codice promo <small>(facoltativo — nei primi 3 mesi: −5% col codice founder)</small>
+          <input type="text" name="codice-promo" id="promoInput" maxlength="20"
+                 autocomplete="off" autocapitalize="characters" placeholder="Es. FOUNDER26">
+        </label>
+        <p class="promo-feedback" id="promoFeedback" aria-live="polite" hidden></p>
         <div class="order-recap" id="orderRecap" aria-live="polite"></div>
         <p class="order-pay-note">🔒 Dopo l'invio ti portiamo al pagamento sicuro con
           <strong>Stripe</strong>. Nessun addebito prima della conferma dell'ordine.</p>

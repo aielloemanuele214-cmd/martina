@@ -13,8 +13,9 @@
   const NAMES = ['L’occasione', 'Voi due', 'I dettagli', 'Come ricontattarti'];
   let current = 0;
 
-  /* totale in tempo reale: base 19,90 € (prezzo founder) + extra */
-  const BASE = 19.9;
+  /* totale in tempo reale: base 19,50 € + extra, −5% col codice promo */
+  const BASE = 19.5;
+  const PROMO = { codice: 'FOUNDER26', sconto: 0.05 };
   const euro = (n) => n.toFixed(2).replace('.', ',') + ' €';
   const totale = () => {
     let t = BASE;
@@ -25,12 +26,30 @@
     }
     return t;
   };
+  const promoValido = () =>
+    (form.elements['codice-promo']?.value || '').trim().toUpperCase() === PROMO.codice;
   const paintTotal = () => {
     const el = document.getElementById('orderTotal');
     if (el) el.textContent = euro(totale());
   };
+  const paintPromo = () => {
+    const fb = document.getElementById('promoFeedback');
+    const val = (form.elements['codice-promo']?.value || '').trim();
+    if (!fb) return;
+    fb.hidden = !val;
+    if (!val) return;
+    if (promoValido()) {
+      fb.textContent = '✓ Codice valido: −5% sul totale';
+      fb.className = 'promo-feedback ok';
+    } else {
+      fb.textContent = 'Codice non riconosciuto';
+      fb.className = 'promo-feedback no';
+    }
+    recap();
+  };
   form.addEventListener('input', (e) => {
     if (e.target.matches('[data-prezzo]')) paintTotal();
+    if (e.target.name === 'codice-promo') paintPromo();
   });
 
   const paint = () => {
@@ -67,13 +86,18 @@
     if (nFoto) extras.push(`${nFoto} foto reali`);
     if (nSprite) extras.push(`${nSprite} personaggi in più`);
     if (form.elements['qr-stampabile']?.checked) extras.push('biglietto QR da stampare');
+    const t = totale();
+    const conPromo = promoValido();
+    const riga = conPromo
+      ? `<s>${euro(t)}</s> <b>${euro(t * (1 - PROMO.sconto))}</b> <small>(codice ${PROMO.codice}: −5%)</small>`
+      : `<b>${euro(t)}</b>`;
     box.innerHTML =
       `<h3>Riepilogo</h3>
-       <p><b>${chk}</b> · L'Avventura 19,90 €` +
+       <p><b>${chk}</b> · L'Avventura 19,50 €` +
       (extras.length ? ` + ${extras.join(' + ')}` : '') + `</p>
        <p>${v('nome-tuo') || '—'} &amp; ${v('nome-partner') || '—'}` +
       (v('scadenza') ? ` · consegna entro <b>${v('scadenza')}</b>` : '') +
-      ` · totale <b>${euro(totale())}</b> <small>(prezzo founder −50%)</small></p>`;
+      ` · totale ${riga}</p>`;
   };
 
   btnNext.addEventListener('click', () => {

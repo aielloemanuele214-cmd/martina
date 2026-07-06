@@ -119,6 +119,47 @@
     paint();
   }
 
+  /* ---------- Popup founder: −5% col codice FOUNDER26 ---------- */
+  const overlay = $('#promoOverlay');
+  if (overlay && !localStorage.getItem('sad-promo-vista')) {
+    const close = () => {
+      overlay.hidden = true;
+      localStorage.setItem('sad-promo-vista', '1');
+      document.removeEventListener('keydown', onKey);
+    };
+    const onKey = (e) => { if (e.key === 'Escape') close(); };
+    setTimeout(() => {
+      overlay.hidden = false;
+      document.addEventListener('keydown', onKey);
+      $('input[type="email"]', overlay)?.focus({ preventScroll: true });
+    }, 10000);
+    $('#promoClose').addEventListener('click', close);
+    overlay.addEventListener('click', (e) => { if (e.target === overlay) close(); });
+    $('#promoForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const form = e.target;
+      const btn = $('button[type="submit"]', form);
+      btn.disabled = true;
+      try {
+        // Netlify Forms: POST AJAX verso la pagina stessa
+        const res = await fetch('/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: new URLSearchParams(new FormData(form)).toString()
+        });
+        if (!res.ok) throw new Error(res.status);
+        form.outerHTML = '<p class="promo-ok">💌 Fatto! Il codice <strong>FOUNDER26</strong> ' +
+          'sta arrivando nella tua casella email.</p>';
+        localStorage.setItem('sad-promo-vista', '1');
+      } catch {
+        btn.disabled = false;
+        $('.promo-err', form)?.remove();
+        form.insertAdjacentHTML('beforeend',
+          '<p class="promo-err">Ops, invio non riuscito: riprova tra poco o scrivici su Instagram.</p>');
+      }
+    });
+  }
+
   /* ---------- Demo: l'iframe (≈4,5 MB) viene caricato solo su richiesta ---------- */
   const start = $('#demoStart');
   if (start) {
