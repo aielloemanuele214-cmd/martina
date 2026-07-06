@@ -5,9 +5,10 @@ fogli-sprite puliti per il motore:
   - walk16  : camminata 4 direzioni x 4 frame (front/back/left/right)
   - expr16  : NPC, 5 espressioni (idle/sorriso/imbarazzo/sguardo/interazione)
   - dance16 : coppia, 5 pose di ballo rock
-Metodo: si ritaglia la fascia dei titoli/etichette, si toglie lo sfondo navy
-(flood dal bordo, incl. le ombre a terra), si scartano i frammenti piccoli
-(testo, note musicali, diamanti), poi si tagliano le celle della griglia e si
+Metodo: chroma key VERDE (lo sfondo è verde-dominante, i personaggi mai) →
+scontorno perfetto senza erodere capelli/contorni; si scartano i frammenti
+piccoli (testo, note, diamanti), si tagliano le celle della griglia (la coppia
+dai marker rosa numerati), si rifinisce per figura (buchi + green-spill) e si
 impacchetta a scala comune (piedi a terra). Sincronizza le dimensioni in
 sprites.json. Uso: python3 tools/orbita_art.py all
 """
@@ -20,26 +21,19 @@ SRC = os.path.join(ROOT, 'packs', 'ultima-orbita', 'assets', '_src') + os.sep
 OUT = os.path.join(ROOT, 'packs', 'ultima-orbita', 'assets', 'sprites')
 DBG = os.path.join(ROOT, 'packs', 'ultima-orbita', 'assets', '_dbg')
 os.makedirs(OUT, exist_ok=True); os.makedirs(DBG, exist_ok=True)
-NAVY = np.array([2, 16, 34])       # colore di sfondo dei fogli chibi
-BLEED_IT = 26          # abbastanza da riempire di colore anche i buchi tappati
+GREEN_T = 25            # soglia "verde-dominante" per il chroma key
+BLEED_IT = 26           # abbastanza da riempire di colore anche i buchi tappati
 
 
-def key_navy(rgb, dist, minsize):
-    """alpha=0 per lo sfondo navy collegato al bordo (incluse le ombre a terra);
-    poi elimina i frammenti opachi piccoli (testo, note, diamanti). Color-bleed
-    dei colori nei pixel trasparenti (niente frange al resize)."""
+def key_green(rgb, minsize):
+    """Chroma key VERDE: lo sfondo è verde-dominante (G nettamente > R e > B) e
+    NESSUNA parte del personaggio lo è (tuta bianca, capelli/pelle caldi, accenti
+    rosa) → si toglie tutto il verde (sfondo + ombre + verde intrappolato fra i
+    corpi + frangia verde ai bordi) senza mai erodere i capelli né i contorni
+    scuri. Poi si scartano i frammenti opachi piccoli (testo, note, diamanti)."""
     a = rgb.astype(np.int32)
-    d = np.sqrt(((a - NAVY) ** 2).sum(axis=2))
-    # Lo sfondo navy è BLU-dominante; capelli castani e pelle sono CALDI
-    # (rosso-dominante). Escludendo i pixel caldi dalla maschera di sfondo, i
-    # capelli non vengono mai erosi dove toccano il navy → niente teste/caschi
-    # staccati dal corpo (era il difetto della vista di spalle).
-    warm = (a[:, :, 0] - a[:, :, 2]) > 8
-    m = (d <= dist) & ~warm
-    lbl, _ = ndimage.label(m)
-    border = set(lbl[0, :]) | set(lbl[-1, :]) | set(lbl[:, 0]) | set(lbl[:, -1])
-    border.discard(0)
-    bg = np.isin(lbl, list(border))
+    G, R, B = a[:, :, 1], a[:, :, 0], a[:, :, 2]
+    bg = ((G - R) > GREEN_T) & ((G - B) > GREEN_T)
     op = ~bg
     ol, n = ndimage.label(op)
     if n:
@@ -77,6 +71,9 @@ def refine(sub):
         mm = ring & (cnt > 0)
         rgbf[mm] = acc[mm] / cnt[mm][:, None]
         known |= mm
+    # green-spill: neutralizza l'eventuale alone verde ai bordi (G non può
+    # superare il max fra R e B) — non tocca i pixel non verdi.
+    rgbf[:, :, 1] = np.minimum(rgbf[:, :, 1], np.maximum(rgbf[:, :, 0], rgbf[:, :, 2]))
     out = sub.copy()
     out[:, :, :3] = np.clip(rgbf, 0, 255).astype(np.uint8)
     out[:, :, 3] = np.where(filled, 255, 0).astype(np.uint8)
@@ -153,9 +150,9 @@ def pack(cells, fh, name, quantize=True):
     return {'fw': fw, 'fh': fh, 'n': len(scaled)}
 
 
-def keyed(name, crop, dist, minsize):
+def keyed(name, crop, minsize):
     a = np.array(Image.open(SRC + name + '.png').convert('RGB'))[crop[1]:crop[3], crop[0]:crop[2]]
-    rgba = key_navy(a, dist, minsize)
+    rgba = key_green(a, minsize)
     prev = Image.new('RGBA', (rgba.shape[1], rgba.shape[0]), (255, 0, 255, 255))
     prev.alpha_composite(Image.fromarray(rgba))
     prev.convert('RGB').save(os.path.join(DBG, name + '_keyed.png'))
@@ -167,10 +164,12 @@ def dance_bounds():
     a = np.array(Image.open(SRC + 'dance16.png').convert('RGB')).astype(np.int32)
     top = a[250:360]
     R, G, B = top[:, :, 0], top[:, :, 1], top[:, :, 2]
-    pink = (R > 200) & (G > 120) & (G < 200) & (B > 150) & (B < 220)
+    # rosa dei marker (robusto sia su fondo navy che verde): R alto, B medio-alto,
+    # verde più basso di entrambi (non è né sfondo verde né testo bianco)
+    pink = (R > 190) & (B > 150) & (R - G > 25) & (B - G > 10)
     lbl, n = ndimage.label(pink)
     sz = ndimage.sum(np.ones_like(lbl), lbl, range(1, n + 1))
-    cx = sorted(int(np.where(lbl == i + 1)[1].mean()) for i, s in enumerate(sz) if s > 200)
+    cx = sorted(int(np.where(lbl == i + 1)[1].mean()) for i, s in enumerate(sz) if s > 150)
     assert len(cx) == 5, f'attesi 5 marker, trovati {len(cx)}: {cx}'
     return [0] + [(cx[i] + cx[i + 1]) // 2 for i in range(4)] + [a.shape[1]]
 
@@ -210,7 +209,7 @@ if __name__ == '__main__':
     only = sys.argv[1] if len(sys.argv) > 1 else 'all'
 
     if only in ('all', 'walk'):
-        rgba = keyed('walk16', (175, 165, 1254, 1254), 88, 700)
+        rgba = keyed('walk16', (175, 165, 1254, 1254), 700)
         rb = bands(rgba[:, :, 3].sum(1), 20, 40)
         cb = bands(rgba[:, :, 3].sum(0), 20, 25)
         assert len(rb) == 4 and len(cb) == 4, f'walk: griglia {len(rb)}x{len(cb)}'
@@ -220,7 +219,7 @@ if __name__ == '__main__':
             DIMS[dname] = pack([f for f in frames if f], 240, dname)
 
     if only in ('all', 'expr'):
-        rgba = keyed('expr16', (0, 410, 1536, 860), 88, 900)
+        rgba = keyed('expr16', (0, 410, 1536, 860), 900)
         cb = bands(rgba[:, :, 3].sum(0), 30, 40)
         assert len(cb) == 5, f'expr: colonne {len(cb)}'
         ry = np.where((rgba[:, :, 3] > 0).any(axis=1))[0]
@@ -228,7 +227,7 @@ if __name__ == '__main__':
         DIMS['astro2'] = pack(frames, 240, 'astro2')
 
     if only in ('all', 'dance'):
-        rgba = keyed('dance16', (0, 360, 1536, 800), 90, 700)
+        rgba = keyed('dance16', (0, 360, 1536, 800), 1600)
         xb = dance_bounds()
         ry = np.where((rgba[:, :, 3] > 0).any(axis=1))[0]
         frames = [cell(rgba, xb[c], xb[c + 1], ry.min(), ry.max() + 1) for c in range(5)]

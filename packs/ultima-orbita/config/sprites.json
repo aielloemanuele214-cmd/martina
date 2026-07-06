@@ -9,45 +9,45 @@
     },
     "astroDown": {
       "asset": "astro_down",
-      "fw": 134,
+      "fw": 146,
       "fh": 240,
       "n": 4,
-      "alt": 26.7
+      "alt": 26.9
     },
     "astroUp": {
       "asset": "astro_up",
-      "fw": 126,
+      "fw": 130,
       "fh": 240,
       "n": 4,
-      "alt": 26.7
+      "alt": 26.9
     },
     "astroLeft": {
       "asset": "astro_left",
-      "fw": 122,
+      "fw": 132,
       "fh": 240,
       "n": 4,
-      "alt": 26.7
+      "alt": 26.9
     },
     "astroRight": {
       "asset": "astro_right",
-      "fw": 124,
+      "fw": 128,
       "fh": 240,
       "n": 4,
-      "alt": 26.7
+      "alt": 26.9
     },
     "astro2": {
       "asset": "astro2",
-      "fw": 136,
+      "fw": 146,
       "fh": 240,
       "n": 5,
-      "alt": 26.4
+      "alt": 26.7
     },
     "coppia": {
       "asset": "coppia",
-      "fw": 344,
+      "fw": 348,
       "fh": 300,
       "n": 5,
-      "alt": 32
+      "alt": 30
     },
     "gatto": {
       "asset": "gatto",
