@@ -608,6 +608,7 @@ h3{font-size:1.25rem;font-weight:700}
 .order-total{font-family:var(--font-display);font-weight:700;color:var(--crema);
   text-align:right;font-size:1.05rem}
 .order-total b{color:var(--corallo);font-size:1.25rem}
+.order-pay-note{font-size:.88rem;color:var(--testo-soft);text-align:center}
 .order-recap{background:rgba(232,137,107,.08);border:1px dashed var(--bordo-forte);
   border-radius:var(--r-md);padding:16px 18px;font-size:.95rem;color:var(--testo-soft)}
 .order-recap h3{font-size:1rem;color:var(--pesca);margin-bottom:6px}

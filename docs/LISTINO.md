@@ -38,6 +38,18 @@ medio reale 25–35 € con gli extra.
 - **Seconda occasione** per lo stesso cliente (dal compleanno alla proposta…): sconto fedeltà, il materiale c'è già
 - **Versione "gemella"** per l'altro partner (dialoghi invertiti): +30%
 
+## Pagamenti (Stripe Payment Link)
+
+Setup una tantum su dashboard.stripe.com:
+1. Crea 4 prodotti: **L'Avventura** 19,90 € (quantità fissa 1), **Foto reale**
+   0,50 € (quantità regolabile 0-10), **Personaggio extra** 3 € (0-5),
+   **Biglietto QR** 5 € (0-1).
+2. Crea un **Payment Link** con i 4 prodotti e quantità regolabile sugli extra.
+3. Incolla l'URL nella costante `STRIPE_PAYMENT_LINK` in `grazie.html`:
+   il bottone "Completa il pagamento" compare da solo.
+4. Alla fine del periodo founder: aggiorna i prezzi dei prodotti Stripe al
+   listino pieno (39,80 / 1 / 6 / 10 €) e i testi del sito.
+
 ## Flusso operativo per ordine
 1. `python3 tools/sad.py ordine <slug>` → cartella `clienti/<slug>/`
 2. compila `ordine.json` + foto in `foto/` (dal template dell'occasione scelta)

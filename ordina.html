@@ -107,12 +107,12 @@
           <label class="extra-row">
             <span class="extra-body"><b>📷 Le vostre foto reali</b><i><s>1&nbsp;€</s> 0,50&nbsp;€ l'una, dentro le sorprese</i></span>
             <span class="extra-ctrl"><input type="number" name="foto-reali" data-prezzo="0.5"
-              min="0" max="20" value="0" inputmode="numeric" aria-label="Quante foto reali"> foto</span>
+              min="0" max="10" value="0" inputmode="numeric" aria-label="Quante foto reali"> foto</span>
           </label>
           <label class="extra-row">
             <span class="extra-body"><b>🐱 Personaggi in più</b><i><s>6&nbsp;€</s> 3&nbsp;€ a sprite: il gatto, un amico, la famiglia…</i></span>
             <span class="extra-ctrl"><input type="number" name="sprite-extra" data-prezzo="3"
-              min="0" max="10" value="0" inputmode="numeric" aria-label="Quanti personaggi in più"> sprite</span>
+              min="0" max="5" value="0" inputmode="numeric" aria-label="Quanti personaggi in più"> sprite</span>
           </label>
           <label class="extra-row">
             <span class="extra-body"><b>🖼️ Biglietto QR da stampare</b><i><s>10&nbsp;€</s> 5&nbsp;€, design elegante pronto per la stampa</i></span>
@@ -152,6 +152,8 @@
           foto e ricordi verranno usati solo per creare la nostra avventura.</span>
         </label>
         <div class="order-recap" id="orderRecap" aria-live="polite"></div>
+        <p class="order-pay-note">🔒 Dopo l'invio ti portiamo al pagamento sicuro con
+          <strong>Stripe</strong>. Nessun addebito prima della conferma dell'ordine.</p>
       </fieldset>
 
       <div class="order-nav">
