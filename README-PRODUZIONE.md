@@ -87,7 +87,9 @@ clienti/anna-marco/
    automatiche (raggiungibilità, apertura all'arrivo, finali, reset, save, fps)
 5. **Pubblica**: `python3 tools/sad.py consegna anna-marco --push` — crea la
    pagina in `g/<token>.html`, genera il QR e pusha: il gioco va online su
-   GitHub Pages (`…github.io/martina/g/<token>.html`). Il link finisce in `NOTE.md`.
+   `sempreaddue.netlify.app/g/<token>.html`. Il link finisce in `NOTE.md`.
+   ⚠️ Ogni push = 1 deploy Netlify = 15 crediti (300/mese sul piano Free):
+   accorpa consegne e modifiche nello stesso push quando possibile.
 
 ## Editor in-gioco (?editor) — per nuove ambientazioni
 

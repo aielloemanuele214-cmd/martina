@@ -4,4 +4,4 @@ Disallow: /dist/
 Disallow: /g/
 Disallow: /social/
 
-Sitemap: https://aielloemanuele214-cmd.github.io/martina/sitemap.xml
+Sitemap: https://sempreaddue.netlify.app/sitemap.xml

@@ -462,7 +462,7 @@ def consegna(slug, push=False, senza_qa=False, base_url=None):
     import secrets, shutil
     # Sostituire col dominio definitivo quando ci sarà (o usare SAD_BASE_URL)
     base_url = (base_url or os.environ.get('SAD_BASE_URL')
-                or 'https://aielloemanuele214-cmd.github.io/martina').rstrip('/')
+                or 'https://sempreaddue.netlify.app').rstrip('/')
 
     # 1. trova l'ordine: clienti/<slug>/ordine.json oppure clienti/<slug>.json
     per_cartella = os.path.join(ROOT, 'clienti', slug, 'ordine.json')

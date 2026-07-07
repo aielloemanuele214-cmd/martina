@@ -54,6 +54,5 @@ le primitive grafiche in `gen.py`.
 ## Promemoria
 - La scadenza founder (6 ottobre 2026) è scritta nelle slide del
   carosello 03: a fine promo vanno archiviate o rigenerate.
-- Il link nelle bio è `aielloemanuele214-cmd.github.io/martina` (GitHub
-  Pages): da sostituire appena c'è il dominio definitivo — per un link
-  in bio presentabile conviene comprarlo prima di pubblicare.
+- Il link nelle bio è `sempreaddue.netlify.app`: da sostituire con il
+  dominio definitivo, quando ci sarà.

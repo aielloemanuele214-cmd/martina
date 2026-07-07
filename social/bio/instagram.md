@@ -22,7 +22,7 @@ Un posto a due. Per sempre.
 
 ## Link
 ```
-https://aielloemanuele214-cmd.github.io/martina
+https://sempreaddue.netlify.app
 ```
 *(da aggiornare quando ci sarà il dominio definitivo)*
 
