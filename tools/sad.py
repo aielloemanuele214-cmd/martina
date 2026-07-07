@@ -453,16 +453,21 @@ def qa(file=None):
 
 
 def consegna(slug, push=False, senza_qa=False, base_url=None):
-    """Consegna un ordine: build → QA → g/<token>.html → QR.
+    """Consegna un ordine: build → QA → <giochi>/g/<token>.html → QR.
 
-    Il gioco finisce in g/ con un nome impossibile da indovinare: su Netlify
-    (integrazione Git) il push pubblica tutto da solo e il link è pronto.
-    robots.txt esclude g/ dai motori di ricerca.
+    Il gioco è un HTML autonomo salvato nella repo PRIVATA dei giochi
+    (SAD_GIOCHI_REPO, default /workspace/sempreaddue-giochi), servita da
+    Cloudflare Pages: il push pubblica il link privato ed è FUORI da Netlify
+    (zero crediti consumati). Il token nel nome rende il link impossibile da
+    indovinare; foto e messaggi dei clienti non entrano mai nella repo
+    pubblica del sito. Link finale: <base_url>/g/<token>.html
     """
     import secrets, shutil
-    # Sostituire col dominio definitivo quando ci sarà (o usare SAD_BASE_URL)
+    # Dominio Cloudflare Pages dei giochi (o SAD_BASE_URL; poi gioca.sempreaddue.it)
     base_url = (base_url or os.environ.get('SAD_BASE_URL')
-                or 'https://sempreaddue.netlify.app').rstrip('/')
+                or 'https://sempreaddue-giochi.pages.dev').rstrip('/')
+    # Repo privata dei giochi (clone locale): lì finisce il file e da lì si pubblica
+    giochi_repo = os.environ.get('SAD_GIOCHI_REPO', '/workspace/sempreaddue-giochi')
 
     # 1. trova l'ordine: clienti/<slug>/ordine.json oppure clienti/<slug>.json
     per_cartella = os.path.join(ROOT, 'clienti', slug, 'ordine.json')
@@ -485,11 +490,15 @@ def consegna(slug, push=False, senza_qa=False, base_url=None):
             sys.exit('✗ QA fallita: consegna interrotta. '
                      'Se è un problema di tooling (node/playwright), usa --senza-qa.')
 
-    # 4. copia in g/ con token segreto (solo il cliente conoscerà il link)
+    # 4. copia nella repo PRIVATA dei giochi, con token segreto nel nome
+    assert os.path.isdir(os.path.join(giochi_repo, '.git')), (
+        f'repo giochi non trovata in {giochi_repo}. Clona '
+        'aielloemanuele214-cmd/sempreaddue-giochi lì, oppure imposta '
+        'la variabile SAD_GIOCHI_REPO al percorso del clone.')
     alfabeto = 'abcdefghjkmnpqrstuvwxyz23456789'   # niente 0/o/1/l/i ambigui
     token = ''.join(secrets.choice(alfabeto) for _ in range(12))
     token = f'{token[:4]}-{token[4:8]}-{token[8:]}'
-    gdir = os.path.join(ROOT, 'g')
+    gdir = os.path.join(giochi_repo, 'g')
     os.makedirs(gdir, exist_ok=True)
     dest = os.path.join(gdir, f'{token}.html')
     shutil.copyfile(dist, dest)
@@ -518,22 +527,25 @@ def consegna(slug, push=False, senza_qa=False, base_url=None):
         open(note, 'w', encoding='utf-8').write(txt)
 
     print(f'\n🎁 consegna pronta per "{slug}"')
-    print(f'   file   g/{token}.html ({os.path.getsize(dest)//1024//1024} MB)')
+    print(f'   file   {os.path.relpath(dest, giochi_repo)} '
+          f'({os.path.getsize(dest)//1024//1024} MB) → repo giochi privata')
     print(f'   link   {url}')
     if qr_path:
         print(f'   QR     {os.path.relpath(qr_path, ROOT)}')
 
-    # 7. pubblicazione: commit + push (su Netlify col repo collegato = deploy)
+    # 7. pubblicazione: commit + push NELLA REPO GIOCHI (Cloudflare Pages, non Netlify).
+    #    Il QR e le NOTE restano nella repo del sito (clienti/ e dist/ sono privati/ignorati):
+    #    il QR codifica il link segreto, quindi non va mai in una repo pubblica.
     if push:
-        da_aggiungere = [dest] + ([qr_path] if qr_path else []) \
-            + ([note] if os.path.exists(note) else [])
-        subprocess.check_call(['git', 'add', *da_aggiungere], cwd=ROOT)
-        subprocess.check_call(['git', 'commit', '-m', f'Consegna ordine {slug}'], cwd=ROOT)
-        subprocess.check_call(['git', 'push'], cwd=ROOT)
-        print('   push eseguito: se il repo è collegato a Netlify, il link è (quasi) online')
+        subprocess.check_call(['git', 'add', dest], cwd=giochi_repo)
+        subprocess.check_call(
+            ['git', '-c', 'user.email=aielloemanuele214@gmail.com',
+             '-c', 'user.name=SempreAddue',
+             'commit', '-m', f'Consegna ordine {slug}'], cwd=giochi_repo)
+        subprocess.check_call(['git', 'push', 'origin', 'HEAD:main'], cwd=giochi_repo)
+        print('   ✓ push nella repo giochi: Cloudflare Pages pubblica il link in ~1 minuto')
     else:
-        print('   per pubblicare:  git add g/ clienti/ dist/ && git commit -m'
-              f' "Consegna {slug}" && git push   (oppure rilancia con --push)')
+        print(f'   per pubblicare:  rilancia con --push (commit+push in {giochi_repo})')
 
 
 def preview():

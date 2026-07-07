@@ -4,3 +4,10 @@ package.json
 package-lock.json
 __pycache__/
 *.pyc
+
+# Privacy: dati clienti reali e giochi consegnati NON vanno nella repo pubblica.
+# I giochi vivono nella repo privata sempreaddue-giochi (Cloudflare Pages).
+clienti/*
+!clienti/demo.json
+!clienti/esempio.json
+g/*.html

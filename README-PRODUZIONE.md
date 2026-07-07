@@ -85,11 +85,18 @@ clienti/anna-marco/
    inesistenti e coordinate fuori scala vengono bloccati PRIMA della build)
 4. **QA**: `python3 tools/sad.py qa dist/stanza-anna-marco.html` — 13 verifiche
    automatiche (raggiungibilità, apertura all'arrivo, finali, reset, save, fps)
-5. **Pubblica**: `python3 tools/sad.py consegna anna-marco --push` — crea la
-   pagina in `g/<token>.html`, genera il QR e pusha: il gioco va online su
-   `sempreaddue.netlify.app/g/<token>.html`. Il link finisce in `NOTE.md`.
-   ⚠️ Ogni push = 1 deploy Netlify = 15 crediti (300/mese sul piano Free):
-   accorpa consegne e modifiche nello stesso push quando possibile.
+5. **Pubblica**: `python3 tools/sad.py consegna anna-marco --push` — crea il
+   gioco (HTML autonomo), genera il QR e lo pubblica nella **repo privata
+   `sempreaddue-giochi`** (clone in `/workspace/sempreaddue-giochi`, oppure
+   imposta `SAD_GIOCHI_REPO`). Cloudflare Pages lo mette online in ~1 minuto a
+   `https://sempreaddue-giochi.pages.dev/g/<token>.html` (poi
+   `gioca.sempreaddue.it`). Il link finisce in `NOTE.md`.
+   • **Fuori da Netlify**: pubblicare un gioco NON consuma crediti Netlify e
+     NON tocca la repo pubblica del sito.
+   • **Privacy**: foto e messaggi dei clienti restano solo nella repo privata;
+     il QR (che codifica il link segreto) non va mai in una repo pubblica.
+   • Test locale prima di consegnare: `python3 tools/sad.py qa …` + apertura
+     del file in `dist/` nel browser — nessuna pubblicazione, nessun costo.
 
 ## Editor in-gioco (?editor) — per nuove ambientazioni
 
