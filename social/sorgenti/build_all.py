@@ -70,7 +70,7 @@ def c1s1():
     b, y = body(y+30, ['La vostra storia d’amore, trasformata in una',
                        'mini avventura pixel art. Fatta a mano, per voi due.'], size=38)
     c.append(b)
-    c.append(image_frame(f'{IMG}/village-800.webp', MX, y+46, W-2*MX, 520, rotate=-1.2))
+    c.append(image_frame(f'{IMG}/inverno-1200.webp', MX, y+46, W-2*MX, 520, rotate=-1.2))
     c.append(sprite(f'{IMG}/ballo.webp', W-MX-190, y+46+520-268, 170))
     c.append(footer())
     return svg_doc('\n'.join(c))
@@ -191,7 +191,7 @@ def c2s1():
     b, y = body(y+26, ['Niente mockup finti: ogni scena che vedi',
                        'viene da un gioco SempreAddue giocabile.'], size=37)
     c.append(b)
-    c.append(phone(f'{IMG}/village-800.webp', W/2, y+66+430, w=400, rotate=-2))
+    c.append(phone(f'{IMG}/room-800.webp', W/2, y+66+430, w=400, rotate=-2))
     return svg_doc('\n'.join(c))
 
 def c2s2():
@@ -203,10 +203,10 @@ def c2s2():
 
 def c2s3():
     return occasione(3, 'per un compleanno',
-        [[('Una festa che è', CREMA)], [('un mondo intero.', CORALLO)]],
-        ['Come il Villaggio Incantato: si esplora, si parla',
-         'con i personaggi, si scoprono gli auguri nascosti.'],
-        f'{IMG}/village-800.webp', rotate=1.2)
+        [[('Gli auguri,', CREMA)], [('da scoprire.', CORALLO)]],
+        ['Una stanza piena di sorprese nascoste: si',
+         'esplorano una a una, fino alla dedica finale.'],
+        f'{IMG}/room2-900.webp', rotate=1.2)
 
 def c2s4():
     return occasione(4, 'per la proposta',
@@ -216,11 +216,11 @@ def c2s4():
         f'{IMG}/pop-scrivania.webp', rotate=-1.3)
 
 def c2s5():
-    return occasione(5, 'non solo coppie',
-        [[('Per chi c’è', CREMA)], [('da sempre.', CORALLO)]],
-        ['Un fratello, una sorella, il migliore amico:',
-         'la stanza della vostra infanzia, da rigiocare.'],
-        f'{IMG}/infanzia-1200.webp', rotate=1.3)
+    return occasione(5, 'i vostri ricordi',
+        [[('Le vostre foto,', CREMA)], [('dentro il gioco.', CORALLO)]],
+        ['Fotografie vere incastonate nelle sorprese:',
+         'si sbloccano una a una, giocando.'],
+        f'{IMG}/pop-vinile.webp', rotate=1.3)
 
 def c2s6():
     return occasione(6, 'il finale',
@@ -348,6 +348,36 @@ def c3s7():
     return svg_doc('\n'.join(c), glow_x=W/2, glow_y=440, glow_c=CORALLO)
 
 # ══════════════════════════════════════════════════════════════
+# POST SINGOLI — "Per chi c'è da sempre" e linea fantasy
+# ══════════════════════════════════════════════════════════════
+def post04():
+    """Post dedicato: fratello, sorella, migliore amico."""
+    c = [logo()]
+    c.append(kicker(238, "per chi c'e' da sempre"))
+    t, y = title(360, [[('Certi legami', CREMA)], [('si rigiocano.', CORALLO)]], size=100)
+    c.append(t)
+    b, y = body(y+28, ['Un fratello, una sorella, il migliore amico:',
+                       'la stanza della vostra infanzia, ricostruita',
+                       'in pixel art. I letti, i joypad, i poster.'], size=37)
+    c.append(b)
+    c.append(image_frame(f'{IMG}/infanzia-1200.webp', MX, y+42, W-2*MX, H-(y+42)-46, rotate=-1.2))
+    return svg_doc('\n'.join(c), glow_c=PRUGNA)
+
+def post05():
+    """Post dedicato: linea fantasy — Immagina la vostra avventura."""
+    c = [logo()]
+    c.append(kicker(238, 'la linea fantasy'))
+    t, y = title(360, [[('Immagina la', CREMA)], [('vostra avventura.', CORALLO)]], size=92)
+    c.append(t)
+    b, y = body(y+28, ['Non solo ricordi reali: un villaggio incantato,',
+                       'un mondo che esiste solo per voi due.',
+                       'La demo che trovi in bio è proprio questo.'], size=37)
+    c.append(b)
+    c.append(image_frame(f'{IMG}/village-800.webp', MX, y+42, W-2*MX, H-(y+42)-46, rotate=1.2))
+    c.append(sprite(f'{IMG}/ballo.webp', W-MX-180, H-320, 160))
+    return svg_doc('\n'.join(c))
+
+# ══════════════════════════════════════════════════════════════
 # PROFILO 1080x1080
 # ══════════════════════════════════════════════════════════════
 def profile():
@@ -385,5 +415,7 @@ if __name__ == '__main__':
     for folder, fns in slides.items():
         for i, fn in enumerate(fns, 1):
             write(f'{OUT}/{folder}/slide-{i:02d}.svg', fn())
+    write(f'{OUT}/post-04-per-chi-ce-da-sempre/post.svg', post04())
+    write(f'{OUT}/post-05-immagina-la-vostra-avventura/post.svg', post05())
     write(f'{OUT}/profile/profilo.svg', profile())
     print('fatto')
