@@ -14,8 +14,8 @@ social/
   carousel-03/   "Founder −50%" — 7 slide 1080×1350
   post-04-per-chi-ce-da-sempre/        post singolo 1080×1350 (fratelli, sorelle, amici)
   post-05-immagina-la-vostra-avventura/ post singolo 1080×1350 (il mondo fantasy)
-  copy/          caption Instagram + versione TikTok per ogni contenuto
-  hashtags/      i 25 hashtag, già in set pronti da copiare
+  copy/          caption Instagram (brevi) + versione TikTok + hashtag pronti per ogni contenuto
+  hashtags/      strategia hashtag: max 5 proprietari + blocchi pronti per post
   branding/      identità visiva: palette, font, griglia, regole
   sorgenti/      generatore (Python + Node) per rigenerare tutto
 ```
@@ -34,7 +34,8 @@ racconta come un luogo, mai come una "linea" (vedi il lessico in
 
 ## Pubblicare un carosello
 1. Carica le `slide-01.png … slide-07.png` nell'ordine
-2. Caption dal file in `copy/` · hashtag nel primo commento
+2. Caption (breve) dal file in `copy/` · il blocco hashtag pronto è in fondo
+   allo stesso file, va incollato nel **primo commento** (max 5 proprietari)
 3. Su TikTok usa le stesse immagini come photo-mode + la descrizione dedicata
 
 ## Pubblicare un post singolo (04 e 05)

@@ -1,61 +1,56 @@
-# Hashtag SempreAddue — set completo (25)
+# Hashtag SempreAddue
 
-Da usare nel primo commento su Instagram (non nella caption) e in coda
-alla descrizione su TikTok (lì bastano i primi 4-5).
+**Regola d'oro: max 5 hashtag proprietari** (sotto), poi si aggiungono
+solo hashtag mirati al singolo post. I blocchi già pronti, uno per
+contenuto, sono in fondo a ogni file `copy/*.md`: copia da lì.
 
-## Proprietari (5) — sempre presenti, costruiscono il brand
-```
-#SempreAddue
-#UnPostoADue
-#LAmoreInPixel
-#PixelLoveStory
-#GiocaLaVostraStoria
-```
+Su Instagram vanno nel **primo commento** (non nella caption); su TikTok
+in coda alla descrizione bastano i **primi 5**.
 
-## SEO / regalo (8) — chi cerca idee regalo
+## Proprietari (5) — il tetto massimo, mai di più
 ```
-#ideeregalo
-#regalidicoppia
-#regalopersonalizzato
-#regaloanniversario
-#regalocompleanno
-#regaliromantici
-#regalooriginale
-#regaloperlei
+#SempreAddue #UnPostoADue #LAmoreInPixel #PixelLoveStory #GiocaLaVostraStoria
 ```
+Nota: su un account appena nato solo **#SempreAddue** ha davvero
+ricerche. Gli altri quattro servono a "presidiare" i nomi del brand
+mentre cresce — restano sotto i 5, come da regola.
 
-## Romantici (5)
+## Hashtag mirati (si pescano da qui, secondo il post)
+**Regalo / SEO:** `#ideeregalo #regalidicoppia #regalopersonalizzato #regaloanniversario #regalocompleanno #regaliromantici #regalooriginale #regaloperlei`
+**Romantici:** `#anniversariodicoppia #propostadimatrimonio #coppia #fidanzati #amore`
+**Gaming:** `#pixelart #videogiochi #indiegame #retrogaming`
+**Engagement:** `#couplegoals #lovestory #madeinitaly`
+**Legame / nostalgia (post 04):** `#fratelli #sorelle #nostalgia #ricordi`
+**Fantasy (post 05):** `#fantasy`
+
+## Blocchi pronti per post (5 proprietari + mirati)
+
+**Carosello 01 — chi siamo** *(Instagram, primo commento)*
 ```
-#anniversariodicoppia
-#propostadimatrimonio
-#coppia
-#fidanzati
-#amore
+#SempreAddue #UnPostoADue #LAmoreInPixel #PixelLoveStory #GiocaLaVostraStoria #ideeregalo #regalidicoppia #regalopersonalizzato #regalooriginale #pixelart #couplegoals #madeinitaly
 ```
 
-## Gaming (4)
+**Carosello 02 — cosa costruiamo**
 ```
-#pixelart
-#videogiochi
-#indiegame
-#retrogaming
+#SempreAddue #UnPostoADue #LAmoreInPixel #PixelLoveStory #GiocaLaVostraStoria #regaloanniversario #propostadimatrimonio #anniversariodicoppia #fidanzati #regaliromantici #pixelart #couplegoals
 ```
 
-## Engagement (3)
+**Carosello 03 — founder −50%**
 ```
-#couplegoals
-#lovestory
-#madeinitaly
+#SempreAddue #UnPostoADue #LAmoreInPixel #PixelLoveStory #GiocaLaVostraStoria #ideeregalo #regalopersonalizzato #regalidicoppia #regalooriginale #pixelart #couplegoals #madeinitaly
 ```
 
-## Set pronti da copiare
-
-**Instagram (tutti e 25, primo commento):**
+**Post 04 — per chi c'è da sempre**
 ```
-#SempreAddue #UnPostoADue #LAmoreInPixel #PixelLoveStory #GiocaLaVostraStoria #ideeregalo #regalidicoppia #regalopersonalizzato #regaloanniversario #regalocompleanno #regaliromantici #regalooriginale #regaloperlei #anniversariodicoppia #propostadimatrimonio #coppia #fidanzati #amore #pixelart #videogiochi #indiegame #retrogaming #couplegoals #lovestory #madeinitaly
+#SempreAddue #UnPostoADue #LAmoreInPixel #PixelLoveStory #GiocaLaVostraStoria #fratelli #sorelle #nostalgia #ricordi #pixelart #ideeregalo #retrogaming
 ```
 
-**TikTok (i 5 essenziali):**
+**Post 05 — immagina la vostra avventura**
+```
+#SempreAddue #UnPostoADue #LAmoreInPixel #PixelLoveStory #GiocaLaVostraStoria #fantasy #videogiochi #indiegame #pixelart #ideeregalo #regalooriginale #couplegoals
+```
+
+## TikTok — i 5 essenziali (validi per tutti)
 ```
 #SempreAddue #pixelart #ideeregalo #regalidicoppia #couplegoals
 ```
