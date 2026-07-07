@@ -104,6 +104,7 @@
   "ui": {
     "giorni": "IN ORBITA INSIEME DA {g} GIORNI 🚀",
     "segretiCompleti": "Hai trovato tutti i segreti di questa orbita. 💫",
-    "segretiParziali": "Segreti trovati: {n}/{tot}.\nResta ancora qualcosa da scoprire là fuori…"
+    "segretiParziali": "Segreti trovati: {n}/{tot}.\nResta ancora qualcosa da scoprire là fuori…",
+    "inCorso": "L'orbita continua…"
   }
 }

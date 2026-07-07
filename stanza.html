@@ -1306,7 +1306,7 @@ function avviaMusicaGioco(){
 /* ============================================================
    MOTORE
    ============================================================ */
-const ENGINE_V = '1.4.0';
+const ENGINE_V = '1.4.1';
 console.log('Sempreaddue · stanza v'+ENGINE_V);
 const W = 1254;                       // lato stanza in px mondo
 const PCT = W/100;                    // 1% in px mondo
@@ -1952,11 +1952,17 @@ function closeAll(){
 }
 /* ---------- finale (a regole: STORY.finali) ---------- */
 const finaleEl=document.getElementById('finale');
+// Aprendo con una regola vera (auto a fine gioco, o passata esplicitamente)
+// è il vero finale. Aprendo SENZA regola (tap sui cuori) e la partita non è
+// ancora completa, si mostra comunque una schermata di stato: dà sempre
+// accesso a "Resta qui"/"Ricomincia", anche a metà avventura.
 function showFinale(regola){
-  regola = regola || matchEnding();
-  if(!regola) return;
+  const auto = regola || matchEnding();
+  const completo = !!auto;
+  regola = auto || { titolo:'', testo: STORY.ui.inCorso || '' };
   if(diagOpen) closeDialog();
-  setFlag('finaleMostrato'); frozen=true; vibra([60,60,120]);
+  if(completo){ setFlag('finaleMostrato'); vibra([60,60,120]); }
+  frozen=true;
   finaleEl.querySelectorAll('.fh').forEach(h=>h.remove());
   finaleEl.querySelector('h2').textContent=String(risolvi(regola.titolo)??'');
   finaleEl.querySelector('.testo').textContent=String(risolvi(regola.testo)??'');
@@ -1973,8 +1979,8 @@ function showFinale(regola){
   const msg=(trovati>=tot?STORY.ui.segretiCompleti:STORY.ui.segretiParziali)
     .replaceAll('{n}',trovati).replaceAll('{tot}',tot);
   segEl.innerHTML=`<span class="cnt">SEGRETI ${trovati}/${tot}</span>`+msg;
-  // pioggia di cuori
-  for(let i=0;i<26;i++){
+  // pioggia di cuori: solo a partita davvero completa (altrimenti sembrerebbe un finale)
+  if(completo) for(let i=0;i<26;i++){
     const h=document.createElement('div');
     h.className='fh'; h.textContent=['❤️','💕','💗','✨'][i%4];
     h.style.left=Math.random()*100+'%';
@@ -1984,7 +1990,7 @@ function showFinale(regola){
     finaleEl.appendChild(h);
   }
   finaleEl.classList.add('show');
-  audio.sfx('fanfare');
+  if(completo) audio.sfx('fanfare'); else audio.sfx('click');
 }
 finaleEl.querySelector('.resta').addEventListener('click', ()=>{
   finaleEl.classList.remove('show'); frozen=false; setState('idle'); audio.sfx('click');
@@ -2016,10 +2022,12 @@ function updateHearts(){
   el.innerHTML=CONFIG.sorprese.map(s=>`<span class="${flag('trovato.'+s.id)?'':'off'}">❤️</span>`).join('')
     + STORY.segreti.filter(s=>s.hud && flag(s.flag)).map(s=>`<span class="oro">${s.hud}</span>`).join('');
 }
-// col gioco completato, un tocco sul contatore rivede il finale
+// un tocco sul contatore apre sempre lo stato di partita: il vero finale se
+// completa, altrimenti il progresso — con "Resta qui"/"Ricomincia" comunque
+// accessibili in ogni momento (anche a metà avventura)
 document.getElementById('hearts').addEventListener('pointerdown', e=>{
   e.stopPropagation();
-  if(!frozen){ const r=matchEnding(); if(r) showFinale(r); }
+  if(!frozen) showFinale();
 });
 // audio in pausa quando la pagina va in background
 document.addEventListener('visibilitychange', ()=>{
