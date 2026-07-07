@@ -140,11 +140,12 @@
       const btn = $('button[type="submit"]', form);
       btn.disabled = true;
       try {
-        // Netlify Forms: POST AJAX verso la pagina stessa
-        const res = await fetch('/', {
+        // FormSubmit AJAX: la richiesta arriva via email a sempreaddue@gmail.com
+        // (al primissimo invio FormSubmit manda un'email di attivazione: va cliccata)
+        const res = await fetch('https://formsubmit.co/ajax/sempreaddue@gmail.com', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-          body: new URLSearchParams(new FormData(form)).toString()
+          headers: { 'Accept': 'application/json' },
+          body: new FormData(form)
         });
         if (!res.ok) throw new Error(res.status);
         form.outerHTML = '<p class="promo-ok">💌 Fatto! Il tuo codice founder ' +

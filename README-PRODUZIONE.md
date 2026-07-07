@@ -85,8 +85,9 @@ clienti/anna-marco/
    inesistenti e coordinate fuori scala vengono bloccati PRIMA della build)
 4. **QA**: `python3 tools/sad.py qa dist/stanza-anna-marco.html` — 13 verifiche
    automatiche (raggiungibilità, apertura all'arrivo, finali, reset, save, fps)
-5. **Pubblica**: trascina il file su [Netlify Drop](https://app.netlify.com/drop)
-   (gratis), genera il QR, segna il link in `NOTE.md`, **committa la cartella**.
+5. **Pubblica**: `python3 tools/sad.py consegna anna-marco --push` — crea la
+   pagina in `g/<token>.html`, genera il QR e pusha: il gioco va online su
+   GitHub Pages (`…github.io/martina/g/<token>.html`). Il link finisce in `NOTE.md`.
 
 ## Editor in-gioco (?editor) — per nuove ambientazioni
 

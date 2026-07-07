@@ -311,7 +311,7 @@ def c3s5():
     t, y = title(360, [[('Trenta secondi,', CREMA)], [('letteralmente.', CORALLO)]], size=96)
     c.append(t)
     y += 80
-    c.append(step_row(y, 1, 'Apri il sito dal link in bio', 'sempreaddue.netlify.app')); y += 175
+    c.append(step_row(y, 1, 'Apri il sito dal link in bio', 'lo trovi in alto, nel profilo')); y += 175
     c.append(step_row(y, 2, 'Lascia la tua email nel riquadro', 'compare da solo: zero spam, promesso')); y += 175
     c.append(step_row(y, 3, 'Ricevi il codice e ordina', 'lo inserisci nel riepilogo: −50% applicato'))
     c.append(footer())
