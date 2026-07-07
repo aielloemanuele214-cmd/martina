@@ -96,12 +96,11 @@ def c1s3():
     t, y = title(360, [[('Un piccolo mondo,', CREMA)], [('tutto vostro.', CORALLO)]], size=96)
     c.append(t)
     b, y = body(y+30, ['Voi due come protagonisti, in pixel art.',
-                       'Le vostre foto. Le vostre parole. I vostri posti.',
+                       'I vostri ricordi, esposti come opere d’arte.',
                        'Un gioco vero, che esiste in una sola copia.'], size=37)
     c.append(b)
-    c.append(image_frame(f'{IMG}/room-800.webp', MX, y+44, W-2*MX, 500, rotate=1.1))
+    c.append(image_frame(f'{IMG}/museo-1200.webp', MX, y+44, W-2*MX, 500, rotate=1.1))
     c.append(sprite(f'{IMG}/cuore.webp', MX+40, y+44-40, 84))
-    c.append(footer())
     return svg_doc('\n'.join(c))
 
 def c1s4():
@@ -197,10 +196,10 @@ def c2s1():
 
 def c2s2():
     return occasione(2, 'per un anniversario',
-        [[('La vostra stanza,', CREMA)], [('ricostruita.', CORALLO)]],
-        ['Il divano dei film, il giradischi, la finestra',
-         'sui fuochi: ogni dettaglio è un vostro ricordo.'],
-        f'{IMG}/room-800.webp', rotate=-1.2)
+        [[('Una sera d’inverno,', CREMA)], [('insieme.', CORALLO)]],
+        ['Divano, camino e popcorn: la vostra serata',
+         'perfetta diventa un piccolo mondo da esplorare.'],
+        f'{IMG}/inverno-1200.webp', rotate=-1.2)
 
 def c2s3():
     return occasione(3, 'per un compleanno',
@@ -217,11 +216,11 @@ def c2s4():
         f'{IMG}/pop-scrivania.webp', rotate=-1.3)
 
 def c2s5():
-    return occasione(5, 'i vostri ricordi',
-        [[('Le vostre foto,', CREMA)], [('dentro il gioco.', CORALLO)]],
-        ['Fotografie vere incastonate nelle sorprese:',
-         'si sbloccano una a una, giocando.'],
-        f'{IMG}/pop-vinile.webp', rotate=1.3)
+    return occasione(5, 'non solo coppie',
+        [[('Per chi c’è', CREMA)], [('da sempre.', CORALLO)]],
+        ['Un fratello, una sorella, il migliore amico:',
+         'la stanza della vostra infanzia, da rigiocare.'],
+        f'{IMG}/infanzia-1200.webp', rotate=1.3)
 
 def c2s6():
     return occasione(6, 'il finale',
