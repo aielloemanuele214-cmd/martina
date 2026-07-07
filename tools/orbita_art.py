@@ -209,7 +209,7 @@ if __name__ == '__main__':
     only = sys.argv[1] if len(sys.argv) > 1 else 'all'
 
     if only in ('all', 'walk'):
-        rgba = keyed('walk16', (175, 165, 1254, 1254), 700)
+        rgba = keyed('walk16', (175, 145, 1254, 1254), 700)
         rb = bands(rgba[:, :, 3].sum(1), 20, 40)
         cb = bands(rgba[:, :, 3].sum(0), 20, 25)
         assert len(rb) == 4 and len(cb) == 4, f'walk: griglia {len(rb)}x{len(cb)}'
@@ -219,7 +219,7 @@ if __name__ == '__main__':
             DIMS[dname] = pack([f for f in frames if f], 240, dname)
 
     if only in ('all', 'expr'):
-        rgba = keyed('expr16', (0, 410, 1536, 860), 900)
+        rgba = keyed('expr16', (0, 375, 1536, 860), 900)
         cb = bands(rgba[:, :, 3].sum(0), 30, 40)
         assert len(cb) == 5, f'expr: colonne {len(cb)}'
         ry = np.where((rgba[:, :, 3] > 0).any(axis=1))[0]
