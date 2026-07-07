@@ -108,26 +108,27 @@
       <fieldset class="step" data-step="3" hidden>
         <legend class="sr-only">I dettagli dell'avventura</legend>
 
-        <p class="field-label">Vuoi renderla ancora più vostra? <small style="font-weight:400;font-family:var(--font-body);color:var(--testo-soft)">(extra facoltativi a prezzo founder)</small></p>
+        <p class="field-label">Vuoi renderla ancora più vostra? <small style="font-weight:400;font-family:var(--font-body);color:var(--testo-soft)">(extra facoltativi — col codice founder −50% su tutto, extra compresi)</small></p>
         <div class="extra-list" role="group" aria-label="Extra facoltativi">
           <label class="extra-row">
-            <span class="extra-body"><b>📷 Le vostre foto reali</b><i><s>1&nbsp;€</s> 0,50&nbsp;€ l'una, dentro le sorprese</i></span>
-            <span class="extra-ctrl"><input type="number" name="foto-reali" data-prezzo="0.5"
+            <span class="extra-body"><b>📷 Le vostre foto reali</b><i>1&nbsp;€ l'una, dentro le sorprese</i></span>
+            <span class="extra-ctrl"><input type="number" name="foto-reali" data-prezzo="1"
               min="0" max="10" value="0" inputmode="numeric" aria-label="Quante foto reali"> foto</span>
           </label>
           <label class="extra-row">
-            <span class="extra-body"><b>🐱 Personaggi in più</b><i><s>6&nbsp;€</s> 3&nbsp;€ a sprite: il gatto, un amico, la famiglia…</i></span>
-            <span class="extra-ctrl"><input type="number" name="sprite-extra" data-prezzo="3"
+            <span class="extra-body"><b>🐱 Personaggi in più</b><i>6&nbsp;€ a sprite: il gatto, un amico, la famiglia…</i></span>
+            <span class="extra-ctrl"><input type="number" name="sprite-extra" data-prezzo="6"
               min="0" max="5" value="0" inputmode="numeric" aria-label="Quanti personaggi in più"> sprite</span>
           </label>
           <label class="extra-row">
-            <span class="extra-body"><b>🖼️ Biglietto QR da stampare</b><i><s>10&nbsp;€</s> 5&nbsp;€, design elegante pronto per la stampa</i></span>
-            <span class="extra-ctrl"><input type="checkbox" name="qr-stampabile" value="Sì (+5€)" data-prezzo="5"
+            <span class="extra-body"><b>🖼️ Biglietto QR da stampare</b><i>10&nbsp;€, design elegante pronto per la stampa</i></span>
+            <span class="extra-ctrl"><input type="checkbox" name="qr-stampabile" value="Sì (+10€)" data-prezzo="10"
               aria-label="Aggiungi il biglietto QR da stampare"></span>
           </label>
         </div>
-        <p class="order-total" aria-live="polite">Totale stimato: <b id="orderTotal">19,50&nbsp;€</b>
-          <small>preventivo indicativo — confermiamo entro un giorno</small></p>
+        <p class="order-total" aria-live="polite">Totale: <b id="orderTotal">19,50&nbsp;€</b>
+          <small>da confermare via email — nessun pagamento automatico.
+          Hai un codice founder? Lo inserisci all'ultimo passo.</small></p>
 
         <label class="field" id="fotoUploadField" hidden>Carica le tue foto
           <small>facoltativo, massimo 5 file — jpg, png, heic, webp</small>
@@ -180,6 +181,14 @@
           meglio per il risultato finale. Non potremo essere ritenuti responsabili di eventuali
           incomprensioni dovute a informazioni incomplete o troppo generiche — il nostro obiettivo
           resta comunque uno solo: la scena più bella per voi due.</p>
+
+        <!-- Riepilogo calcolato dal form: questi campi nascosti finiscono
+             nell'email d'ordine (tabella FormSubmit) già coi conti fatti -->
+        <input type="hidden" name="RIEPILOGO — L'Avventura" id="rBase">
+        <input type="hidden" name="RIEPILOGO — Extra" id="rExtra">
+        <input type="hidden" name="RIEPILOGO — Subtotale" id="rSubtotale">
+        <input type="hidden" name="RIEPILOGO — Codice founder" id="rPromo">
+        <input type="hidden" name="RIEPILOGO — TOTALE da confermare" id="rTotale">
       </fieldset>
 
       <div class="order-nav">

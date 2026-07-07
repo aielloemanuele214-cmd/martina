@@ -659,6 +659,13 @@ h3{font-size:1.25rem;font-weight:700}
   border-radius:var(--r-md);padding:16px 18px;font-size:.95rem;color:var(--testo-soft)}
 .order-recap h3{font-size:1rem;color:var(--pesca);margin-bottom:6px}
 .order-recap b{color:var(--crema)}
+.recap-row{display:flex;justify-content:space-between;gap:16px;
+  padding:3px 0;border-bottom:1px dotted rgba(232,137,107,.25)}
+.recap-row span:last-child,.recap-row b{white-space:nowrap}
+.recap-total{border-bottom:0;margin-top:4px;padding-top:8px;
+  border-top:1px solid var(--bordo-forte);font-weight:700}
+.recap-total b{color:var(--corallo);font-size:1.15rem}
+.recap-total small{font-weight:400;color:var(--testo-soft)}
 .order-nav{display:flex;justify-content:space-between;gap:14px;margin-top:26px;
   flex-wrap:wrap}
 .order-nav .btn{flex:1;min-width:150px}

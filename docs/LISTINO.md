@@ -20,16 +20,20 @@ Analisi competitor: Gift Games €37,50–60 (template, 4 gg) · Muksun $99 (no 
 Bday Game $250–450 (file Windows) · love-page self-service $5–10. Nessun player
 italiano. Vantaggio nostro: browser via link/QR, mobile-first, pixel art curata.
 
-**Base fissa 19,50 € + promo founder: −50% sul totale per i primi 3 mesi**
-(codice **FOUNDER26**, inviato via email a chi lo richiede dal popup del sito;
-le email arrivano dal form Netlify "promo").
+**Base fissa 19,50 € + extra a prezzo pieno; promo founder: −50%
+sull'INTERO totale (extra compresi) fino al 6 ottobre 2026** — codice
+**FOUNDER26**, inviato via email a chi lo richiede dal popup del sito
+(le richieste arrivano via FormSubmit). Il form d'ordine riconosce il
+codice, applica lo sconto in tempo reale e manda l'email con il riepilogo
+già calcolato riga per riga (campi RIEPILOGO): il totale nell'email, sul
+form e sulla pagina Grazie è sempre lo stesso numero.
 
 | Voce | Contenuto | Lavoro | Prezzo |
 |---|---|---|---|
 | **L'Avventura** (unico pacchetto) | template occasione + **sprite dei due protagonisti inclusi** + nomi, dedica, data, testi delle 3 sorprese, finale, link + QR funzionante | ~30-45 min (form → `ordine.json`, build, QA automatica, Netlify+QR) + sprite | **19,50 €** fissi |
-| add-on **Foto reali** | fotografie della coppia nei popup, a foto | pochi min/foto | ~~1 €~~ 0,50 € l'una (founder) |
-| add-on **Personaggi in più** | sprite aggiuntivi: gatto, amici, famiglia (pipeline `sad art`) | ~15-30 min/sprite | ~~6 €~~ 3 € a sprite (founder) |
-| add-on **Biglietto QR da stampare** | PDF di design elegante pronto per la stampa | ~10 min | ~~10 €~~ 5 € (founder) |
+| add-on **Foto reali** | fotografie della coppia nei popup, a foto | pochi min/foto | 1 € l'una (0,50 € col codice founder) |
+| add-on **Personaggi in più** | sprite aggiuntivi: gatto, amici, famiglia (pipeline `sad art`) | ~15-30 min/sprite | 6 € a sprite (3 € col codice founder) |
+| add-on **Biglietto QR da stampare** | PDF di design elegante pronto per la stampa | ~10 min | 10 € (5 € col codice founder) |
 
 La musica **non** è personalizzabile (colonna sonora inclusa del template).
 Obiettivo: 19,50 come biglietto d'ingresso (sotto ogni competitor), carrello

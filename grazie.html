@@ -29,6 +29,11 @@
     <p style="max-width:46ch;margin:16px auto 30px;color:var(--testo-soft)">
       Grazie: la vostra storia è arrivata. Ecco cosa succede adesso.</p>
 
+    <!-- Riepilogo dell'ordine appena inviato (salvato dal form in localStorage):
+         il cliente rivede qui le stesse cifre che sono arrivate a noi via email -->
+    <div class="order-recap" id="ordineRecap" hidden
+         style="max-width:440px;margin:0 auto 30px;text-align:left"></div>
+
     <ol class="next-steps" aria-label="Cosa succede ora">
       <li><span class="ns-num">1</span><span>Leggiamo con calma la vostra richiesta</span></li>
       <li><span class="ns-num">2</span><span>Vi rispondiamo <b>entro un giorno</b> via email
@@ -44,6 +49,24 @@
     <a class="btn btn-ghost btn-lg" href="index.html#demo">Nel frattempo, gioca la demo</a>
 
     <script>
+      /* Riepilogo ordine: scritto dal form (site/js/ordina.js) al momento
+         dell'invio. Mostrato solo se recente (24h), poi ignorato. */
+      try {
+        const o = JSON.parse(localStorage.getItem('sad-ordine') || 'null');
+        if (o && Date.now() - o.ts < 86400000 && Array.isArray(o.righe)) {
+          const esc = (s) => String(s).replace(/[&<>"]/g,
+            (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+          const box = document.getElementById('ordineRecap');
+          box.innerHTML = '<h3>📋 Il vostro ordine</h3>' +
+            o.righe.map(([n, v]) =>
+              `<p class="recap-row"><span>${esc(n)}</span><span>${esc(v)}</span></p>`).join('') +
+            `<p class="recap-row recap-total"><span>TOTALE <small>(da confermare)</small></span><b>${esc(o.totale)}</b></p>` +
+            '<p style="margin-top:10px;font-size:.85rem">È lo stesso riepilogo arrivato a noi: ' +
+            've lo confermiamo via email entro un giorno.</p>';
+          box.hidden = false;
+        }
+      } catch { /* niente riepilogo: la pagina resta com'è */ }
+
       /* Fase di test senza partita IVA (vedi docs/LISTINO.md): il pagamento
          NON è automatico sul sito. Dopo aver confermato il preventivo finale
          via email, gli inviate una richiesta di pagamento dall'app/sito

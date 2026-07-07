@@ -13,42 +13,70 @@
   const NAMES = ['L’occasione', 'Voi due', 'I dettagli', 'Come ricontattarti'];
   let current = 0;
 
-  /* totale in tempo reale: base 19,50 € + extra, −50% col codice promo */
+  /* Totale in tempo reale. Listino pieno (19,50 € base + extra a prezzo
+     pieno); il codice founder vale −50% sull'INTERO totale, extra compresi
+     — stessa promessa del popup e del carosello social. Il riepilogo coi
+     conti fatti viaggia anche nell'email (campi nascosti RIEPILOGO) e sulla
+     pagina Grazie (localStorage): il cliente e noi leggiamo le stesse cifre. */
   const BASE = 19.5;
   const PROMO = { codice: 'FOUNDER26', sconto: 0.5 };
   const euro = (n) => n.toFixed(2).replace('.', ',') + ' €';
-  const totale = () => {
-    let t = BASE;
-    for (const el of form.querySelectorAll('[data-prezzo]')) {
-      const unit = Number(el.dataset.prezzo);
-      if (el.type === 'checkbox') t += el.checked ? unit : 0;
-      else t += unit * Math.max(0, Number(el.value) || 0);
-    }
-    return t;
+  const righeExtra = () => {
+    const r = [];
+    const nFoto = Math.max(0, Number(form.elements['foto-reali']?.value) || 0);
+    const nSprite = Math.max(0, Number(form.elements['sprite-extra']?.value) || 0);
+    if (nFoto) r.push([`${nFoto} foto real${nFoto === 1 ? 'e' : 'i'}`, nFoto * 1]);
+    if (nSprite) r.push([`${nSprite} personagg${nSprite === 1 ? 'io' : 'i'} in più`, nSprite * 6]);
+    if (form.elements['qr-stampabile']?.checked) r.push(['Biglietto QR da stampare', 10]);
+    return r;
   };
+  const subtotale = () => BASE + righeExtra().reduce((s, [, v]) => s + v, 0);
   const promoValido = () =>
     (form.elements['codice-promo']?.value || '').trim().toUpperCase() === PROMO.codice;
+  const totaleFinale = () => subtotale() * (promoValido() ? 1 - PROMO.sconto : 1);
+
   const paintTotal = () => {
     const el = document.getElementById('orderTotal');
-    if (el) el.textContent = euro(totale());
+    if (!el) return;
+    el.innerHTML = promoValido()
+      ? `<s>${euro(subtotale())}</s> ${euro(totaleFinale())}`
+      : euro(totaleFinale());
   };
   const paintPromo = () => {
     const fb = document.getElementById('promoFeedback');
     const val = (form.elements['codice-promo']?.value || '').trim();
     if (!fb) return;
     fb.hidden = !val;
-    if (!val) return;
-    if (promoValido()) {
-      fb.textContent = '✓ Codice valido: −50% sul totale';
-      fb.className = 'promo-feedback ok';
-    } else {
-      fb.textContent = 'Codice non riconosciuto';
-      fb.className = 'promo-feedback no';
+    if (val) {
+      if (promoValido()) {
+        fb.textContent = `✓ Codice founder valido — −50% applicato su tutto: ${euro(totaleFinale())}`;
+        fb.className = 'promo-feedback ok';
+      } else {
+        fb.textContent = 'Codice non riconosciuto — il totale resta a prezzo pieno';
+        fb.className = 'promo-feedback no';
+      }
     }
+    paintTotal();
     recap();
   };
+
+  /* I campi nascosti RIEPILOGO finiscono nella tabella dell'email:
+     chi legge l'ordine trova i conti già fatti, riga per riga. */
+  const syncEmailRecap = () => {
+    const set = (id, v) => { const el = document.getElementById(id); if (el) el.value = v; };
+    const extra = righeExtra();
+    const codice = (form.elements['codice-promo']?.value || '').trim();
+    set('rBase', euro(BASE));
+    set('rExtra', extra.length ? extra.map(([n, v]) => `${n} = ${euro(v)}`).join(' · ') : 'nessuno');
+    set('rSubtotale', euro(subtotale()));
+    set('rPromo', promoValido()
+      ? `${PROMO.codice} valido → −50% (−${euro(subtotale() * PROMO.sconto)})`
+      : codice ? `«${codice}» NON riconosciuto — nessuno sconto applicato` : 'non inserito');
+    set('rTotale', euro(totaleFinale()));
+  };
+
   form.addEventListener('input', (e) => {
-    if (e.target.matches('[data-prezzo]')) paintTotal();
+    if (e.target.matches('[data-prezzo]')) { paintTotal(); recap(); }
     if (e.target.name === 'codice-promo') paintPromo();
     if (e.target.name === 'foto-reali') paintFotoField();
   });
@@ -115,26 +143,24 @@
   const recap = () => {
     const v = (n) => (form.elements[n]?.value || '').trim();
     const box = document.getElementById('orderRecap');
+    if (!box) return;
     const chk = (form.querySelector('input[name="occasione"]:checked') || {}).value || '—';
-    const extras = [];
-    const nFoto = Number(v('foto-reali')) || 0;
-    const nSprite = Number(v('sprite-extra')) || 0;
-    if (nFoto) extras.push(`${nFoto} foto reali`);
-    if (nSprite) extras.push(`${nSprite} personaggi in più`);
-    if (form.elements['qr-stampabile']?.checked) extras.push('biglietto QR da stampare');
-    if (fotoInput?.files.length) extras.push(`${fotoInput.files.length} foto caricate`);
-    const t = totale();
+    const righe = [["L'Avventura — tutto incluso", BASE], ...righeExtra()];
     const conPromo = promoValido();
-    const riga = conPromo
-      ? `<s>${euro(t)}</s> <b>${euro(t * (1 - PROMO.sconto))}</b> <small>(codice ${PROMO.codice}: −50%)</small>`
-      : `<b>${euro(t)}</b>`;
-    box.innerHTML =
-      `<h3>Riepilogo</h3>
-       <p><b>${chk}</b> · L'Avventura 19,50 €` +
-      (extras.length ? ` + ${extras.join(' + ')}` : '') + `</p>
-       <p>${v('nome-tuo') || '—'} &amp; ${v('nome-partner') || '—'}` +
-      (v('scadenza') ? ` · consegna entro <b>${v('scadenza')}</b>` : '') +
-      ` · totale stimato ${riga}</p>`;
+    let html = `<h3>Riepilogo del vostro ordine</h3>
+      <p>${chk} · <b>${v('nome-tuo') || '—'} &amp; ${v('nome-partner') || '—'}</b>` +
+      (v('scadenza') ? ` · consegna entro <b>${v('scadenza')}</b>` : '') + `</p>`;
+    for (const [nome, val] of righe)
+      html += `<p class="recap-row"><span>${nome}</span><span>${euro(val)}</span></p>`;
+    if (conPromo) {
+      html += `<p class="recap-row"><span>Subtotale</span><span>${euro(subtotale())}</span></p>`;
+      html += `<p class="recap-row"><span>Codice ${PROMO.codice} · −50% su tutto</span><span>−${euro(subtotale() * PROMO.sconto)}</span></p>`;
+    }
+    if (fotoInput?.files.length)
+      html += `<p class="recap-row"><span>${fotoInput.files.length} foto allegate</span><span>—</span></p>`;
+    html += `<p class="recap-row recap-total"><span>TOTALE <small>(da confermare via email)</small></span><b>${euro(totaleFinale())}</b></p>`;
+    box.innerHTML = html;
+    syncEmailRecap();
   };
 
   btnNext.addEventListener('click', () => {
@@ -147,9 +173,23 @@
     paint();
   });
   form.addEventListener('submit', (e) => {
-    if (!validStep()) e.preventDefault();
+    if (!validStep()) { e.preventDefault(); return; }
+    syncEmailRecap();
+    /* la pagina Grazie rilegge questo riepilogo e lo mostra al cliente:
+       le stesse cifre che arrivano a noi via email */
+    try {
+      const righe = [["L'Avventura — tutto incluso", euro(BASE)],
+        ...righeExtra().map(([n, v]) => [n, euro(v)])];
+      if (promoValido()) {
+        righe.push(['Subtotale', euro(subtotale())]);
+        righe.push([`Codice ${PROMO.codice} · −50% su tutto`, '−' + euro(subtotale() * PROMO.sconto)]);
+      }
+      localStorage.setItem('sad-ordine', JSON.stringify(
+        { righe, totale: euro(totaleFinale()), ts: Date.now() }));
+    } catch { /* storage pieno o negato: la pagina Grazie farà senza */ }
   });
 
   paintFotoField();
+  paintTotal();
   paint();
 })();
