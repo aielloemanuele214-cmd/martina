@@ -1,4 +1,4 @@
-# Carosello 02 — "Cosa realizziamo" · Copy
+# Carosello 02 — "Cosa costruiamo" · Copy
 
 ## Instagram — caption (≈220 parole)
 

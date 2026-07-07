@@ -348,7 +348,7 @@ def c3s7():
     return svg_doc('\n'.join(c), glow_x=W/2, glow_y=440, glow_c=CORALLO)
 
 # ══════════════════════════════════════════════════════════════
-# POST SINGOLI — "Per chi c'è da sempre" e linea fantasy
+# POST SINGOLI — "Per chi c'è da sempre" e il mondo fantasy
 # ══════════════════════════════════════════════════════════════
 def post04():
     """Post dedicato: fratello, sorella, migliore amico."""
@@ -364,9 +364,9 @@ def post04():
     return svg_doc('\n'.join(c), glow_c=PRUGNA)
 
 def post05():
-    """Post dedicato: linea fantasy — Immagina la vostra avventura."""
+    """Post dedicato: il mondo fantasy — Immagina la vostra avventura."""
     c = [logo()]
-    c.append(kicker(238, 'la linea fantasy'))
+    c.append(kicker(238, 'un mondo tutto vostro'))
     t, y = title(360, [[('Immagina la', CREMA)], [('vostra avventura.', CORALLO)]], size=92)
     c.append(t)
     b, y = body(y+28, ['Non solo ricordi reali: un villaggio incantato,',

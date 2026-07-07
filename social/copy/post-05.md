@@ -1,4 +1,4 @@
-# Post 05 — "Immagina la vostra avventura" (linea fantasy) · Copy
+# Post 05 — "Immagina la vostra avventura" · Copy
 *(post singolo, da pubblicare dopo il post 04)*
 
 ## Instagram — caption (≈180 parole)
@@ -6,13 +6,12 @@
 Fin qui vi abbiamo mostrato stanze vere: il divano, il camino, la
 cameretta. Ma c'è un'altra strada — e ha un nome suo.
 
-**Immagina la vostra avventura** è la nostra linea fantasy: mondi che
-non esistono da nessuna parte, tranne che per voi due. Un villaggio
-incantato con la locanda e la fontana dei desideri. Un castello sulla
-collina. Una storia dove siete voi i protagonisti, ma tutto il resto lo
-inventiamo insieme.
+Si chiama **Immagina la vostra avventura**, ed è un mondo che non esiste
+da nessuna parte, tranne che per voi due. Un villaggio incantato con la
+locanda e la fontana dei desideri. Un castello sulla collina. Una storia
+dove siete voi i protagonisti, ma tutto il resto lo inventiamo insieme.
 
-È la linea perfetta per chi ama i videogiochi davvero, per chi si è
+È la strada perfetta per chi ama i videogiochi davvero, per chi si è
 conosciuto giocando, o per chi vuole regalare un'evasione totale invece
 di un ricordo.
 
@@ -30,7 +29,7 @@ Un posto a due. Per sempre.
 
 ## TikTok — descrizione
 
-La linea fantasy di SempreAddue: mondi che esistono solo per voi due 🕹
+Immagina la vostra avventura: mondi che esistono solo per voi due 🕹
 La demo è nel link. #SempreAddue #fantasy #pixelart #indiegame #regalidicoppia
 
 ## TikTok — hook iniziale

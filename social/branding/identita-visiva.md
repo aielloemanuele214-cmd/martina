@@ -78,3 +78,28 @@ con `image-rendering: pixelated` (nitidezza pixel).
 Caldo, diretto, dà del tu. Piccola nostalgia. Frasi brevi che scaldano.
 MAI: gergo da marketing, urgenza finta, "amore amore amore", maiuscole
 urlate, promesse esagerate. La scadenza founder è vera: si dice così.
+
+## Lessico — parliamo di mondi, non di prodotti
+
+SempreAddue non vende un prodotto: costruisce un posto. Il lessico da
+catalogo rompe l'incantesimo, quindi certe parole non entrano mai nei
+testi rivolti al pubblico (landing, social, email):
+
+| Vietato | Al suo posto |
+|---|---|
+| linea (fantasy/romantica) | *un mondo tutto vostro*, *un'altra strada* |
+| prodotto, servizio | *avventura*, *piccolo mondo*, *regalo* |
+| pacchetto | *tutto compreso*, *un prezzo solo* |
+| extra, add-on | *se volete aggiungerci di più*, *rendila ancora più vostra* |
+| lancio, novità di prodotto | *da oggi potete anche…* |
+| cliente | *voi due*, *chi la riceve* (eccezione: "non da cliente" nel founder) |
+| realizziamo/produciamo | *costruiamo*, *disegnamo*, *inventiamo* |
+
+"Immagina la vostra avventura" è un **nome proprio**, non una categoria:
+si introduce come un luogo («un mondo che non esiste da nessuna parte,
+tranne che per voi due»), mai come una voce d'assortimento.
+
+**Eccezione voluta**: nel modulo d'ordine, nelle FAQ e nel riepilogo
+prezzi il registro resta pratico e nudo (prezzi chiari, meccanica del
+codice founder spiegata passo passo). Lì la trasparenza È l'emozione:
+fa parte del patto di sincerità del brand.

@@ -10,10 +10,10 @@ social/
   profile/       immagine profilo 1080×1080 (svg + png + webp)
   bio/           bio Instagram e TikTok pronte da incollare
   carousel-01/   "Cos'è SempreAddue" — 7 slide 1080×1350
-  carousel-02/   "Cosa realizziamo" (linea romantica) — 7 slide 1080×1350
+  carousel-02/   "Cosa costruiamo" (cuore romantico) — 7 slide 1080×1350
   carousel-03/   "Founder −50%" — 7 slide 1080×1350
   post-04-per-chi-ce-da-sempre/        post singolo 1080×1350 (fratelli, sorelle, amici)
-  post-05-immagina-la-vostra-avventura/ post singolo 1080×1350 (linea fantasy)
+  post-05-immagina-la-vostra-avventura/ post singolo 1080×1350 (il mondo fantasy)
   copy/          caption Instagram + versione TikTok per ogni contenuto
   hashtags/      i 25 hashtag, già in set pronti da copiare
   branding/      identità visiva: palette, font, griglia, regole
@@ -22,14 +22,15 @@ social/
 
 ## Ordine di pubblicazione consigliato
 1. **Carosello 01** — chi siamo, cos'è SempreAddue
-2. **Carosello 02** — cosa realizziamo (cuore romantico: anniversario, compleanno, proposta)
+2. **Carosello 02** — cosa costruiamo (cuore romantico: anniversario, compleanno, proposta)
 3. **Carosello 03** — promo founder −50% (scadenza reale 6 ottobre 2026)
 4. **Post 04** — "Per chi c'è da sempre": fratelli, sorelle, migliori amici
-5. **Post 05** — "Immagina la vostra avventura": lancio della linea fantasy
+5. **Post 05** — "Immagina la vostra avventura": il mondo fantasy
 
-La scala di priorità del brand: prima la linea romantica (è il cuore del
-prodotto), poi il legame di sempre, infine la linea fantasy come mondo a
-parte con il suo nome proprio.
+La scala di priorità del brand: prima il cuore romantico, poi il legame
+di sempre, infine il mondo fantasy — che ha un nome proprio e si
+racconta come un luogo, mai come una "linea" (vedi il lessico in
+`branding/identita-visiva.md`).
 
 ## Pubblicare un carosello
 1. Carica le `slide-01.png … slide-07.png` nell'ordine
