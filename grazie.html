@@ -39,8 +39,7 @@
         costruire la vostra avventura</span></li>
     </ol>
 
-    <p class="pay-trust" id="payTrust" hidden>💳 Pagamenti sicuri con PayPal —
-      <b id="payTrustHandle"></b></p>
+    <p class="pay-trust">💳 Pagamento sicuro — <b>PayPal</b></p>
 
     <a class="btn btn-ghost btn-lg" href="index.html#demo">Nel frattempo, gioca la demo</a>
 
@@ -50,12 +49,9 @@
          via email, gli inviate una richiesta di pagamento dall'app/sito
          PayPal ("Richiedi denaro") per l'importo esatto — un account PayPal
          personale incassa pagamenti "beni e servizi" senza bisogno di
-         partita IVA. Qui sotto solo un riferimento, non un bottone di paga. */
-      const PAYPAL_HANDLE = 'aielloemanuele@yahoo.it';
-      if (PAYPAL_HANDLE) {
-        document.getElementById('payTrustHandle').textContent = PAYPAL_HANDLE;
-        document.getElementById('payTrust').hidden = false;
-      }
+         partita IVA. L'indirizzo PayPal NON compare sul sito (scelta voluta):
+         arriva al cliente dentro la richiesta di pagamento PayPal stessa.
+         L'indirizzo è annotato in docs/LISTINO.md. */
 
       /* Stripe Payment Link — PRONTO MA SPENTO. Da riattivare quando aprirai
          la partita IVA e vorrai automatizzare l'incasso (Stripe in Italia
