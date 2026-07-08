@@ -108,8 +108,11 @@ def build_specs(brief):
                    f"1) idle warm smile; 2) bashful hand behind neck; 3) speaking open-hand gesture; "
                    f"4) thoughtful hand on chin; 5) amused arms crossed. Expressive on-model face. {GREEN} {NEG}"))
         specs.append(dict(name='ballo5', kind='char', frames=5, fh=312, aspect='16:9', green=True, ref=True,
-            prompt=f"{STYLE} Five-frame SHEET, one row: {P} and {S} embracing in a slow dance, tender "
-                   f"micro-movements chaining smoothly. Same two characters, consistent design. {GREEN} {NEG}"))
+            prompt=f"{STYLE} Sprite SHEET of EXACTLY five dancing poses in one horizontal row: {P} and {S} "
+                   f"embracing in a slow dance, tender micro-movements that chain smoothly. Each of the five "
+                   f"poses is a SEPARATE couple-figure with a WIDE vertical green gap between poses — poses "
+                   f"never overlap or touch horizontally. NO ground line, NO connecting shadow. Same two "
+                   f"characters, consistent design. {GREEN} {NEG}"))
     if brief.get('animale'):
         specs.append(dict(name='gatto', kind='char', frames=2, fh=240, aspect='16:9', green=True, ref=False,
             prompt=f"{STYLE} Two-frame SHEET, one row, of {brief['animale']} on the floor: 1) sleeping curled; "
