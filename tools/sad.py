@@ -502,7 +502,9 @@ def consegna(slug, push=False, senza_qa=False, base_url=None):
     os.makedirs(gdir, exist_ok=True)
     dest = os.path.join(gdir, f'{token}.html')
     shutil.copyfile(dist, dest)
-    url = f'{base_url}/g/{token}.html'
+    # Cloudflare Pages serve anche l'URL senza estensione (redirect 308 su
+    # quella con .html): generiamo direttamente il link pulito, niente redirect.
+    url = f'{base_url}/g/{token}'
 
     # 5. QR nella cartella dell'ordine (o in dist/ per gli ordini a file singolo)
     qr_path = None
@@ -533,9 +535,10 @@ def consegna(slug, push=False, senza_qa=False, base_url=None):
     if qr_path:
         print(f'   QR     {os.path.relpath(qr_path, ROOT)}')
 
-    # 7. pubblicazione: commit + push NELLA REPO GIOCHI (Cloudflare Pages, non Netlify).
-    #    Il QR e le NOTE restano nella repo del sito (clienti/ e dist/ sono privati/ignorati):
-    #    il QR codifica il link segreto, quindi non va mai in una repo pubblica.
+    # 7. pubblicazione: commit+push nella repo giochi (archivio/backup) +
+    #    deploy diretto su Cloudflare Pages (progetto "Direct Upload": NON è
+    #    collegato via Git-integration, quindi il solo push NON basta a
+    #    pubblicare — serve `wrangler pages deploy`, per questo lo eseguiamo qui).
     if push:
         subprocess.check_call(['git', 'add', dest], cwd=giochi_repo)
         subprocess.check_call(
@@ -543,9 +546,25 @@ def consegna(slug, push=False, senza_qa=False, base_url=None):
              '-c', 'user.name=SempreAddue',
              'commit', '-m', f'Consegna ordine {slug}'], cwd=giochi_repo)
         subprocess.check_call(['git', 'push', 'origin', 'HEAD:main'], cwd=giochi_repo)
-        print('   ✓ push nella repo giochi: Cloudflare Pages pubblica il link in ~1 minuto')
+        print('   ✓ push nella repo giochi (archivio/backup)')
+
+        assert os.environ.get('CLOUDFLARE_API_TOKEN'), (
+            'CLOUDFLARE_API_TOKEN non impostato: senza quello wrangler non può '
+            'pubblicare. Impostalo (vedi docs/CLOUDFLARE.md) e rilancia.')
+        env = dict(os.environ)
+        env.setdefault('CLOUDFLARE_ACCOUNT_ID', '209fe63f2d1d75aaa5279683e27d2866')
+        r = subprocess.call(
+            ['npx', '--yes', 'wrangler@latest', 'pages', 'deploy', '.',
+             '--project-name=sempreaddue-giochi', '--branch=main', '--commit-dirty=true'],
+            cwd=giochi_repo, env=env)
+        if r != 0:
+            sys.exit('✗ Push fatto ma il deploy Cloudflare è fallito: il gioco è '
+                      'salvato nella repo ma NON online. Controlla CLOUDFLARE_API_TOKEN '
+                      'e rilancia `wrangler pages deploy .` a mano dentro '
+                      f'{giochi_repo}, oppure ripeti la consegna con --push.')
+        print('   ✓ pubblicato su Cloudflare Pages: il link è già online')
     else:
-        print(f'   per pubblicare:  rilancia con --push (commit+push in {giochi_repo})')
+        print(f'   per pubblicare:  rilancia con --push (commit+push+deploy in {giochi_repo})')
 
 
 def preview():
