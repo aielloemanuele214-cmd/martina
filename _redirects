@@ -1,0 +1,5 @@
+# Giochi consegnati: ora vivono nella repo privata sempreaddue-giochi (Cloudflare Pages).
+# I vecchi link Netlify già consegnati ai clienti restano validi via 301 verso Cloudflare,
+# così nessun QR/regalo già dato smette di funzionare. NON aggiungere qui foto o dati privati.
+/g/88zf-fx57-w73x.html   https://sempreaddue-giochi.pages.dev/g/88zf-fx57-w73x   301
+/g/88zf-fx57-w73x        https://sempreaddue-giochi.pages.dev/g/88zf-fx57-w73x   301

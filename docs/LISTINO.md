@@ -30,7 +30,7 @@ form e sulla pagina Grazie è sempre lo stesso numero.
 
 | Voce | Contenuto | Lavoro | Prezzo |
 |---|---|---|---|
-| **L'Avventura** (unico pacchetto) | template occasione + **sprite dei due protagonisti inclusi** + nomi, dedica, data, testi delle 3 sorprese, finale, link + QR funzionante | ~30-45 min (form → `ordine.json`, build, QA automatica, Netlify+QR) + sprite | **19,50 €** fissi |
+| **L'Avventura** (unico pacchetto) | template occasione + **sprite dei due protagonisti inclusi** + nomi, dedica, data, testi delle 3 sorprese, finale, link + QR funzionante | ~30-45 min (form → `ordine.json`, build, QA automatica, Cloudflare+QR) + sprite | **19,50 €** fissi |
 | add-on **Foto reali** | fotografie della coppia nei popup, a foto | pochi min/foto | 1 € l'una (0,50 € col codice founder) |
 | add-on **Personaggi in più** | sprite aggiuntivi: gatto, amici, famiglia (pipeline `sad art`) | ~15-30 min/sprite | 6 € a sprite (3 € col codice founder) |
 | add-on **Biglietto QR da stampare** | PDF di design elegante pronto per la stampa | ~10 min | 10 € (5 € col codice founder) |
@@ -53,7 +53,7 @@ organizzato (listino, form, consegna automatizzata) non sostituisce
 l'obbligo. Per questo il form mostra solo un **totale stimato** ("preventivo
 indicativo") e il pagamento resta un passo manuale, fuori dal sito:
 
-1. Leggi la richiesta (email di Netlify Forms o cartella `clienti/<slug>/`)
+1. Leggi la richiesta (email di FormSubmit o cartella `clienti/<slug>/`)
 2. Confermi via email/Instagram il preventivo finale (extra, eventuali
    sconti/accordi particolari)
 3. Mandi una richiesta di pagamento **PayPal** ("Richiedi denaro" dall'app,
@@ -63,9 +63,10 @@ indicativo") e il pagamento resta un passo manuale, fuori dal sito:
    tipicamente un'attività registrata per attivare i pagamenti live
 4. Ricevuto il pagamento, parti con `sad.py consegna <slug> --push`
 
-L'email PayPal di riferimento è configurata in `grazie.html`
-(`PAYPAL_HANDLE`, oggi `aielloemanuele@yahoo.it` — solo un riferimento di
-fiducia mostrato al cliente, il pagamento lo inizi sempre tu).
+L'indirizzo PayPal **non compare sul sito** (scelta di privacy): `grazie.html`
+mostra solo «💳 Pagamento sicuro — PayPal». Il cliente vede l'indirizzo dentro
+la richiesta di pagamento che gli mandi tu. Riferimento interno: l'incasso va
+sull'account PayPal di `aielloemanuele@yahoo.it`.
 
 **Soglia di test auto-imposta:** i primi 5-10 ordini, poi stop e valutazione
 col commercialista prima di continuare — per restare genuinamente
@@ -75,23 +76,25 @@ un'attività occasionale e non scivolare in "abituale" senza accorgersene.
 
 Lo scaffolding Stripe è già pronto in `grazie.html`, solo spento
 (`STRIPE_PAYMENT_LINK = ''`). Per riattivarlo quando avrai la partita IVA:
-1. Su dashboard.stripe.com crea 4 prodotti: **L'Avventura** 19,50 €
-   (quantità fissa 1), **Foto reale** 0,50 € (quantità regolabile 0-10),
-   **Personaggio extra** 3 € (0-5), **Biglietto QR** 5 € (0-1).
+1. Su dashboard.stripe.com crea 4 prodotti a **prezzo pieno**: **L'Avventura**
+   19,50 € (quantità fissa 1), **Foto reale** 1 € (quantità regolabile 0-10),
+   **Personaggio extra** 6 € (0-5), **Biglietto QR** 10 € (0-1).
 2. Crea un coupon **FOUNDER26** al −50% e abilita "Consenti codici
    promozionali" sul Payment Link (il cliente lo inserisce nel checkout).
 3. Crea il **Payment Link** con i 4 prodotti e quantità regolabile sugli extra.
 4. Incolla l'URL nella costante `STRIPE_PAYMENT_LINK` in `grazie.html`:
    il bottone "Completa il pagamento" ricompare da solo.
-5. Alla fine del periodo founder: disattiva il coupon FOUNDER26, porta gli
-   extra al listino pieno (1 / 6 / 10 €) e aggiorna i testi del sito.
+5. Alla fine del periodo founder (6 ottobre 2026): disattiva il coupon
+   FOUNDER26. I prezzi dei prodotti restano quelli pieni; aggiorna solo i
+   testi del sito che citano lo sconto founder.
 
 ## Flusso operativo per ordine
 1. `python3 tools/sad.py ordine <slug>` → cartella `clienti/<slug>/`
 2. compila `ordine.json` + foto in `foto/` (dal template dell'occasione scelta)
-3. `python3 tools/sad.py consegna <slug> --push` → build, QA, copia in
-   `g/<token>.html`, QR in `clienti/<slug>/qr-<slug>.png`, link in `NOTE.md`,
-   commit e push (con il repo collegato a Netlify il push = pubblicazione)
+3. `python3 tools/sad.py consegna <slug> --push` → build, QA, pubblicazione
+   nella repo privata `sempreaddue-giochi` (Cloudflare Pages, fuori da
+   Netlify), QR in `clienti/<slug>/`, link in `NOTE.md`. Vedi
+   `README-PRODUZIONE.md` per i dettagli.
 
 ## Demo commerciale
 `dist/stanza-demo.html` (salvataggio disattivato, watermark @sempreaddue nel

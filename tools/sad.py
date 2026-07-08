@@ -11,8 +11,9 @@ Comandi:
     new <slug> [--da pack]    scaffolding di un nuovo pack (copia di un pack esistente)
     qa [file.html]            suite QA Playwright parametrica (default: stanza.html)
     consegna <slug> [--push] [--senza-qa] [--base-url URL]
-                              build + QA + copia in g/<token>.html + QR pronto da
-                              inviare; con --push committa e pubblica (deploy Netlify)
+                              build + QA + gioco in g/<token>.html + QR pronto da
+                              inviare; con --push pubblica su Cloudflare Pages
+                              (repo privata sempreaddue-giochi, fuori da Netlify)
     preview                   server locale per provare stanza.html e dist/
     art                       rigenera gli sprite da assets/_src/ (tools/sprites.py)
     music <in.mp3> <out.mp3>  loop strumentale senza stacco (tools/music.py)
