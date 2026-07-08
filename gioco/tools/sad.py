@@ -313,6 +313,17 @@ def pack_asset_map(pack, manifest):
     return amap
 
 
+def _engine_version():
+    """Versione del motore = prima voce di engine/CHANGELOG.md (es. '## 1.4.0').
+    Così lo stamp nell'HTML non si disallinea mai dal changelog."""
+    p = os.path.join(ROOT, 'engine', 'CHANGELOG.md')
+    for line in open(p, encoding='utf-8'):
+        m = re.match(r'##\s*([0-9]+\.[0-9]+\.[0-9]+)', line.strip())
+        if m:
+            return m.group(1)
+    return '0.0.0'
+
+
 def build_base(pack=DEFAULT_PACK):
     validate_pack(pack, silenzioso=True)
     manifest, config, room, sprites, story = load_pack(pack)
@@ -326,6 +337,7 @@ def build_base(pack=DEFAULT_PACK):
             parts.append(gen_assets_js(sprites, story))
             parts.append(gen_story_js(story))
     html = ''.join(parts)
+    html = html.replace('{{ENGINE_VERSION}}', _engine_version())
     # incorpora gli asset effettivamente usati (asset del pack + fallback globali)
     for name, (rel, mime) in pack_asset_map(pack, manifest).items():
         ph = '{{B64:%s}}' % name
