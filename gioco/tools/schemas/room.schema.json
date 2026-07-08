@@ -38,9 +38,28 @@
         }
       }
     },
+    "walk": {
+      "type": "object",
+      "required": [
+        "w",
+        "h",
+        "data"
+      ],
+      "properties": {
+        "w": {
+          "type": "integer"
+        },
+        "h": {
+          "type": "integer"
+        },
+        "data": {
+          "type": "string"
+        }
+      }
+    },
     "colliders": {
       "type": "array",
-      "minItems": 1,
+      "minItems": 0,
       "items": {
         "type": "object",
         "required": [
@@ -80,7 +99,7 @@
       "properties": {
         "pts": {
           "type": "array",
-          "minItems": 3,
+          "minItems": 0,
           "items": {
             "type": "array",
             "items": {

@@ -27,13 +27,36 @@ function prepColliders(){
   });
 }
 prepColliders();
-function blocked(px,py){
-  for(const c of COLLIDERS){
-    if(pointInPoly(px,py,c.pts)) return true;
-    if(nearPoly(px*c.sqz,py,c.spts,RY)) return true;
+/* Bitmap di calpestabilità (opzionale): se il pack fornisce ROOM.walk (griglia
+   1-bit ricavata dalla maschera di collisione della stanza generata), il motore
+   usa quella — collisioni pixel-accurate coerenti con l'arte, senza poligoni a
+   mano. Se assente, si usano i COLLIDERS poligonali (compatibilità). */
+let WALK=null, WALKW=0, WALKH=0;
+(function initWalk(){
+  const w=(typeof ROOM!=='undefined') && ROOM.walk;
+  if(w && w.data){
+    const raw=atob(w.data); WALKW=w.w; WALKH=w.h;
+    WALK=new Uint8Array(raw.length);
+    for(let i=0;i<raw.length;i++) WALK[i]=raw.charCodeAt(i);
   }
+})();
+function walkableAt(px,py){
+  const gx=Math.floor(px/100*WALKW), gy=Math.floor(py/100*WALKH);
+  if(gx<0||gy<0||gx>=WALKW||gy>=WALKH) return false;
+  const idx=gy*WALKW+gx;
+  return (WALK[idx>>3]>>(idx&7))&1;
+}
+function blocked(px,py){
   const B=ROOM.bounds;
   if(px<B.xMin||px>B.xMax||py<B.yMin||py>B.yMax) return true;
+  if(WALK){
+    if(!walkableAt(px,py)) return true;
+  } else {
+    for(const c of COLLIDERS){
+      if(pointInPoly(px,py,c.pts)) return true;
+      if(nearPoly(px*c.sqz,py,c.spts,RY)) return true;
+    }
+  }
   // lui è un ostacolo morbido (ellittico anche lui)
   if(Math.hypot((px-npc.x)*.5, py-npc.y)<1.7) return true;
   return false;
