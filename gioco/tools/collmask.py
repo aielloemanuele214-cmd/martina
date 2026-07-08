@@ -44,7 +44,7 @@ def _walkable(mask_path):
 
 
 def derive(mask_path):
-    """Ritorna dict: {walk:{w,h,data}, bounds:{...}, gatto:[x,y], calpestabile_pct}."""
+    """Ritorna dict: {walk:{w,h,data}, grid(GRID×GRID bool), bounds, gatto, calpestabile_pct}."""
     walk, H = _walkable(mask_path)
     ys, xs = np.where(walk)
     if len(xs) == 0:
@@ -56,21 +56,82 @@ def derive(mask_path):
     dist = ndimage.distance_transform_edt(walk)
     cy, cx = np.unravel_index(int(np.argmax(dist)), dist.shape)
     gatto = [round(float(cx) / H * 100, 1), round(float(cy) / H * 100, 1)]
-    # griglia GRID×GRID, bit-pack LSB-first (combacia col decode del motore)
     small = np.array(Image.fromarray((walk * 255).astype(np.uint8))
                      .resize((GRID, GRID), Image.NEAREST)) > 128
     packed = np.packbits(small.flatten(), bitorder='little')
     data = base64.b64encode(packed.tobytes()).decode()
     return {
         'walk': {'w': GRID, 'h': GRID, 'data': data},
-        'bounds': bounds, 'gatto': gatto,
+        'grid': small, 'bounds': bounds, 'gatto': gatto,
         'calpestabile_pct': round(100 * float(walk.mean()), 1),
     }
 
 
-def spawn_point(info):
-    """Un punto di spawn sicuro: il centro dell'area libera più ampia (come il gatto)."""
-    return list(info['gatto'])
+def _cells(grid):
+    ys, xs = np.where(grid)
+    return xs, ys
+
+
+def spread(grid, k):
+    """k punti calpestabili ben distanziati (farthest-point sampling), in % 0-100.
+    Serve a piazzare oggetti/personaggi lontani tra loro e tutti raggiungibili."""
+    G = grid.shape[0]
+    xs, ys = _cells(grid)
+    if len(xs) == 0:
+        return []
+    # parti dal centro dell'area libera (max distanza dai bordi)
+    dist = ndimage.distance_transform_edt(grid)
+    cy, cx = np.unravel_index(int(np.argmax(dist)), dist.shape)
+    chosen = [(cx, cy)]
+    pool = np.stack([xs, ys], 1).astype(np.float32)
+    while len(chosen) < k and len(pool):
+        ch = np.array(chosen, np.float32)
+        d = np.min(((pool[:, None, :] - ch[None, :, :]) ** 2).sum(2), 1)
+        i = int(np.argmax(d))
+        chosen.append((int(pool[i, 0]), int(pool[i, 1])))
+    return [[round(c[0] / G * 100, 1), round(c[1] / G * 100, 1)] for c in chosen]
+
+
+def entrance(grid):
+    """Punto d'ingresso del protagonista: cella calpestabile nella fascia bassa
+    (vicino alla camera) più centrata orizzontalmente. In % 0-100."""
+    G = grid.shape[0]
+    xs, ys = _cells(grid)
+    if len(xs) == 0:
+        return [50.0, 50.0]
+    ymax = ys.max()
+    band = ys >= ymax - max(2, int(G * 0.12))     # ultimo ~12% calpestabile
+    bx, by = xs[band], ys[band]
+    j = int(np.argmin(np.abs(bx - G / 2)))         # il più centrale in x
+    return [round(float(bx[j]) / G * 100, 1), round(float(by[j]) / G * 100, 1)]
+
+
+def reachable(grid, start, targets):
+    """BFS: dallo start (x%,y%) quali target (lista di [x%,y%]) sono raggiungibili."""
+    G = grid.shape[0]
+    def cell(p): return (min(G - 1, int(p[0] / 100 * G)), min(G - 1, int(p[1] / 100 * G)))
+    from collections import deque
+    seen = np.zeros_like(grid, bool)
+    sx, sy = cell(start)
+    if not grid[sy, sx]:
+        # aggancia alla cella calpestabile più vicina
+        xs, ys = _cells(grid)
+        j = int(np.argmin((xs - sx) ** 2 + (ys - sy) ** 2)); sx, sy = xs[j], ys[j]
+    q = deque([(sx, sy)]); seen[sy, sx] = True
+    while q:
+        x, y = q.popleft()
+        for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+            nx, ny = x + dx, y + dy
+            if 0 <= nx < G and 0 <= ny < G and grid[ny, nx] and not seen[ny, nx]:
+                seen[ny, nx] = True; q.append((nx, ny))
+    out = []
+    for t in targets:
+        tx, ty = cell(t)
+        # raggiungibile se una cella calpestabile vista è entro ~2 celle dal target
+        r = 2
+        block = seen[max(0, ty - r):ty + r + 1, max(0, tx - r):tx + r + 1]
+        out.append(bool(block.any()))
+    return out
 
 
 if __name__ == '__main__':

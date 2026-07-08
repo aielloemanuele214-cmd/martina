@@ -21,7 +21,9 @@ import base64, json, os, ssl, sys, urllib.request, subprocess
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(ROOT, 'tools'))
 import sprites  # helper: load_rgba_keyed, cells_grid, pack (nessun side-effect all'import)
+import collmask  # derivazione collisioni + posizionamento dalla maschera
 from PIL import Image
+import numpy as np
 
 CA = '/root/.ccr/ca-bundle.crt'
 CTX = ssl.create_default_context(cafile=CA) if os.path.exists(CA) else ssl.create_default_context()
@@ -138,17 +140,146 @@ def build_specs(brief):
     specs.append(dict(name='pop_finestra', kind='popup', aspect='1:1', green=False,
         prompt=f"{STYLE} Square close-up of the view outside the window at night for this scene, atmospheric, "
                f"same palette as the room. No text. {NEG}"))
+    # maschera di collisione della stanza (per le collisioni pixel-accurate)
+    specs.append(dict(name='mask', kind='mask', aspect='1:1', green=False, ref_room=True,
+        prompt="Redraw this room as a FLAT STENCIL COLLISION MASK: solid filled silhouettes ONLY. "
+               "ABSOLUTELY NO line art, NO outlines, NO plank lines, NO patterns, NO text, NO shading — "
+               "every area is ONE uniform flat fill. Two colors: PURE WHITE #FFFFFF for the entire "
+               "walkable floor (rugs, mats and small floor items are WHITE/walkable); PURE BLACK #000000 "
+               "for everything a person cannot walk through — walls, the whole top back-wall band, and the "
+               "FOOTPRINT of volumetric furniture (fireplace, bookshelf, sofa, armchair, tables, chairs), "
+               "plus everything outside the room. Big solid black shapes for furniture, big solid white for floor."))
     return specs
 
 def process_char(srcpng, name, frames, fh, outdir):
+    """Ritorna (fw, n_celle) oppure None se il foglio ha troppe poche celle."""
     rgba = sprites.load_rgba_keyed(srcpng)
     cells = sprites.cells_grid(rgba)
-    if len(cells) != frames:
-        print(f'  ⚠ {name}: trovate {len(cells)} celle invece di {frames} — controlla il foglio')
-        if len(cells) < frames: return None
-        cells = cells[:frames]
+    n = len(cells)
+    if n != frames:
+        print(f'  ⚠ {name}: trovate {n} celle invece di {frames}')
+        if n < 2: return None
+        if n > frames: cells = cells[:frames]; n = frames
     sprites.OUT = outdir
-    return sprites.pack(cells, fh, name)
+    return sprites.pack(cells, fh, name), n
+
+
+def _ritratti(spr_dir, fw, prefix='pt_secondario', sheet='secondario_emo', fh=262, N=5):
+    """Ritaglia i ritratti (volto) dai frame del foglio impacchettato."""
+    im = Image.open(os.path.join(spr_dir, sheet + '.png')).convert('RGBA')
+    for i in range(N):
+        fr = im.crop((i * fw, 0, (i + 1) * fw, fh)); al = np.array(fr)[:, :, 3]
+        ys, xs = np.where(al > 10)
+        if not len(ys): continue
+        top = ys.min(); side = min(fw, fh - top)
+        head = al[top:top + side // 2]; hx = np.where(head.any(axis=0))[0]
+        cx = (hx.min() + hx.max()) // 2; x0 = max(0, min(fw - side, cx - side // 2))
+        fr.crop((x0, top, x0 + side, top + side)).resize((128, 128), Image.LANCZOS)\
+          .save(os.path.join(spr_dir, f'{prefix}_{i}.png'))
+
+def _pt_gatto(spr, fw):
+    im = Image.open(os.path.join(spr, 'gatto.png')).convert('RGBA')
+    fr = im.crop((fw, 0, 2 * fw, im.size[1])); al = np.array(fr)[:, :, 3]
+    ys, xs = np.where(al > 10)
+    if len(ys):
+        fr.crop((int(xs.min()), int(ys.min()), int(xs.max()) + 1, int(ys.max()) + 1))\
+          .resize((128, 128), Image.LANCZOS).save(os.path.join(spr, 'pt_gatto.png'))
+
+
+def _wire_sprites(cfg, dims, ncells, produced):
+    KEEP = {'bg', 'bg2'}                    # fondali: sempre presenti, il motore li usa
+    sp = json.load(open(os.path.join(cfg, 'sprites.json'), encoding='utf-8'))
+    sheets, pers = sp['sheets'], sp['personaggi']
+    for key in list(sheets.keys()):
+        a = sheets[key].get('asset')
+        if a in KEEP:
+            continue
+        if a in dims:
+            sheets[key]['fw'] = dims[a]
+            if a in ncells: sheets[key]['n'] = ncells[a]
+        else:
+            del sheets[key]                 # protagonista_left (mirroring) o foglio non generato (modulare)
+    pers.get('player', {}).get('fogli', {}).pop('left', None)
+    for role in ('npc', 'coppia', 'gatto'):
+        if role in pers and pers[role].get('foglio') not in sheets:
+            del pers[role]
+    # il ballo può uscire con meno pose del previsto: adatta la seq ai frame reali
+    cop = pers.get('coppia')
+    if cop and cop.get('foglio') in sheets:
+        n = sheets[cop['foglio']].get('n', 5)
+        seq = list(range(n)) + list(range(n - 2, 0, -1))   # ping-pong 0..n-1..1
+        cop.setdefault('anim', {})['seq'] = seq
+    json.dump(sp, open(os.path.join(cfg, 'sprites.json'), 'w'), ensure_ascii=False, indent=2)
+
+
+def _wire_manifest(pack_dir, produced, dims):
+    man = json.load(open(os.path.join(pack_dir, 'manifest.json'), encoding='utf-8'))
+    amap = {n: f'sprites/{n}.png' for n in
+            ('protagonista_down', 'protagonista_up', 'protagonista_right',
+             'secondario_emo', 'ballo5', 'gatto') if n in dims}
+    if 'secondario_emo' in dims:
+        amap.update({f'pt_secondario_{i}': f'sprites/pt_secondario_{i}.png' for i in range(5)})
+    if 'gatto' in dims: amap['pt_gatto'] = 'sprites/pt_gatto.png'
+    amap['bg'] = 'rooms/stanza_bg.png'; amap['bg2'] = 'rooms/stanza_bg2.png'
+    for n in ('pop_vinile', 'pop_tv', 'pop_scrivania', 'pop_finestra'):
+        if n in produced: amap[n] = f'popup/{n}.png'
+    man['assets'] = amap
+    json.dump(man, open(os.path.join(pack_dir, 'manifest.json'), 'w'), ensure_ascii=False, indent=2)
+
+
+def _lontano(a, b, m=14):
+    return (a[0] - b[0]) ** 2 + (a[1] - b[1]) ** 2 >= m * m
+
+
+def _clamp(p, B, m=1.0):
+    """Riporta il punto dentro i limiti stanza (la griglia 128 può cadere di una
+    frazione fuori dai bounds full-res: il motore taglierebbe la cella)."""
+    return [min(max(p[0], B['xMin'] + m), B['xMax'] - m),
+            min(max(p[1], B['yMin'] + m), B['yMax'] - m)]
+
+
+def _wire_pack(pack_dir, dims, ncells, produced):
+    cfg = os.path.join(pack_dir, 'config')
+    info = collmask.derive(os.path.join(pack_dir, 'assets', '_src', 'mask.png'))
+    grid = info['grid']; pts = collmask.spread(grid, 6)
+    B = info['bounds']
+    cat_pos = _clamp(info['gatto'], B)            # centro dell'area libera più ampia → gatto
+    spawn = _clamp(collmask.entrance(grid), B)    # ingresso: basso-centro (non sul gatto)
+    # NPC e indizi dai punti ben distanziati, saltando quelli troppo vicini a spawn/gatto
+    far = [p for p in pts[1:] if _lontano(p, spawn) and _lontano(p, cat_pos)] or pts[1:]
+    npc_pos = _clamp(far[0] if far else spawn, B)
+    clues = [_clamp(p, B) for p in (far[1:4] + far + pts)[:3]]
+    # room.json: collisioni dalla maschera
+    room = json.load(open(os.path.join(cfg, 'room.json'), encoding='utf-8'))
+    room['bounds'] = info['bounds']; room['colliders'] = []
+    room['dietroLetto'] = {'pts': []}; room['walk'] = info['walk']
+    json.dump(room, open(os.path.join(cfg, 'room.json'), 'w'), ensure_ascii=False, indent=2)
+    # characters.json: spawn/npc/gatto su punti calpestabili
+    ch = json.load(open(os.path.join(cfg, 'characters.json'), encoding='utf-8'))
+    ch['posizioni']['protagonista'] = {'x': spawn[0], 'y': spawn[1]}
+    ch['posizioni']['secondario'] = {'x': npc_pos[0], 'y': npc_pos[1]}
+    if 'gatto' in dims:
+        ch.setdefault('gatto', {}); ch['gatto']['x'] = cat_pos[0]; ch['gatto']['y'] = cat_pos[1]
+    json.dump(ch, open(os.path.join(cfg, 'characters.json'), 'w'), ensure_ascii=False, indent=2)
+    # interactions.json: i 3 indizi su punti calpestabili distanziati
+    it = json.load(open(os.path.join(cfg, 'interactions.json'), encoding='utf-8'))
+    for s, (x, y) in zip(it.get('sorprese', []), clues):
+        s['x'] = x; s['y'] = y; s['ax'] = x; s['ay'] = y; s['ri'] = 6
+    json.dump(it, open(os.path.join(cfg, 'interactions.json'), 'w'), ensure_ascii=False, indent=2)
+    _wire_sprites(cfg, dims, ncells, produced)
+    _wire_manifest(pack_dir, produced, dims)
+    # QA raggiungibilità
+    reach = collmask.reachable(grid, spawn, clues + [npc_pos])
+    labels = ['indizio 1', 'indizio 2', 'indizio 3', 'NPC']
+    print('\n🧭 QA raggiungibilità (dallo spawn):')
+    allok = True
+    for lab, ok in zip(labels, reach):
+        print(f'   {"✓" if ok else "✗"} {lab}'); allok = allok and ok
+    print(f'   calpestabile {info["calpestabile_pct"]}% · spawn {spawn} · gatto {cat_pos}')
+    if not allok:
+        print('   ⚠ punti non raggiungibili: la stanza è troppo chiusa, rigenera stanza+maschera')
+    return allok
+
 
 def main(slug, only=None, model=DEFAULT_MODEL):
     key = _key()
@@ -165,28 +296,34 @@ def main(slug, only=None, model=DEFAULT_MODEL):
     if only: specs = [s for s in specs if s['name'] in only]
     ref_prota = os.path.join(src, 'protagonista_down.png')
     ref_room = os.path.join(rooms, 'stanza_bg.png')
-    dims = {}
+    dims = {}; ncells = {}; produced = set()
     n_before = _count()
     for s in specs:
         print(f'· genero {s["name"]} …')
         if s['kind'] == 'char':
             raw = os.path.join(src, s['name'] + '.png')
-            gen(model, key, s['prompt'], raw, aspect=s.get('aspect'),
-                ref=ref_prota if s.get('ref') else None)
-            d = process_char(raw, s['name'], s['frames'], s['fh'], spr)
-            if d: dims[s['name']] = d
+            gen(model, key, s['prompt'], raw, aspect=s.get('aspect'), ref=ref_prota if s.get('ref') else None)
+            r = process_char(raw, s['name'], s['frames'], s['fh'], spr)
+            if r: dims[s['name']] = r[0]; ncells[s['name']] = r[1]; produced.add(s['name'])
         elif s['kind'] == 'room':
             out = os.path.join(rooms, s['name'] + '.png')
-            gen(model, key, s['prompt'], out, aspect='1:1',
-                ref=ref_room if s.get('ref_room') else None)
-            Image.open(out).convert('RGB').resize((1024, 1024), Image.LANCZOS).save(out)
+            gen(model, key, s['prompt'], out, aspect='1:1', ref=ref_room if s.get('ref_room') else None)
+            Image.open(out).convert('RGB').resize((1024, 1024), Image.LANCZOS).save(out); produced.add(s['name'])
         elif s['kind'] == 'popup':
             out = os.path.join(pops, s['name'] + '.png')
             gen(model, key, s['prompt'], out, aspect='1:1')
-            Image.open(out).convert('RGB').resize((512, 512), Image.LANCZOS).save(out)
-    if dims:
-        print('\nDIMS (aggiorna packs/%s/config/sprites.json con fw):' % slug)
-        print(' ', json.dumps(dims))
+            Image.open(out).convert('RGB').resize((512, 512), Image.LANCZOS).save(out); produced.add(s['name'])
+        elif s['kind'] == 'mask':
+            gen(model, key, s['prompt'], os.path.join(src, 'mask.png'), aspect='1:1',
+                ref=ref_room if s.get('ref_room') else None); produced.add('mask')
+
+    if 'secondario_emo' in dims:
+        _ritratti(spr, dims['secondario_emo'])
+    if 'gatto' in dims:
+        _pt_gatto(spr, dims['gatto'])
+    if not only:
+        _wire_pack(pack_dir, dims, ncells, produced)   # collisioni, posizioni, cablaggio, QA
+
     print(f'\n💸 immagini generate stavolta: {_count()-n_before} · registro: {USAGE}')
     _report()
 
