@@ -13,31 +13,54 @@ import os
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 U = os.path.join(ROOT, 'assets', '_src') + os.sep
 OUT = os.path.join(ROOT, 'assets', 'sprites')
-THR = 10          # somma RGB massima per "nero di sfondo"
+THR = 10          # somma RGB massima per "nero di sfondo" (chroma nero, legacy)
+GREEN_MIN = 90    # G minimo per considerare un pixel "verde chroma"
+GREEN_DOM = 40    # di quanto G deve superare R e B
 BLEED_IT = 10     # iterazioni di color-bleed
 
+def _chroma_mask(a):
+    """Maschera dei pixel di SFONDO + tipo di chroma rilevato dai bordi.
+    Auto-detect: se il bordo è verde acceso → chroma key VERDE (consigliato:
+    ritaglio pulito anche con capelli/vestiti scuri, che col nero erano il
+    punto critico); altrimenti → NERO puro (sorgenti legacy). Ritorna anche una
+    versione 'larga' della maschera per i seed di regioni intrappolate."""
+    r, g, bl = a[:, :, 0], a[:, :, 1], a[:, :, 2]
+    green = (g >= GREEN_MIN) & (g - r >= GREEN_DOM) & (g - bl >= GREEN_DOM)
+    bordo = np.concatenate([green[0, :], green[-1, :], green[:, 0], green[:, -1]])
+    if bordo.mean() > 0.5:                       # bordo prevalentemente verde
+        largo = (g >= 60) & (g - r >= 20) & (g - bl >= 20)   # verde anche sfumato
+        return green, largo, 'verde'
+    s = a.sum(axis=2)
+    return s <= THR, s <= 30, 'nero'
+
 def load_rgba_keyed(path, seeds=()):
-    """alpha=0 per il nero puro collegato al bordo. `seeds`: punti (x,y) dentro
-    regioni di sfondo INTRAPPOLATO (es. tra i due corpi nel ballo) da rimuovere
-    esplicitamente — tutto il resto (ombre della chioma, occhi, pieghe) resta opaco."""
+    """alpha=0 per lo sfondo chroma (verde acceso o nero puro) collegato al bordo.
+    `seeds`: punti (x,y) dentro regioni di sfondo INTRAPPOLATO (es. tra i due
+    corpi nel ballo) da rimuovere esplicitamente — tutto il resto (ombre della
+    chioma, occhi, pieghe) resta opaco."""
     im = Image.open(path).convert('RGB')
     a = np.array(im).astype(np.int32)
-    s = a.sum(axis=2)
-    dark = s <= THR
-    lbl, nlab = ndimage.label(dark)
+    key, key_largo, modo = _chroma_mask(a)
+    lbl, nlab = ndimage.label(key)
     border = set(lbl[0, :]) | set(lbl[-1, :]) | set(lbl[:, 0]) | set(lbl[:, -1])
     border.discard(0)
     bg = np.isin(lbl, list(border))
     if seeds:
-        # connettività stretta (s<=30): la colonna di sfondo è nero pieno, così il
-        # flood non "scappa" lungo cinture/pieghe scure dei vestiti
-        enc = (s <= 30) & ~bg
+        # maschera 'larga' per non far scappare il flood lungo pieghe/cinture
+        enc = key_largo & ~bg
         l2, _ = ndimage.label(enc)
         for (sx, sy) in seeds:
             lab = l2[sy, sx]
             if lab: bg |= (l2 == lab)
-            else: print(f'  [seed ({sx},{sy}) fuori da una regione scura: ignorato]')
+            else: print(f'  [seed ({sx},{sy}) fuori da una regione di sfondo: ignorato]')
     rgba = np.dstack([a.astype(np.uint8), np.where(bg, 0, 255).astype(np.uint8)])
+    if modo == 'verde':
+        # spill suppression: sui pixel OPACHI con alone verdastro, riporta il
+        # verde al massimo tra R e B → via le frange verdi ai bordi del soggetto
+        op = rgba[:, :, 3] > 0
+        r0, g0, b0 = rgba[:, :, 0], rgba[:, :, 1], rgba[:, :, 2]
+        spill = op & (g0 > r0) & (g0 > b0)
+        g0[spill] = np.maximum(r0[spill], b0[spill])
     # color-bleed: copia i colori dei vicini opachi dentro i pixel trasparenti
     rgb = rgba[:, :, :3].astype(np.float32)
     alpha = rgba[:, :, 3] > 0
