@@ -12,3 +12,6 @@ package-lock.json
 gioco/clienti/*
 !gioco/clienti/demo.json
 !gioco/clienti/esempio.json
+
+# Pack di prova/scratch (rigenerabili, non vanno versionati)
+gioco/packs/test-*/
