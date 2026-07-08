@@ -42,7 +42,9 @@ Caroselli, post, bio, hashtag, kit di branding e i generatori delle grafiche.
 | File | A cosa serve |
 |---|---|
 | `README-PRODUZIONE.md` | come costruire e consegnare un'avventura, passo-passo |
+| `STANDARD-PRODUZIONE.md` | **standard unici**: misure, chroma verde, terminologia, stage/layout |
 | `GENERAZIONE-ASSET.md` | specifiche per generare gli sprite/asset con l'AI |
+| `PROMPT-NANOBANANA.md` | prompt pronti per generare gli asset con Gemini/Nano Banana |
 | `CHECKLIST-QA.md` | i controlli sul telefono prima di consegnare |
 | `LISTINO.md` | catalogo, prezzi, modello founder, pagamenti PayPal |
 | `RISPOSTA-FOUNDER.md` | email pronta per chi richiede il codice founder |

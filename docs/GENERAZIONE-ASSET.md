@@ -1,4 +1,9 @@
 # SEMPREADDUE — Istruzioni ufficiali del gioco per la generazione asset
+
+> 📐 Misure, chroma e layout autorevoli in **`STANDARD-PRODUZIONE.md`**.
+> Terminologia: **protagonista** (giocabile) · **secondario** (NPC). Fondo di
+> ritaglio: **verde #00FF00** (le stanze no: piena scena).
+
 ### Documento da integrare al PROMPT MASTER · v1.0 (motore 1.3.x)
 
 > **Regola di precedenza:** in caso di conflitto tra il PROMPT MASTER e questo
@@ -70,9 +75,9 @@ zuccheroso. Qualità premium: ogni elemento sembra dello stesso mondo.
 ## 3. SPECIFICHE ASSET (sostituiscono la sezione OUTPUT del prompt master)
 
 ### Regole globali per OGNI foglio sprite
-- **Sfondo NERO PIENO (#000000)** — niente trasparenza, niente scacchiera
+- **Sfondo VERDE CHROMA PIENO (#00FF00)** — niente trasparenza, niente scacchiera
   (vera o disegnata), niente glow/alone/sfumatura attorno alle figure.
-  Lo scontorno lo fa la nostra pipeline automatica.
+  Il verde è lontano da pelle/capelli/vestiti: il ritaglio è pulito anche sui toni scuri. Lo scontorno lo fa la pipeline automatica.
 - Frame **in fila orizzontale, equidistanti**, stessa scala in ogni frame,
   personaggio centrato, **piedi sempre visibili** e appoggiati alla stessa
   linea di terra.
@@ -82,7 +87,7 @@ zuccheroso. Qualità premium: ogni elemento sembra dello stesso mondo.
 - Dimensione sorgente consigliata: **1536×1024** per i fogli personaggio,
   **1254×1254 o più** per la stanza.
 
-### 3.1 LEI — protagonista giocabile · 4 fogli (uno per direzione)
+### 3.1 PROTAGONISTA — personaggio giocabile · 4 fogli (uno per direzione)
 Un foglio per ciascuna vista: **fronte, destra, schiena, sinistra**
 (niente specchiature: la sinistra va disegnata, non riflessa).
 Ogni foglio contiene **4 frame, in quest'ordine**:
@@ -94,8 +99,8 @@ Ogni foglio contiene **4 frame, in quest'ordine**:
 | 3 | **Passo B** | gamba sinistra avanti (il motore alterna A-idle-B-idle) |
 | 4 | **Interazione** | si china / allunga una mano verso un oggetto |
 
-### 3.2 LUI — secondo protagonista (NPC) · 1 foglio
-Lui **non cammina**: sta in piedi nella stanza. Un solo foglio frontale con
+### 3.2 SECONDARIO — NPC (secondo personaggio) · 1 foglio
+Il secondario **non cammina**: sta in piedi nella stanza. Un solo foglio frontale con
 **5 frame emotivi, in quest'ordine**:
 
 1. **Idle** (sorriso rilassato) · 2. **Imbarazzo** (mano dietro la nuca)
@@ -136,9 +141,9 @@ che si vede fuori).
 
 ### 3.7 Consegna — nomi dei file
 ```
-lei_sheet.png     4 direzioni × 4 frame (un file per direzione va bene:
-                  lei_fronte / lei_destra / lei_schiena / lei_sinistra)
-lui_sheet.png     5 frame emotivi
+protagonista_sheet.png  4 direzioni × 4 frame (un file per direzione va bene:
+                  protagonista_fronte / _destra / _schiena / _sinistra)
+secondario_sheet.png    5 frame emotivi
 ballo_sheet.png   5 pose di coppia
 gatto_sheet.png   2 frame (se previsto)
 stanza_bg.png     frame 1 ambientazione
@@ -153,15 +158,14 @@ pop_finestra.png  popup del segreto finestra
 
 ## 4. Che fine fanno gli asset (perché le regole contano)
 
-La pipeline automatica (`sad art`) prende i fogli su fondo nero e:
-scontorna col flood-fill (il nero collegato al bordo sparisce, le ombre
-scure interne restano), impacchetta i frame in celle a larghezza garantita,
+La pipeline automatica (`sad art`) prende i fogli su fondo verde chroma e:
+scontorna il verde chroma collegato al bordo (tutto il resto resta opaco), impacchetta i frame in celle a larghezza garantita,
 allinea i piedi, genera i ritratti dai frame di lui, comprime tutto dentro
 un unico HTML. Le collisioni dei mobili si disegnano in gioco (`?editor`).
 
 Conseguenze pratiche:
-- capelli/vestiti **quasi neri vanno bene** (le ombre interne sopravvivono),
-  ma il fondo deve essere **nero puro uniforme**;
+- capelli/vestiti **scuri sono al sicuro** (il verde è lontano dai loro toni),
+  ma il fondo deve essere **verde chroma #00FF00 uniforme**;
 - ogni sporco tra i frame (frammenti, puntini, pezzi del frame vicino)
   finisce nel gioco: i fogli devono essere puliti;
 - se i frame non sono equidistanti o i piedi non sono sulla stessa linea,
@@ -171,12 +175,12 @@ Conseguenze pratiche:
 
 ## 5. CONTROLLO QUALITÀ (da verificare prima di consegnare)
 
-- [ ] Tutti i fogli su **fondo nero pieno**, zero trasparenze/scacchiere/glow
+- [ ] Tutti i fogli su **fondo verde chroma #00FF00**, zero trasparenze/scacchiere/glow
 - [ ] Frame equidistanti, stessa scala, piedi sulla stessa linea di terra
-- [ ] Lei: 4 direzioni × 4 frame nell'ordine idle/passoA/passoB/interazione
-- [ ] Lui: 5 frame emotivi nell'ordine indicato, viso curato (diventa ritratto)
+- [ ] Protagonista: 4 direzioni × 4 frame nell'ordine idle/passoA/passoB/interazione
+- [ ] Secondario: 5 frame emotivi nell'ordine indicato, viso curato (diventa ritratto)
 - [ ] Ballo: 5 pose concatenabili avanti-e-indietro, proporzioni coerenti
-- [ ] Lui poco più alto di lei, in TUTTI i fogli (ballo compreso)
+- [ ] Secondario poco più alto del protagonista (se previsto dalla coppia), in TUTTI i fogli (ballo compreso)
 - [ ] Stanza: 2 frame identici tranne gli elementi animati; loop discreto
 - [ ] 3 oggetti indizio + NPC + animale + finestra visibili, separati,
       raggiungibili a piedi; spazio libero per il ballo
