@@ -91,11 +91,12 @@ def build_specs(brief):
             "only the characters on flat green, nothing else. Feet at the same height in each frame.")
     order = ("Frame order left-to-right: 1) idle; 2) walk step A; 3) walk step B; 4) interaction, "
              "reaching one hand toward an unseen off-frame object (do NOT draw any object).")
-    # per il protagonista: 4 direzioni; 'down'=frontale, 'up'=di spalle, right/left=profili
+    # Solo 3 direzioni: 'down'=frontale, 'up'=di spalle, 'right'=profilo destro.
+    # La SINISTRA non si genera: il motore la ottiene riflettendo la destra
+    # (mirroring) — meno sprite, meno costi, orientamento sempre corretto.
     faces = {'protagonista_down': 'strictly FRONT-FACING (facing the camera) in all four frames, do not turn to profile',
              'protagonista_up':   'seen from BEHIND (back-facing) in all four frames',
-             'protagonista_right':'in RIGHT-SIDE profile, walking to the right',
-             'protagonista_left': 'in LEFT-SIDE profile, walking to the left'}
+             'protagonista_right':'in RIGHT-SIDE profile, walking to the right'}
     specs = []
     for name, face in faces.items():
         specs.append(dict(name=name, kind='char', frames=4, fh=242, aspect='16:9', green=True,

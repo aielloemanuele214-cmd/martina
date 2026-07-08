@@ -2340,18 +2340,28 @@ function glyph(ch,xPct,yPct,sizeWorld,alpha,dyCanvas){
   ctx.drawImage(CACHE.glyphs[ch], cvx(xPct*PCT)-d/2, cvy(yPct*PCT)-d/2+(dyCanvas||0), d, d);
   ctx.globalAlpha=1;
 }
-// Frame del giocatore dalla macchina a stati + stati dichiarati nel pack
-// (nessun flip: art dedicata per ogni direzione)
+// Frame del giocatore dalla macchina a stati + stati dichiarati nel pack.
+// Mirroring intelligente: se una direzione orizzontale non ha foglio dedicato,
+// si riflette l'altra (left = right ribaltato). Front/back restano sempre
+// dedicati (non riflettibili). Così bastano 3 fogli (down/up/right): il
+// personaggio si orienta sempre verso il punto toccato, senza "camminare
+// all'indietro" e senza sprite duplicati.
 function playerFrame(){
-  const P=SPR.player, key=P.fogli[player.dir];
+  const P=SPR.player;
+  let dir=player.dir, flip=false, key=P.fogli[dir];
+  if(!key){
+    if(dir==='left'  && P.fogli.right){ key=P.fogli.right; flip=true; }
+    else if(dir==='right' && P.fogli.left){ key=P.fogli.left; flip=true; }
+    else key=P.fogli.down || P.fogli[Object.keys(P.fogli)[0]];   // fallback sicuro
+  }
   const st=P.stati[player.state]||P.stati.idle;
   if(st.seq){
     const i=Math.floor(player.animT/st.dur)%st.seq.length;
-    return {key, frame:st.seq[i], dy:0};
+    return {key, frame:st.seq[i], dy:0, flip};
   }
   // frame fisso + eventuale respiro (movimento verticale, non cambio frame)
   const dy=st.bobFreq?Math.sin(clock*st.bobFreq)*-(st.bobAmp??1):0;
-  return {key, frame:st.frame||0, dy};
+  return {key, frame:st.frame||0, dy, flip};
 }
 
 function render(){
@@ -2421,7 +2431,7 @@ function render(){
       const a=inBehind(player.x,player.y)?.45:1;
       const pf=playerFrame();
       blitShadow(player.x, player.y, H_LEI*.45, a);
-      blit(pf.key, pf.frame, player.x, player.y, false, a, pf.dy);
+      blit(pf.key, pf.frame, player.x, player.y, pf.flip, a, pf.dy);
     }});
   }
   ents.sort((a,b)=>a.y-b.y).forEach(e=>e.draw());
