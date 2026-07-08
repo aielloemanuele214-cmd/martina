@@ -3,39 +3,48 @@
 Il prodotto è **un solo file**: `stanza.html`. Contiene motore, grafica e
 audio incorporati (base64), funziona offline e su qualunque hosting statico.
 
-## Struttura del repo (dopo F1 — engine a moduli + pack)
+## Dove sei — cartella `gioco/`
+
+Tutta la produzione vive nella cartella **`gioco/`** della repo. **Lancia i
+comandi da lì**: `cd gioco`, poi `python3 tools/sad.py …` (i percorsi qui
+sotto sono relativi a `gioco/`).
 
 ```
-engine/src/                   17 moduli ordinati del motore (css, motore, story, render…)
-engine/CHANGELOG.md           versioni del motore (semver)
-packs/martina/                IL CONTENUTO: manifest + config/*.json
-  config/settings.json          nomi, data, musica, salvataggio
-  config/characters.json        posizioni, gatto
-  config/dialogues.json         battute di lui, messaggio del gatto
-  config/interactions.json      i 3 indizi (posizioni, arrivo, testi) + finestra
-  config/cutscenes.json         ballo, contratto
-  config/endings.json           finale
-  config/room.json              collisioni, limiti, zona dietro-letto
-  config/sprites.json           fogli sprite: dimensioni, stati di animazione, altezze
-  config/story.json             IL COMPORTAMENTO: eventi (quando/se/fai), scene a
+gioco/
+  engine/src/                 18 moduli ordinati del motore (css, motore, story, render…)
+  engine/CHANGELOG.md         versioni del motore (semver)
+  packs/martina/              IL CONTENUTO: manifest + config/*.json
+    config/settings.json        nomi, data, musica, salvataggio
+    config/characters.json      posizioni, gatto
+    config/dialogues.json       battute di lui, messaggio del gatto
+    config/interactions.json    i 3 indizi (posizioni, arrivo, testi) + finestra
+    config/cutscenes.json       ballo, contratto
+    config/endings.json         finale
+    config/room.json            collisioni, limiti, zona dietro-letto
+    config/sprites.json         fogli sprite: dimensioni, stati di animazione, altezze
+    config/story.json           IL COMPORTAMENTO: eventi (quando/se/fai), scene a
                                 passi (ballo, contratto, fusa), dialoghi, segreti,
                                 finali a regole — tutto dati, zero codice
-assets/                       asset finali (sprites/ rooms/ popup/ audio/) + _src/ (fogli grezzi)
-tools/sad.py                  CLI unica: build-base [pack] · build <cliente> · check [pack]
-tools/sprites.py              pipeline: scontorno + packing + ritratti da assets/_src/
-clienti/*.json                personalizzazioni per cliente (sostituiscono il CONFIG)
-dist/                         file consegnabili
-legacy/prototipo/             primo prototipo (non più usato)
+  packs/{romantica,compleanno,proposta,ultima-orbita}/   template per occasione
+  assets/                     asset finali (sprites/ rooms/ popup/ audio/) + _src/ (fogli grezzi)
+  tools/sad.py                CLI unica: build-base [pack] · build <cliente> · check [pack]
+  tools/sprites.py            pipeline: scontorno + packing + ritratti da assets/_src/
+  clienti/                    ordini: solo demo/esempio in pubblico; i reali sono privati
+  dist/                       file consegnabili (non versionati)
 ```
 
-Comandi (CLI unica `tools/sad.py`):
+Il resto della repo: il **sito** è alla radice, il **marketing** in `social/`,
+i **documenti** in `docs/`, lo **storico** in `archivio/`. Mappa completa nel
+`README.md` alla radice.
+
+Comandi (CLI unica `tools/sad.py`, da dentro `gioco/`):
 
 ```bash
 python3 tools/sad.py ordine <slug>          # nuovo ordine: crea clienti/<slug>/ (json+foto+note)
 python3 tools/sad.py validate clienti/<slug>/ordine.json   # schema + lint (id, file, limiti)
 python3 tools/sad.py build clienti/<slug>/ordine.json      # → dist/stanza-<slug>.html (valida prima)
 python3 tools/sad.py qa [dist/stanza-<slug>.html]          # suite QA Playwright (13 verifiche)
-python3 tools/sad.py consegna <slug> [--push]              # build+QA+g/<token>.html+QR: consegna in un comando
+python3 tools/sad.py consegna <slug> [--push]              # build+QA+gioco+QR: pubblica su Cloudflare (repo giochi privata)
 python3 tools/sad.py build-base [pack]      # moduli engine + pack + asset → stanza.html
 python3 tools/sad.py validate [pack]        # schema + lint dell'intero pack
 python3 tools/sad.py new <slug> --da martina# nuovo pack (copia da uno esistente)
@@ -45,7 +54,8 @@ python3 tools/sad.py music in.mp3 out.mp3 --strumentale    # loop senza stacco
 ```
 
 Dipendenze di build: `pip install -r tools/requirements.txt` (+ `npm i playwright` per la QA).
-(`python3 build.py …` continua a funzionare: delega a `sad.py`.)
+Per pubblicare i giochi serve il token Cloudflare in ambiente
+(`CLOUDFLARE_API_TOKEN`, salvato in `~/.config/sempreaddue/cloudflare.env`).
 
 Il motore non contiene alcun contenuto: per cambiare stanza, collisioni,
 testi, indizi o sprite si toccano SOLO i JSON del pack e gli asset.
@@ -158,7 +168,7 @@ Per il ballo: 5 pose di coppia abbracciata, fila orizzontale.
   finale con contatore giorni e contatore segreti.
 - Audio: mp3 in loop senza stacco (Warm Memories in gioco, Paper Lantern nel
   menù), effetti soft Web Audio, valzer synth nel ballo.
-- Il prossimo passo architetturale è descritto in `ARCHITETTURA.md` (F1+).
+- Il piano architetturale originale (ormai realizzato) è in `archivio/ARCHITETTURA.md`.
 
 ## Prompt di generazione sprite (da adattare)
 

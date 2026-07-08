@@ -1,3 +1,6 @@
+> ⚠️ **Documento storico** — conservato per riferimento, non più operativo.
+> Per lavorare oggi vedi il `README.md` alla radice e `docs/`.
+
 # Architettura Scalabile — Piattaforma "Sempreaddue"
 ### Da gioco-regalo singolo a engine commerciale di mini avventure grafiche personalizzate
 

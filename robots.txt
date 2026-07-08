@@ -1,7 +1,9 @@
 User-agent: *
 Allow: /
-Disallow: /dist/
-Disallow: /g/
+# Cartelle di lavoro, non pagine del sito: fuori dai motori di ricerca.
+Disallow: /gioco/
+Disallow: /archivio/
+Disallow: /docs/
 Disallow: /social/
 
 Sitemap: https://sempreaddue.netlify.app/sitemap.xml

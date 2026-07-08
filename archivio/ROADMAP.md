@@ -1,3 +1,6 @@
+> ⚠️ **Documento storico** — conservato per riferimento, non più operativo.
+> Per lavorare oggi vedi il `README.md` alla radice e `docs/`.
+
 # Sempreaddue · "Una stanza tutta per voi" — Roadmap verso la Gold
 
 ## Stato attuale: v1.0.0-rc1 — ~95% verso la 1.0

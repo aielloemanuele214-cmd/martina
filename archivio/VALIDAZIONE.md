@@ -1,3 +1,6 @@
+> ⚠️ **Documento storico** — conservato per riferimento, non più operativo.
+> Per lavorare oggi vedi il `README.md` alla radice e `docs/`.
+
 # Checklist di Validazione — Specifica Ufficiale (v1.0.0-rc4)
 
 ## Bug Fix rc4 — Pulizia sprite, gameplay e rifinitura animazioni

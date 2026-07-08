@@ -18,7 +18,7 @@ Comandi:
     art                       rigenera gli sprite da assets/_src/ (tools/sprites.py)
     music <in.mp3> <out.mp3>  loop strumentale senza stacco (tools/music.py)
 
-Architettura (vedi ARCHITETTURA.md):
+Architettura (storico: archivio/ARCHITETTURA.md · guida: docs/README-PRODUZIONE.md):
   engine/src/   moduli ordinati per numero: il builder li concatena.
   packs/<slug>/ manifest.json + config/*.json = TUTTO il contenuto.
                 Il motore non conosce alcun contenuto specifico.
