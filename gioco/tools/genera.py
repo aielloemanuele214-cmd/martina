@@ -22,6 +22,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(ROOT, 'tools'))
 import sprites  # helper: load_rgba_keyed, cells_grid, pack (nessun side-effect all'import)
 import collmask  # derivazione collisioni + posizionamento dalla maschera
+import qc         # controllo qualità visivo automatico (art director AI)
 from PIL import Image
 import numpy as np
 
@@ -30,6 +31,8 @@ CTX = ssl.create_default_context(cafile=CA) if os.path.exists(CA) else ssl.creat
 USAGE = os.path.expanduser('~/.config/sempreaddue/gemini-usage.tsv')
 ENV = os.path.expanduser('~/.config/sempreaddue/gemini.env')
 DEFAULT_MODEL = 'gemini-3.1-flash-image'
+PRO_MODEL = 'gemini-3-pro-image'      # escalation quando flash non convince il QC
+MAX_QC = int(os.environ.get('SAD_QC_RETRY', '3'))   # tentativi per asset prima di arrendersi
 COST = {'gemini-3.1-flash-image': 0.04, 'gemini-2.5-flash-image': 0.04, 'gemini-3-pro-image': 0.13}
 
 # ---- Style Bible (invariato: il DNA visivo SempreAddue) ----
@@ -41,6 +44,11 @@ GREEN = ("Placed on a SOLID PURE #00FF00 GREEN SCREEN, perfectly flat, hard-edge
   "no gradient, no green light spilling on the subject.")
 NEG = ("Avoid: blur, anti-aliased fuzzy edges, glow, 3D render look, text, watermark, extra limbs, "
   "feet cut off, inconsistent proportions between frames.")
+# Gli sfondi sono un PALCO vuoto: ogni essere vivo è uno sprite separato, mai dipinto qui.
+NOLIVING = ("CRITICAL: the scene is completely EMPTY of any living being — absolutely NO people, "
+  "NO human figures or silhouettes, NO cats, NO dogs, NO animals or pets anywhere. Only "
+  "architecture, furniture and inanimate objects. Living things are separate sprites, never "
+  "painted into this image.")
 
 def _key():
     if os.environ.get('GEMINI_API_KEY'): return os.environ['GEMINI_API_KEY']
@@ -84,6 +92,31 @@ def gen(model, key, prompt, dest, aspect=None, ref=None):
             return True
     raise SystemExit('nessuna immagine: ' + json.dumps(d)[:300])
 
+def gen_qc(model, key, prompt, dest, aspect, ref, qckind, qcfmt, qcref=None):
+    """Genera CON controllo qualità: genera → giudica → se bocciato rigenera con i
+    difetti in prompt, fino a MAX_QC tentativi; all'ultimo tentativo passa al modello
+    pro (più preciso). Ritorna (ok, verdetto). Così ogni asset esce corretto sia
+    tecnicamente sia esteticamente prima di entrare nella build."""
+    cur, last = prompt, None
+    for att in range(1, MAX_QC + 1):
+        m = model if att < MAX_QC else PRO_MODEL          # ultimo colpo: modello pro
+        gen(m, key, cur, dest, aspect=aspect, ref=ref)
+        if not qckind:
+            return True, None
+        v = qc.judge(qckind, dest, key, ref_path=qcref, **(qcfmt or {}))
+        last = v
+        if v['ok']:
+            print(f'    ✓ qc {qckind} (tentativo {att}/{MAX_QC}, {m.split("-")[-2]})')
+            return True, v
+        dif = '; '.join(v['difetti'])[:200]
+        print(f'    ✗ qc {qckind} [{att}/{MAX_QC}]: {dif}')
+        corr = v.get('correzione') or 'Fix all listed defects.'
+        cur = (prompt + "\n\nIMPORTANT — the previous attempt was REJECTED by quality control "
+               "for these defects: " + ' | '.join(v['difetti']) +
+               f". You MUST correct them now: {corr}")
+    print(f'    ⚠ {qckind}: ancora imperfetto dopo {MAX_QC} tentativi — segnalato per revisione')
+    return False, last
+
 # ---- specifiche degli asset: come costruire il prompt e come processare ----
 def build_specs(brief):
     P, S = brief['protagonista'], brief.get('secondario', '')
@@ -100,17 +133,27 @@ def build_specs(brief):
              'protagonista_up':   'seen from BEHIND (back-facing) in all four frames',
              'protagonista_right':'in RIGHT-SIDE profile, walking to the right'}
     specs = []
+    dirdesc = {'protagonista_down': 'frontal', 'protagonista_up': 'back-facing',
+               'protagonista_right': 'right-side profile'}
     for name, face in faces.items():
         specs.append(dict(name=name, kind='char', frames=4, fh=242, aspect='16:9', green=True,
             ref=(name != 'protagonista_down'),  # gli altri usano il down come riferimento
+            qckind='sheet', qcfmt=dict(n=4,
+                desc=f"{dirdesc[name]} walk cycle: 1) idle, 2) walk step A, 3) walk step B, "
+                     f"4) interaction reaching one hand — ALL standing, NO sitting/crouching"),
             prompt=f"{STYLE} A walk-cycle sprite SHEET of {P}, {face}. {tech} {order} "
+                   f"Every frame is STANDING on both feet (never sitting, kneeling or crouching). "
                    f"Identical character design in every frame. {GREEN} {NEG}"))
     if S:
         specs.append(dict(name='secondario_emo', kind='char', frames=5, fh=262, aspect='16:9', green=True, ref=True,
+            qckind='sheet', qcfmt=dict(n=5, desc="front-view acting: idle smile, bashful, speaking, "
+                     "thoughtful, amused — one standing figure per cell, same character"),
             prompt=f"{STYLE} Front-view acting SHEET of {S}, 5 frames in one row, stands still. Order: "
                    f"1) idle warm smile; 2) bashful hand behind neck; 3) speaking open-hand gesture; "
                    f"4) thoughtful hand on chin; 5) amused arms crossed. Expressive on-model face. {GREEN} {NEG}"))
         specs.append(dict(name='ballo5', kind='char', frames=5, fh=312, aspect='16:9', green=True, ref=True,
+            qckind='sheet', qcfmt=dict(n=5, desc="5 dancing poses of the SAME couple embracing, "
+                     "one couple-figure per cell, chained tender micro-movements"),
             prompt=f"{STYLE} Sprite SHEET of EXACTLY five dancing poses in one horizontal row: {P} and {S} "
                    f"embracing in a slow dance, tender micro-movements that chain smoothly. Each of the five "
                    f"poses is a SEPARATE couple-figure with a WIDE vertical green gap between poses — poses "
@@ -118,6 +161,8 @@ def build_specs(brief):
                    f"characters, consistent design. {GREEN} {NEG}"))
     if brief.get('animale'):
         specs.append(dict(name='gatto', kind='char', frames=2, fh=240, aspect='16:9', green=True, ref=False,
+            qckind='sheet', qcfmt=dict(n=2, desc="2 poses of the SAME cat: sleeping curled, then awake head "
+                     "raised — one cat per cell"),
             prompt=f"{STYLE} Two-frame SHEET, one row, of {brief['animale']} on the floor: 1) sleeping curled; "
                    f"2) awake head raised. Same animal. {GREEN} {NEG}"))
     # stanza (2 frame, niente verde) + popup
@@ -125,30 +170,39 @@ def build_specs(brief):
     objs = brief.get('oggetti', ['a record player', 'a TV with a blanket', 'a writing desk'])
     anim = brief.get('animati', 'candle flames flicker, small reflections shift')
     specs.append(dict(name='stanza_bg', kind='room', aspect='1:1', green=False,
-        prompt=f"{STYLE} Top-down 3/4 cozy-sim view, square room, full scene, NO green screen. {room}. "
+        qckind='room', qcfmt={},
+        prompt=f"{STYLE} Top-down 3/4 cozy-sim view, square room, EMPTY stage, NO green screen. {room}. "
                f"Back wall occupies the top ~20-25%; rest is warm walkable floor. Clearly separated: "
                f"clue object A ({objs[0]}) on the UPPER-LEFT; clue object B ({objs[1]}) on the RIGHT; "
                f"clue object C ({objs[2]}) LOWER-LEFT on furniture; an open central-bottom space; a "
-               f"mid-right spot to stand; a window on the back wall onto the night. Readable, lived-in. {NEG}"))
+               f"window on the back wall onto the night. Readable, lived-in but UNOCCUPIED. {NOLIVING} {NEG}"))
     specs.append(dict(name='stanza_bg2', kind='room', aspect='1:1', green=False, ref_room=True,
-        prompt=f"Take the reference room image and change ONLY the animated elements: {anim}. Keep "
-               f"everything else pixel-identical so the two frames loop without jitter. Square, same framing."))
+        qckind='room_anim', qcfmt=dict(anim=anim),
+        prompt=f"Take the reference room image and change ONLY these animated elements: {anim}. Do NOT add, "
+               f"remove or move anything else — every object, wall and piece of furniture stays pixel-identical "
+               f"and in the exact same place, so the two frames loop without jitter. Do NOT add any creature. "
+               f"Square, same framing. {NOLIVING}"))
     for i, key in enumerate(['pop_vinile', 'pop_tv', 'pop_scrivania'][:len(objs)]):
         specs.append(dict(name=key, kind='popup', aspect='1:1', green=False,
+            qckind='popup', qcfmt=dict(subj=objs[i]),
             prompt=f"{STYLE} Square intimate close-up of {objs[i]}, same world and candlelight as the room, "
                    f"cozy atmosphere. No text. {NEG}"))
     specs.append(dict(name='pop_finestra', kind='popup', aspect='1:1', green=False,
+        qckind='popup', qcfmt=dict(subj='the night view outside the window of this scene'),
         prompt=f"{STYLE} Square close-up of the view outside the window at night for this scene, atmospheric, "
                f"same palette as the room. No text. {NEG}"))
     # maschera di collisione della stanza (per le collisioni pixel-accurate)
     specs.append(dict(name='mask', kind='mask', aspect='1:1', green=False, ref_room=True,
+        qckind='mask', qcfmt={},
         prompt="Redraw this room as a FLAT STENCIL COLLISION MASK: solid filled silhouettes ONLY. "
                "ABSOLUTELY NO line art, NO outlines, NO plank lines, NO patterns, NO text, NO shading — "
-               "every area is ONE uniform flat fill. Two colors: PURE WHITE #FFFFFF for the entire "
+               "every area is ONE uniform flat fill. Exactly two colors: PURE WHITE #FFFFFF for the entire "
                "walkable floor (rugs, mats and small floor items are WHITE/walkable); PURE BLACK #000000 "
-               "for everything a person cannot walk through — walls, the whole top back-wall band, and the "
-               "FOOTPRINT of volumetric furniture (fireplace, bookshelf, sofa, armchair, tables, chairs), "
-               "plus everything outside the room. Big solid black shapes for furniture, big solid white for floor."))
+               "for everything a person cannot walk through — ALL walls, the ENTIRE top back-wall and sloped "
+               "ceiling band (this whole upper area MUST be black), the round window, and the FOOTPRINT of "
+               "volumetric furniture (fireplace, bookshelf, sofa, armchair, tables, chairs), plus everything "
+               "outside the room. There are NO people or animals in this room: draw NO character silhouettes. "
+               "Big solid black shapes for walls and furniture, big solid white for the floor."))
     return specs
 
 def process_char(srcpng, name, frames, fh, outdir):
@@ -240,15 +294,19 @@ def _clamp(p, B, m=1.0):
 
 def _wire_pack(pack_dir, dims, ncells, produced):
     cfg = os.path.join(pack_dir, 'config')
-    info = collmask.derive(os.path.join(pack_dir, 'assets', '_src', 'mask.png'))
-    grid = info['grid']; pts = collmask.spread(grid, 6)
+    # wall_top: fascia alta forzata a muro (i personaggi non fluttuano sulla parete)
+    info = collmask.derive(os.path.join(pack_dir, 'assets', '_src', 'mask.png'), wall_top=0.15)
+    grid = info['grid']; pts = collmask.spread(grid, 8)
     B = info['bounds']
-    cat_pos = _clamp(info['gatto'], B)            # centro dell'area libera più ampia → gatto
+    # zona-pavimento: solo la parte bassa della stanza ospita i personaggi (mai sul muro)
+    yfloor = B['yMin'] + 0.28 * (B['yMax'] - B['yMin'])
+    floor = [p for p in pts if p[1] >= yfloor] or pts
+    cat_pos = _clamp(info['gatto'] if info['gatto'][1] >= yfloor else floor[0], B)
     spawn = _clamp(collmask.entrance(grid), B)    # ingresso: basso-centro (non sul gatto)
-    # NPC e indizi dai punti ben distanziati, saltando quelli troppo vicini a spawn/gatto
-    far = [p for p in pts[1:] if _lontano(p, spawn) and _lontano(p, cat_pos)] or pts[1:]
+    # NPC e indizi dai punti ben distanziati sul pavimento, lontani da spawn/gatto
+    far = [p for p in floor if _lontano(p, spawn) and _lontano(p, cat_pos)] or floor
     npc_pos = _clamp(far[0] if far else spawn, B)
-    clues = [_clamp(p, B) for p in (far[1:4] + far + pts)[:3]]
+    clues = [_clamp(p, B) for p in (far[1:4] + far + floor)[:3]]
     # room.json: collisioni dalla maschera
     room = json.load(open(os.path.join(cfg, 'room.json'), encoding='utf-8'))
     room['bounds'] = info['bounds']; room['colliders'] = []
@@ -296,26 +354,35 @@ def main(slug, only=None, model=DEFAULT_MODEL):
     if only: specs = [s for s in specs if s['name'] in only]
     ref_prota = os.path.join(src, 'protagonista_down.png')
     ref_room = os.path.join(rooms, 'stanza_bg.png')
-    dims = {}; ncells = {}; produced = set()
+    dims = {}; ncells = {}; produced = set(); imperfetti = []
     n_before = _count()
     for s in specs:
         print(f'· genero {s["name"]} …')
+        qk, qf = s.get('qckind'), s.get('qcfmt')
         if s['kind'] == 'char':
             raw = os.path.join(src, s['name'] + '.png')
-            gen(model, key, s['prompt'], raw, aspect=s.get('aspect'), ref=ref_prota if s.get('ref') else None)
+            ok, _ = gen_qc(model, key, s['prompt'], raw, s.get('aspect'),
+                           ref_prota if s.get('ref') else None, qk, qf)
+            if not ok: imperfetti.append(s['name'])
             r = process_char(raw, s['name'], s['frames'], s['fh'], spr)
             if r: dims[s['name']] = r[0]; ncells[s['name']] = r[1]; produced.add(s['name'])
         elif s['kind'] == 'room':
             out = os.path.join(rooms, s['name'] + '.png')
-            gen(model, key, s['prompt'], out, aspect='1:1', ref=ref_room if s.get('ref_room') else None)
+            ok, _ = gen_qc(model, key, s['prompt'], out, '1:1',
+                           ref_room if s.get('ref_room') else None, qk, qf,
+                           qcref=ref_room if qk == 'room_anim' else None)
+            if not ok: imperfetti.append(s['name'])
             Image.open(out).convert('RGB').resize((1024, 1024), Image.LANCZOS).save(out); produced.add(s['name'])
         elif s['kind'] == 'popup':
             out = os.path.join(pops, s['name'] + '.png')
-            gen(model, key, s['prompt'], out, aspect='1:1')
+            ok, _ = gen_qc(model, key, s['prompt'], out, '1:1', None, qk, qf)
+            if not ok: imperfetti.append(s['name'])
             Image.open(out).convert('RGB').resize((512, 512), Image.LANCZOS).save(out); produced.add(s['name'])
         elif s['kind'] == 'mask':
-            gen(model, key, s['prompt'], os.path.join(src, 'mask.png'), aspect='1:1',
-                ref=ref_room if s.get('ref_room') else None); produced.add('mask')
+            ok, _ = gen_qc(model, key, s['prompt'], os.path.join(src, 'mask.png'), '1:1',
+                           ref_room if s.get('ref_room') else None, qk, qf)
+            if not ok: imperfetti.append(s['name'])
+            produced.add('mask')
 
     if 'secondario_emo' in dims:
         _ritratti(spr, dims['secondario_emo'])
@@ -324,7 +391,12 @@ def main(slug, only=None, model=DEFAULT_MODEL):
     if not only:
         _wire_pack(pack_dir, dims, ncells, produced)   # collisioni, posizioni, cablaggio, QA
 
-    print(f'\n💸 immagini generate stavolta: {_count()-n_before} · registro: {USAGE}')
+    if imperfetti:
+        print(f'\n⚠ asset ancora imperfetti dopo il QC ({MAX_QC} tentativi): {", ".join(imperfetti)}')
+        print('   → rilancia `sad genera {slug} --assets ' + ','.join(imperfetti) + '` o rivedi il brief')
+    else:
+        print('\n✅ QC visivo superato da tutti gli asset')
+    print(f'💸 immagini generate stavolta: {_count()-n_before} · registro: {USAGE}')
     _report()
 
 def _count():

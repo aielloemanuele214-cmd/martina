@@ -43,9 +43,15 @@ def _walkable(mask_path):
     return walk, H
 
 
-def derive(mask_path):
-    """Ritorna dict: {walk:{w,h,data}, grid(GRID×GRID bool), bounds, gatto, calpestabile_pct}."""
+def derive(mask_path, wall_top=0.0):
+    """Ritorna dict: {walk:{w,h,data}, grid(GRID×GRID bool), bounds, gatto, calpestabile_pct}.
+
+    `wall_top`: frazione superiore dell'immagine forzata NON calpestabile (rete di
+    sicurezza: in vista 3/4 dall'alto quella fascia è sempre muro/soffitto; evita
+    che i personaggi camminino sulla parete anche se la maschera l'ha sbagliata)."""
     walk, H = _walkable(mask_path)
+    if wall_top > 0:
+        walk[:int(H * wall_top)] = False
     ys, xs = np.where(walk)
     if len(xs) == 0:
         raise SystemExit('maschera senza area calpestabile: controlla la maschera')
