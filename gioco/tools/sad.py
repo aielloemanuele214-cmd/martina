@@ -16,6 +16,9 @@ Comandi:
                               (repo privata sempreaddue-giochi, fuori da Netlify)
     preview                   server locale per provare stanza.html e dist/
     art                       rigenera gli sprite da assets/_src/ (tools/sprites.py)
+    genera <slug> [--assets a,b] [--modello X]
+                              genera gli asset dell'ordine con Gemini (Nano Banana)
+                              su verde + pipeline; legge packs/<slug>/genera.json
     music <in.mp3> <out.mp3>  loop strumentale senza stacco (tools/music.py)
 
 Architettura (storico: archivio/ARCHITETTURA.md · guida: docs/README-PRODUZIONE.md):
@@ -618,6 +621,9 @@ if __name__ == '__main__':
         preview()
     elif cmd == 'art':
         sys.exit(subprocess.call([sys.executable, os.path.join(ROOT, 'tools', 'sprites.py')]))
+    elif cmd == 'genera' and len(sys.argv) >= 3:
+        sys.exit(subprocess.call([sys.executable, os.path.join(ROOT, 'tools', 'genera.py'),
+                                  *sys.argv[2:]]))
     elif cmd == 'music' and len(sys.argv) == 4:
         sys.exit(subprocess.call([sys.executable, os.path.join(ROOT, 'tools', 'music.py'),
                                   sys.argv[2], sys.argv[3]]))

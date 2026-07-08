@@ -1,0 +1,13 @@
+{
+  "_nota": "Brief artistico per `sad genera <slug>` — mettilo in packs/<slug>/genera.json. Descrizioni in inglese (i modelli rendono meglio).",
+
+  "protagonista": "a woman in her late 20s, warm olive skin, long chestnut wavy hair, mustard knit sweater, high-waist jeans, white sneakers, gentle confident posture",
+  "secondario": "a man in his early 30s, light-medium skin, short dark tidy hair and short beard, teal henley shirt, dark jeans, slightly taller",
+  "stanza": "cozy winter living room, lit fireplace, red sofa, bookshelf, snowy night outside the window",
+  "oggetti": [
+    "a vintage record player",
+    "a TV with a folded blanket",
+    "a wooden writing desk with a letter"
+  ],
+  "animati": "candle flames flicker, fireplace fire dances, snow falls softly outside the window"
+}

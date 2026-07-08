@@ -146,45 +146,50 @@ def pack(cells, fh, name):
     print(f'{name}: n={len(scaled)} fw={fw} fh={fh} {os.path.getsize(f"{OUT}/{name}.png")//1024}KB  celle-che-toccano-il-bordo={bad}')
     return fw
 
-# ---- LEI: 4 righe x 4 colonne ----
-rgba = load_rgba_keyed(U+'protagonista_sheet.png')
-cells = cells_grid(rgba)
-assert len(cells) == 16, f'attese 16 celle lei, trovate {len(cells)}'
-dims = {}
-for row, nome in enumerate(['protagonista_down', 'protagonista_right', 'protagonista_up', 'protagonista_left']):
-    dims[nome] = pack(cells[row*4:(row+1)*4], 242, nome)
+def main():
+    # ---- LEI: 4 righe x 4 colonne ----
+    rgba = load_rgba_keyed(U+'protagonista_sheet.png')
+    cells = cells_grid(rgba)
+    assert len(cells) == 16, f'attese 16 celle lei, trovate {len(cells)}'
+    dims = {}
+    for row, nome in enumerate(['protagonista_down', 'protagonista_right', 'protagonista_up', 'protagonista_left']):
+        dims[nome] = pack(cells[row*4:(row+1)*4], 242, nome)
 
-# ---- LUI: 5 frame emotivi ----
-rgba = load_rgba_keyed(U+'secondario_sheet.png')
-cells = cells_grid(rgba)
-assert len(cells) == 5, f'attese 5 celle lui, trovate {len(cells)}'
-dims['secondario_emo'] = pack(cells, 262, 'secondario_emo')
+    # ---- LUI: 5 frame emotivi ----
+    rgba = load_rgba_keyed(U+'secondario_sheet.png')
+    cells = cells_grid(rgba)
+    assert len(cells) == 5, f'attese 5 celle lui, trovate {len(cells)}'
+    dims['secondario_emo'] = pack(cells, 262, 'secondario_emo')
 
-# ---- BALLO: 5 frame di coppia ----
-# semi = sfondo intrappolato fra i due corpi (misurato sul foglio sorgente 1536x1024)
-BALLO_SEEDS = [(160,360),(160,470),(160,630),   # frame 1: colonna fra i corpi
-               (760,370),(760,600),             # frame 3: colonna fra i corpi
-               (1300,700)]                      # frame 5: varco fra le gambe
-rgba = load_rgba_keyed(U+'ballo_sheet.png', seeds=BALLO_SEEDS)
-cells = cells_grid(rgba)
-assert len(cells) == 5, f'attese 5 celle ballo, trovate {len(cells)}'
-dims['ballo5'] = pack(cells, 312, 'ballo5')
+    # ---- BALLO: 5 frame di coppia ----
+    # semi = sfondo intrappolato fra i due corpi (misurato sul foglio sorgente 1536x1024)
+    BALLO_SEEDS = [(160,360),(160,470),(160,630),   # frame 1: colonna fra i corpi
+                   (760,370),(760,600),             # frame 3: colonna fra i corpi
+                   (1300,700)]                      # frame 5: varco fra le gambe
+    rgba = load_rgba_keyed(U+'ballo_sheet.png', seeds=BALLO_SEEDS)
+    cells = cells_grid(rgba)
+    assert len(cells) == 5, f'attese 5 celle ballo, trovate {len(cells)}'
+    dims['ballo5'] = pack(cells, 312, 'ballo5')
 
-print('DIMS =', dims)
+    print('DIMS =', dims)
 
-# ---- RITRATTI di lui (dal foglio appena impacchettato) ----
-sheet = Image.open(f'{OUT}/secondario_emo.png').convert('RGBA')
-FW, FH, N = dims['secondario_emo'], 262, 5
-for i in range(N):
-    fr = sheet.crop((i*FW, 0, (i+1)*FW, FH))
-    al = np.array(fr)[:, :, 3]
-    ys, xs = np.where(al > 10)
-    top = ys.min()
-    side = min(FW, FH - top)
-    head = al[top:top + side//2]
-    hx = np.where(head.any(axis=0))[0]
-    cx = (hx.min() + hx.max()) // 2
-    x0 = max(0, min(FW - side, cx - side//2))
-    fr.crop((x0, top, x0 + side, top + side)).resize((128, 128), Image.LANCZOS)\
-      .save(f'{OUT}/pt_secondario_{i}.png')
-print('ritratti pt_secondario_0..4 rigenerati')
+    # ---- RITRATTI di lui (dal foglio appena impacchettato) ----
+    sheet = Image.open(f'{OUT}/secondario_emo.png').convert('RGBA')
+    FW, FH, N = dims['secondario_emo'], 262, 5
+    for i in range(N):
+        fr = sheet.crop((i*FW, 0, (i+1)*FW, FH))
+        al = np.array(fr)[:, :, 3]
+        ys, xs = np.where(al > 10)
+        top = ys.min()
+        side = min(FW, FH - top)
+        head = al[top:top + side//2]
+        hx = np.where(head.any(axis=0))[0]
+        cx = (hx.min() + hx.max()) // 2
+        x0 = max(0, min(FW - side, cx - side//2))
+        fr.crop((x0, top, x0 + side, top + side)).resize((128, 128), Image.LANCZOS)\
+          .save(f'{OUT}/pt_secondario_{i}.png')
+    print('ritratti pt_secondario_0..4 rigenerati')
+
+
+if __name__ == "__main__":
+    main()
