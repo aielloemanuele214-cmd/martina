@@ -122,7 +122,7 @@ non un ballo di coppia acrobatico. Proporzioni coerenti coi fogli singoli.
 ### 3.5 AMBIENTAZIONE · 2 immagini quadrate identiche tranne l'animazione
 - **Frame 1**: la stanza completa.
 - **Frame 2**: identico al pixel, **cambiano SOLO gli elementi animati**
-  (fiamme di candele, luci, schermi, stelle, riflessi…). Il motore alterna
+  (2–4, scelti per contesto: catalogo in `STANDARD-PRODUZIONE.md §6`). Il motore alterna
   i due frame con ritmo irregolare: l'effetto deve essere discreto e in
   loop perfetto.
 - La stanza deve contenere, ben visibili e separati tra loro:

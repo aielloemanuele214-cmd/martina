@@ -73,10 +73,37 @@ stanza, si calibrano collisioni e arrivi con l'editor in-gioco (`?editor`,
 vedi `README-PRODUZIONE.md`) e si salva il nuovo `room.json`. Da lì diventa
 un altro layout riutilizzabile — non si ricalibra a ogni ordine.
 
-## 6. Checklist di conformità (prima di `sad art`)
+## 6. Ambiente vivo — il SECONDO frame della stanza (obbligatorio)
+
+Ogni stanza va consegnata in **due frame** (`stanza_bg` + `stanza_bg2`). Il
+motore li alterna con un ritmo irregolare (sfarfallio tipo candela) e
+l'ambiente prende vita. Regole:
+
+- **Frame 2 = Frame 1 identico pixel per pixel, TRANNE gli elementi animati.**
+  Se cambia qualcos'altro (mobili, luci statiche, prospettiva) la stanza
+  "vibra". Perciò il Frame 2 si genera **partendo dal Frame 1** (in Nano Banana:
+  passa il Frame 1 come immagine input e chiedi di cambiare *solo* quegli
+  elementi).
+- **Scegli 2–4 elementi animati coerenti col contesto** e tienili **discreti**
+  (piccole differenze: una fiamma che si piega, un riflesso che scivola).
+
+**Catalogo — cosa animare per contesto:**
+| Contesto | Elementi animati (Frame 2) |
+|---|---|
+| Fuoco / calore | fiamme di candele, camino, lanterne, braci: la fiamma si piega/oscilla, il bagliore pulsa |
+| Acqua | mare, lago, piscina, fontana, pioggia sul vetro: increspature, riflessi che scivolano, gocce |
+| Vento / aria | tende, piante, alberi, erba, capelli, bucato, bandiere: leggera oscillazione |
+| Luce / tech | TV/schermo/monitor, insegne, lucine, giradischi: bagliore che sfarfalla, disco che gira |
+| Cielo / notte | stelle che brillano, luna, aurora, lucciole, neve/foglie che scendono fuori dalla finestra |
+| Fantasy / magia | scintille sospese, rune luminose, pozione che ribolle, cristalli che pulsano |
+
+Il resto della scena (mobili, pareti, oggetti-indizio) resta **congelato**.
+
+## 7. Checklist di conformità (prima di `sad art`)
 - [ ] Personaggi/oggetti su **verde `#00FF00`** pieno; stanze a piena scena
 - [ ] Stanza 1024², popup 512², frame generati 512² su verde
 - [ ] Piedi dei personaggi sulla **stessa linea di base**, frame equidistanti
 - [ ] I 3 indizi, NPC, animale e finestra nelle **zone dello stage standard**
+- [ ] **Frame 2 vivo**: identico al Frame 1 tranne 2–4 elementi animati coerenti col contesto
 - [ ] Stesso personaggio (viso/vestito/capelli) su TUTTI i fogli
 - [ ] Nomi file: `protagonista_*`, `secondario_*` (vedi `GENERAZIONE-ASSET.md`)
