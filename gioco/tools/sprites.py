@@ -83,9 +83,14 @@ def load_rgba_keyed(path, seeds=()):
     rgba[:, :, :3] = np.clip(rgb, 0, 255).astype(np.uint8)
     return rgba
 
-def cells_grid(rgba):
-    """Trova le celle (bande di righe -> segmenti di colonne) dai pixel opachi."""
+def cells_grid(rgba, expect=None):
+    """Trova le celle (bande di righe -> segmenti di colonne) dai pixel opachi.
+    Se `expect` è dato (numero di frame atteso), taglia i frame ai `expect-1`
+    varchi verticali più AMPI invece che a ogni gap: robusto quando una figura
+    ha un arto staccato (mano protesa) che altrimenti diventa una cella spuria."""
     op = rgba[:, :, 3] > 0
+    if expect and expect > 1:
+        return _cells_ncols(rgba, op, expect)
     rows = np.where(op.any(axis=1))[0]
     bands = []
     start = rows[0]
@@ -107,6 +112,30 @@ def cells_grid(rgba):
         sub = op[y0:y1+1, x0:x1+1]
         ys, xs = np.where(sub)
         out.append(Image.fromarray(rgba[y0+ys.min():y0+ys.max()+1, x0+xs.min():x0+xs.max()+1]))
+    return out
+
+def n_bands(rgba):
+    """Numero di BANDE orizzontali di pixel opachi (righe di uno sheet a griglia)."""
+    rows = np.where((rgba[:, :, 3] > 0).any(axis=1))[0]
+    if len(rows) == 0:
+        return 0
+    return 1 + int(np.sum(np.diff(rows) > 8))
+
+def _cells_ncols(rgba, op, n):
+    """Divide la riga di sprite in ESATTAMENTE n celle, tagliando ai n-1 varchi
+    verticali più ampi tra colonne opache (robusto agli arti staccati)."""
+    cols = np.where(op.any(axis=0))[0]
+    if len(cols) <= n:
+        return [Image.fromarray(rgba)]
+    gaps = sorted(((cols[i] - cols[i - 1], i) for i in range(1, len(cols))),
+                  reverse=True)[:n - 1]
+    cuts = sorted(i for _, i in gaps)
+    out, start = [], 0
+    for c in cuts + [len(cols)]:
+        seg = cols[start:c]; start = c
+        x0, x1 = int(seg[0]), int(seg[-1])
+        sub = op[:, x0:x1 + 1]; ys, xs = np.where(sub)
+        out.append(Image.fromarray(rgba[ys.min():ys.max() + 1, x0 + xs.min():x0 + xs.max() + 1]))
     return out
 
 def footcx(im):

@@ -163,8 +163,10 @@ def build_specs(brief):
         specs.append(dict(name='gatto', kind='char', frames=2, fh=240, aspect='16:9', green=True, ref=False,
             qckind='sheet', qcfmt=dict(n=2, desc="2 poses of the SAME cat: sleeping curled, then awake head "
                      "raised — one cat per cell"),
-            prompt=f"{STYLE} Two-frame SHEET, one row, of {brief['animale']} on the floor: 1) sleeping curled; "
-                   f"2) awake head raised. Same animal. {GREEN} {NEG}"))
+            prompt=f"{STYLE} SHEET of EXACTLY TWO cells in ONE SINGLE HORIZONTAL ROW, side by side "
+                   f"(NOT a 2x2 grid, NOT stacked, NEVER more than two): {brief['animale']} on the floor — "
+                   f"left cell 1) sleeping curled; right cell 2) awake head raised. The SAME single animal in "
+                   f"both cells, wide green gap between them. {GREEN} {NEG}"))
     # stanza (2 frame, niente verde) + popup
     room = brief.get('stanza', 'cozy candle-lit room')
     objs = brief.get('oggetti', ['a record player', 'a TV with a blanket', 'a writing desk'])
@@ -210,6 +212,12 @@ def process_char(srcpng, name, frames, fh, outdir):
     rgba = sprites.load_rgba_keyed(srcpng)
     cells = sprites.cells_grid(rgba)
     n = len(cells)
+    if n > frames:
+        if sprites.n_bands(rgba) > 1:    # griglia multi-riga: prendi la prima riga
+            cells = cells[:frames]       # (ordine di lettura: alto→basso, sx→dx)
+        else:                            # riga unica sovra-segmentata (arto staccato)
+            cells = sprites.cells_grid(rgba, expect=frames)
+        n = len(cells)
     if n != frames:
         print(f'  ⚠ {name}: trovate {n} celle invece di {frames}')
         if n < 2: return None
@@ -296,20 +304,41 @@ def _wire_pack(pack_dir, dims, ncells, produced):
     cfg = os.path.join(pack_dir, 'config')
     # wall_top: fascia alta forzata a muro (i personaggi non fluttuano sulla parete)
     info = collmask.derive(os.path.join(pack_dir, 'assets', '_src', 'mask.png'), wall_top=0.15)
-    grid = info['grid']; pts = collmask.spread(grid, 8)
-    B = info['bounds']
-    # zona-pavimento: solo la parte bassa della stanza ospita i personaggi (mai sul muro)
-    yfloor = B['yMin'] + 0.28 * (B['yMax'] - B['yMin'])
-    floor = [p for p in pts if p[1] >= yfloor] or pts
-    cat_pos = _clamp(info['gatto'] if info['gatto'][1] >= yfloor else floor[0], B)
+    grid = info['grid']; B = info['bounds']
     spawn = _clamp(collmask.entrance(grid), B)    # ingresso: basso-centro (non sul gatto)
-    # NPC e indizi dai punti ben distanziati sul pavimento, lontani da spawn/gatto
-    far = [p for p in floor if _lontano(p, spawn) and _lontano(p, cat_pos)] or floor
-    npc_pos = _clamp(far[0] if far else spawn, B)
-    clues = [_clamp(p, B) for p in (far[1:4] + far + floor)[:3]]
-    # room.json: collisioni dalla maschera
+    reach = collmask.flood(grid, spawn)           # SOLO il pavimento connesso allo spawn
+    # candidati con spazio libero attorno, nel corpo navigabile principale
+    cand = collmask.spread_open(reach, 24, min_clear=2.0)
+    yfloor = B['yMin'] + 0.28 * (B['yMax'] - B['yMin'])   # niente personaggi sul muro alto
+    # gatto: punto ampio raggiungibile dal protagonista (il gatto non è un ostacolo)
+    g0 = collmask.nearest(reach, info['gatto'])
+    cat_pos = g0 if (g0[1] >= yfloor and collmask.engine_reachable(grid, B, spawn, [g0])[0]) \
+        else next((p for p in cand if p[1] >= yfloor
+                   and collmask.engine_reachable(grid, B, spawn, [p])[0]), cand[0])
+    # NPC: il primo candidato ben distanziato la cui APPROACH resta raggiungibile
+    # anche col PROPRIO corpo presente (così non tappa il suo corridoio)
+    npc_pos = next((p for p in cand
+                    if p[1] >= yfloor and _lontano(p, spawn) and _lontano(p, cat_pos)
+                    and collmask.engine_reachable(grid, B, spawn, [p], obstacle=p)[0]), None)
+    if npc_pos is None:
+        npc_pos = next((p for p in cand if collmask.engine_reachable(grid, B, spawn, [p], obstacle=p)[0]), spawn)
+    # indizi: punti raggiungibili col secondario piazzato, distanziati tra loro
+    okc = collmask.engine_reachable(grid, B, spawn, cand, obstacle=npc_pos)
+    pool = [p for p, o in zip(cand, okc) if o and p[1] >= yfloor and _lontano(p, spawn)]
+    clues = []
+    for p in pool:
+        if all(_lontano(p, c, 10) for c in clues) and _lontano(p, npc_pos, 8) and _lontano(p, cat_pos, 8):
+            clues.append(p)
+        if len(clues) == 3:
+            break
+    clues = (clues + pool + cand)[:3]
+    # tutti i punti sono già centro-cella dentro `reach`: nessun clamp che li sposti fuori
+    # room.json: collisioni dalla maschera. bounds allargati di ~1 cella così il
+    # limite duro non blocca mai una cella calpestabile di bordo.
     room = json.load(open(os.path.join(cfg, 'room.json'), encoding='utf-8'))
-    room['bounds'] = info['bounds']; room['colliders'] = []
+    bb = dict(info['bounds']); mg = 100.0 / 128
+    bb['xMin'] -= mg; bb['yMin'] -= mg; bb['xMax'] += mg; bb['yMax'] += mg
+    room['bounds'] = bb; room['colliders'] = []
     room['dietroLetto'] = {'pts': []}; room['walk'] = info['walk']
     json.dump(room, open(os.path.join(cfg, 'room.json'), 'w'), ensure_ascii=False, indent=2)
     # characters.json: spawn/npc/gatto su punti calpestabili
@@ -326,10 +355,13 @@ def _wire_pack(pack_dir, dims, ncells, produced):
     json.dump(it, open(os.path.join(cfg, 'interactions.json'), 'w'), ensure_ascii=False, indent=2)
     _wire_sprites(cfg, dims, ncells, produced)
     _wire_manifest(pack_dir, produced, dims)
-    # QA raggiungibilità
-    reach = collmask.reachable(grid, spawn, clues + [npc_pos])
-    labels = ['indizio 1', 'indizio 2', 'indizio 3', 'NPC']
-    print('\n🧭 QA raggiungibilità (dallo spawn):')
+    # QA raggiungibilità col MODELLO DEL MOTORE (indizi + gatto senza ostacolo,
+    # NPC col proprio corpo presente)
+    rc = collmask.engine_reachable(grid, bb, spawn, clues + [cat_pos])
+    rn = collmask.engine_reachable(grid, bb, spawn, [npc_pos], obstacle=npc_pos)[0]
+    reach = rc + [rn]
+    labels = ['indizio 1', 'indizio 2', 'indizio 3', 'gatto', 'NPC']
+    print('\n🧭 QA raggiungibilità nel gioco (dallo spawn):')
     allok = True
     for lab, ok in zip(labels, reach):
         print(f'   {"✓" if ok else "✗"} {lab}'); allok = allok and ok

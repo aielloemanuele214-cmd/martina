@@ -59,8 +59,12 @@ RUBRICHE = {
         "Se un oggetto si sposta/compare o c'è un essere vivente => ok=false, di' quale "
         "e in quale frame."),
     'sheet': (
-        "ASSET: FOGLIO SPRITE orizzontale che deve contenere ESATTAMENTE {n} frame "
-        "dello STESSO identico personaggio. Pose attese: {desc}. REGOLE:\n"
+        "ASSET: FOGLIO SPRITE su UNA SOLA RIGA orizzontale che deve contenere "
+        "ESATTAMENTE {n} celle affiancate dello STESSO identico personaggio. Pose "
+        "attese: {desc}. REGOLE:\n"
+        "0) DEVE essere una sola riga di {n} figure. Se le figure sono disposte su più "
+        "righe (griglia 2x2), o se il numero TOTALE di figure è diverso da {n} => "
+        "ok=false (conta tutte le figure nell'immagine).\n"
         "1) Ogni cella = UNA sola figura del personaggio, coerente col design delle "
         "altre celle (stessi capelli, vestiti, colori, proporzioni).\n"
         "2) NESSUna posa incoerente col ciclo: in un ciclo di camminata NON ci devono "
@@ -83,9 +87,14 @@ RUBRICHE = {
         "Se la parete in alto è bianca, o c'è una sagoma di personaggio, o ci sono più "
         "di due toni => ok=false."),
     'popup': (
-        "ASSET: illustrazione quadrata primo piano di: {subj}. REGOLE: un solo "
-        "soggetto coerente col mondo del gioco; niente testo/watermark; nessuna persona "
-        "o animale non richiesti. Se compaiono elementi estranei => ok=false."),
+        "ASSET: illustrazione quadrata primo piano ambientata, soggetto principale: "
+        "{subj}. È NORMALE e DESIDERABILE che intorno ci sia l'atmosfera della stanza "
+        "(mobili, candele, luci): NON è un difetto. Boccia (ok=false) SOLO se: c'è "
+        "testo o watermark; oppure compare una PERSONA o un ANIMALE (che non sia il "
+        "soggetto richiesto); oppure il soggetto principale {subj} non è riconoscibile. "
+        "La scrittura a mano ILLEGGIBILE su un oggetto del mondo (una lettera, un "
+        "libro) NON è un difetto: è testo-UI/didascalie/watermark sovrapposti a "
+        "essere vietati. Altrimenti ok=true."),
 }
 
 
