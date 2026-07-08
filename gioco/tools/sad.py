@@ -35,18 +35,18 @@ DEFAULT_PACK = 'martina'
 ASSET_MAP = {
     'bg':            ('assets/rooms/stanza_bg.jpg',   'image/jpeg'),
     'bg2':           ('assets/rooms/stanza_bg2.jpg',  'image/jpeg'),
-    'lei_down':      ('assets/sprites/lei_down.png',  'image/png'),
-    'lei_right':     ('assets/sprites/lei_right.png', 'image/png'),
-    'lei_up':        ('assets/sprites/lei_up.png',    'image/png'),
-    'lei_left':      ('assets/sprites/lei_left.png',  'image/png'),
-    'lui_emo':       ('assets/sprites/lui_emo.png',   'image/png'),
+    'protagonista_down':      ('assets/sprites/protagonista_down.png',  'image/png'),
+    'protagonista_right':     ('assets/sprites/protagonista_right.png', 'image/png'),
+    'protagonista_up':        ('assets/sprites/protagonista_up.png',    'image/png'),
+    'protagonista_left':      ('assets/sprites/protagonista_left.png',  'image/png'),
+    'secondario_emo':       ('assets/sprites/secondario_emo.png',   'image/png'),
     'gatto':         ('assets/sprites/gatto.png',     'image/png'),
     'ballo5':        ('assets/sprites/ballo5.png',    'image/png'),
-    'pt_lui_0':      ('assets/sprites/pt_lui_0.png',  'image/png'),
-    'pt_lui_1':      ('assets/sprites/pt_lui_1.png',  'image/png'),
-    'pt_lui_2':      ('assets/sprites/pt_lui_2.png',  'image/png'),
-    'pt_lui_3':      ('assets/sprites/pt_lui_3.png',  'image/png'),
-    'pt_lui_4':      ('assets/sprites/pt_lui_4.png',  'image/png'),
+    'pt_secondario_0':      ('assets/sprites/pt_secondario_0.png',  'image/png'),
+    'pt_secondario_1':      ('assets/sprites/pt_secondario_1.png',  'image/png'),
+    'pt_secondario_2':      ('assets/sprites/pt_secondario_2.png',  'image/png'),
+    'pt_secondario_3':      ('assets/sprites/pt_secondario_3.png',  'image/png'),
+    'pt_secondario_4':      ('assets/sprites/pt_secondario_4.png',  'image/png'),
     'pt_gatto':      ('assets/sprites/pt_gatto.png',  'image/png'),
     'cuore8':        ('assets/sprites/cuore8.png',    'image/png'),
     'pop_vinile':    ('assets/popup/pop_vinile.jpg',    'image/jpeg'),
@@ -113,8 +113,8 @@ def gen_room_js(room):
 
 # Asset e ruoli di default (pack "camera romantica"); un pack può ridefinirli
 # in sprites.json con 'embed', 'portraitsNpc' e 'musiche' senza toccare il motore.
-DEF_EMBED = ['pt_gatto', 'pop_finestra'] + [f'pt_lui_{i}' for i in range(5)]
-DEF_PORTRAITS = [f'pt_lui_{i}' for i in range(5)]
+DEF_EMBED = ['pt_gatto', 'pop_finestra'] + [f'pt_secondario_{i}' for i in range(5)]
+DEF_PORTRAITS = [f'pt_secondario_{i}' for i in range(5)]
 DEF_MUSICHE = {'gioco': 'mus_gioco', 'menu': 'mus_menu'}
 
 
@@ -137,7 +137,7 @@ def gen_assets_js(sprites, story):
             'const SPR = ' + jsdump(sprites['personaggi']) + ';\n'
             '/* Asset referenziabili con "@nome" da STORY */\n'
             'const ASSET_URI = {\n' + uris + '\n};\n'
-            f"const PORTRAITS_LUI = [{portr}];\n"
+            f"const PORTRAITS_SECONDARIO = [{portr}];\n"
             "/* Colonna sonora (mp3 incorporati) */\n"
             "const MUSICHE = {\n" + mus + "};\n")
 

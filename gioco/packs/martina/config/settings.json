@@ -1,8 +1,8 @@
 {
   "titolo": "Una stanza tutta per voi",
   "nomi": {
-    "lei": "Lei",
-    "lui": "Lui"
+    "protagonista": "Lei",
+    "secondario": "Lui"
   },
   "dataInizio": null,
   "musica": true,

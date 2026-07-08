@@ -1,8 +1,8 @@
 {
   "titolo": "Ho una domanda per te…",
   "nomi": {
-    "lei": "Lei",
-    "lui": "Lui"
+    "protagonista": "Lei",
+    "secondario": "Lui"
   },
   "dataInizio": null,
   "musica": true,

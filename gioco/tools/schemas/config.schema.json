@@ -24,15 +24,15 @@
     "nomi": {
       "type": "object",
       "required": [
-        "lei",
-        "lui"
+        "protagonista",
+        "secondario"
       ],
       "properties": {
-        "lei": {
+        "protagonista": {
           "type": "string",
           "minLength": 1
         },
-        "lui": {
+        "secondario": {
           "type": "string",
           "minLength": 1
         }
@@ -297,11 +297,11 @@
     "posizioni": {
       "type": "object",
       "required": [
-        "lei",
-        "lui"
+        "protagonista",
+        "secondario"
       ],
       "properties": {
-        "lei": {
+        "protagonista": {
           "type": "object",
           "required": [
             "x",
@@ -320,7 +320,7 @@
             }
           }
         },
-        "lui": {
+        "secondario": {
           "type": "object",
           "required": [
             "x",

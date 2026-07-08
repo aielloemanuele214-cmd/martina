@@ -1,10 +1,10 @@
 {
   "posizioni": {
-    "lei": {
+    "protagonista": {
       "x": 50,
       "y": 75
     },
-    "lui": {
+    "secondario": {
       "x": 72,
       "y": 60
     }

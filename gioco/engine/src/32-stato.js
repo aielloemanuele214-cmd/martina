@@ -1,7 +1,7 @@
 /* ---------- stato di gioco ---------- */
 // Macchina a stati del personaggio: 'idle' | 'walk' | 'interact' | 'dance'
 const player = {
-  x:CONFIG.posizioni.lei.x, y:CONFIG.posizioni.lei.y,
+  x:CONFIG.posizioni.protagonista.x, y:CONFIG.posizioni.protagonista.y,
   dir:'down', state:'idle', animT:0, stuckT:0,
 };
 function setState(s){ if(player.state!==s){ player.state=s; player.animT=0; } }
@@ -10,7 +10,7 @@ function facePoint(tx,ty){
   if(Math.abs(dx)>Math.abs(dy)) player.dir = dx<0?'left':'right';
   else player.dir = dy<0?'up':'down';
 }
-const npc = { x:CONFIG.posizioni.lui.x, y:CONFIG.posizioni.lui.y, frame:0 };
+const npc = { x:CONFIG.posizioni.secondario.x, y:CONFIG.posizioni.secondario.y, frame:0 };
 const cat = { ...CONFIG.gatto, awakeUntil:0 };
 let frozen = false;          // input bloccato (dialoghi/modali)
 let cinematic = false;       // scena cinematica in corso: nessun input

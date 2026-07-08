@@ -7,7 +7,7 @@ let diagEmo=0;
 function nextEmo(){
   diagEmo=(diagEmo+1)%ASSETS[SPR.npc.foglio].n;
   npc.frame=diagEmo;
-  dialogEl.querySelector('.portrait').src=PORTRAITS_LUI[diagEmo];
+  dialogEl.querySelector('.portrait').src=PORTRAITS_SECONDARIO[diagEmo];
 }
 function showDialog(nome, righe, opt){
   opt=opt||{};

@@ -124,18 +124,18 @@ def pack(cells, fh, name):
     return fw
 
 # ---- LEI: 4 righe x 4 colonne ----
-rgba = load_rgba_keyed(U+'lei_sheet.png')
+rgba = load_rgba_keyed(U+'protagonista_sheet.png')
 cells = cells_grid(rgba)
 assert len(cells) == 16, f'attese 16 celle lei, trovate {len(cells)}'
 dims = {}
-for row, nome in enumerate(['lei_down', 'lei_right', 'lei_up', 'lei_left']):
+for row, nome in enumerate(['protagonista_down', 'protagonista_right', 'protagonista_up', 'protagonista_left']):
     dims[nome] = pack(cells[row*4:(row+1)*4], 242, nome)
 
 # ---- LUI: 5 frame emotivi ----
-rgba = load_rgba_keyed(U+'lui_sheet.png')
+rgba = load_rgba_keyed(U+'secondario_sheet.png')
 cells = cells_grid(rgba)
 assert len(cells) == 5, f'attese 5 celle lui, trovate {len(cells)}'
-dims['lui_emo'] = pack(cells, 262, 'lui_emo')
+dims['secondario_emo'] = pack(cells, 262, 'secondario_emo')
 
 # ---- BALLO: 5 frame di coppia ----
 # semi = sfondo intrappolato fra i due corpi (misurato sul foglio sorgente 1536x1024)
@@ -150,8 +150,8 @@ dims['ballo5'] = pack(cells, 312, 'ballo5')
 print('DIMS =', dims)
 
 # ---- RITRATTI di lui (dal foglio appena impacchettato) ----
-sheet = Image.open(f'{OUT}/lui_emo.png').convert('RGBA')
-FW, FH, N = dims['lui_emo'], 262, 5
+sheet = Image.open(f'{OUT}/secondario_emo.png').convert('RGBA')
+FW, FH, N = dims['secondario_emo'], 262, 5
 for i in range(N):
     fr = sheet.crop((i*FW, 0, (i+1)*FW, FH))
     al = np.array(fr)[:, :, 3]
@@ -163,5 +163,5 @@ for i in range(N):
     cx = (hx.min() + hx.max()) // 2
     x0 = max(0, min(FW - side, cx - side//2))
     fr.crop((x0, top, x0 + side, top + side)).resize((128, 128), Image.LANCZOS)\
-      .save(f'{OUT}/pt_lui_{i}.png')
-print('ritratti pt_lui_0..4 rigenerati')
+      .save(f'{OUT}/pt_secondario_{i}.png')
+print('ritratti pt_secondario_0..4 rigenerati')

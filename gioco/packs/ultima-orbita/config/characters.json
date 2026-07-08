@@ -1,8 +1,8 @@
 {
   "_note": "Coordinate in % della stanza (0-100). lei = giocatrice (Elena), lui = NPC (Sofia). Il gatto si rivela solo se ci si avvicina entro 'rivelaVicino'.",
   "posizioni": {
-    "lei": { "x": 50, "y": 72 },
-    "lui": { "x": 40, "y": 64 }
+    "protagonista": { "x": 50, "y": 72 },
+    "secondario": { "x": 40, "y": 64 }
   },
   "gatto": {
     "nome": "Cometa",

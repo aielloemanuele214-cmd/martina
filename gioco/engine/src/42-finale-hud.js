@@ -56,7 +56,7 @@ function resetRun(){
   starFx=null; player.fermoT=0; cine.scene=null; audio.stopDance();
   for(const k in bags) delete bags[k];
   percorso.length=0; pendInter=null; parts.length=0;
-  player.x=CONFIG.posizioni.lei.x; player.y=CONFIG.posizioni.lei.y; player.dir='down';
+  player.x=CONFIG.posizioni.protagonista.x; player.y=CONFIG.posizioni.protagonista.y; player.dir='down';
   setState('idle'); camInit=false;
   frozen=false;
   updateHearts(); save();

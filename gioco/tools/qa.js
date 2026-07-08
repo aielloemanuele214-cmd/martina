@@ -51,7 +51,7 @@ const ok=(nome,cond,extra='')=>{
 
  // 3. raggiungibilità di TUTTI i punti d'arrivo dallo spawn
  const reach=await p.evaluate(()=>INTER.map(it=>{
-   const t=findPath(CONFIG.posizioni.lei.x, CONFIG.posizioni.lei.y, it.ax, it.ay);
+   const t=findPath(CONFIG.posizioni.protagonista.x, CONFIG.posizioni.protagonista.y, it.ax, it.ay);
    return [it.evento, !!t];
  }));
  ok('tutti gli interattivi raggiungibili', reach.every(r=>r[1]),
@@ -62,7 +62,7 @@ const ok=(nome,cond,extra='')=>{
  for(const id of ids){
    await p.evaluate(()=>{ if(modalOpen) closePopup(); if(diagOpen) closeDialog();
      clearBag(); updateHearts();
-     player.x=CONFIG.posizioni.lei.x; player.y=CONFIG.posizioni.lei.y;
+     player.x=CONFIG.posizioni.protagonista.x; player.y=CONFIG.posizioni.protagonista.y;
      percorso.length=0; pendInter=null; setState('idle'); });
    await p.waitForTimeout(80);
    await p.evaluate(id=>{ const s=CONFIG.sorprese.find(x=>x.id===id);

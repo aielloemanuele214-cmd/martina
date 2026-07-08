@@ -82,7 +82,7 @@
   },
 
   "dialoghi": {
-    "sofia": { "nome": "$nomi.lui", "modo": "sacchetto", "fonte": "$dialoghi",
+    "sofia": { "nome": "$nomi.secondario", "modo": "sacchetto", "fonte": "$dialoghi",
                "emotivo": true, "verso": "npc" },
     "gatto": { "nome": "$gatto.nome", "righe": ["$gatto.messaggio"],
                "ritratto": "@pt_gatto", "verso": "gatto" }

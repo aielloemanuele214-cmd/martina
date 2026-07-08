@@ -1,8 +1,8 @@
 {
   "titolo": "L'Ultima Orbita",
   "nomi": {
-    "lei": "Elena",
-    "lui": "Sofia"
+    "protagonista": "Elena",
+    "secondario": "Sofia"
   },
   "dataInizio": null,
   "musica": true,

@@ -1,8 +1,8 @@
 {
   "titolo": "Buon compleanno, amore!",
   "nomi": {
-    "lei": "Festeggiata",
-    "lui": "Lui"
+    "protagonista": "Festeggiata",
+    "secondario": "Lui"
   },
   "dataInizio": null,
   "musica": true,

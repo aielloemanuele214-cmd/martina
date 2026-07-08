@@ -2,8 +2,8 @@
   "_slug": "esempio",
   "titolo": "Una stanza tutta per voi",
   "nomi": {
-    "lei": "Marti",
-    "lui": "Manu"
+    "protagonista": "Marti",
+    "secondario": "Manu"
   },
   "dataInizio": null,
   "musica": true,
@@ -124,11 +124,11 @@
     }
   },
   "posizioni": {
-    "lei": {
+    "protagonista": {
       "x": 50,
       "y": 75
     },
-    "lui": {
+    "secondario": {
       "x": 72,
       "y": 60
     }

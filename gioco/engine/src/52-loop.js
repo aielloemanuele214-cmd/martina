@@ -31,7 +31,7 @@ function begin(){
   // splash: da "caricamento" a "tocca per entrare"
   const sp=document.getElementById('splash');
   document.getElementById('spTitolo').textContent=CONFIG.titolo;
-  document.getElementById('spNomi').textContent=CONFIG.nomi.lei+' ❤ '+CONFIG.nomi.lui;
+  document.getElementById('spNomi').textContent=CONFIG.nomi.protagonista+' ❤ '+CONFIG.nomi.secondario;
   const entra=()=>{
     inGioco=true;
     firstGesture();                       // sblocca l'audio dentro il gesto (iOS)
