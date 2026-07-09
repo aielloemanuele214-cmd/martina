@@ -125,38 +125,39 @@ def gen(model, key, prompt, dest, aspect=None, ref=None):
           + ('  ← contenuto vietato dal modello' if fr == 'PROHIBITED_CONTENT' else ''))
     return False
 
-def gen_qc(model, key, prompt, dest, aspect, ref, qckind, qcfmt, qcref=None):
+def gen_qc(model, key, prompt, dest, aspect, ref, qckind, qcfmt, qcref=None, maxq=None, pro=True):
     """Genera CON controllo qualità: genera → giudica → se bocciato rigenera con i
-    difetti in prompt, fino a MAX_QC tentativi; all'ultimo tentativo passa al modello
-    pro (più preciso). Ritorna (ok, verdetto). Così ogni asset esce corretto sia
-    tecnicamente sia esteticamente prima di entrare nella build."""
+    difetti in prompt, fino a `maxq` tentativi. `pro`: se True l'ultimo tentativo
+    passa al modello pro (utile su stanza/maschera; inutile e costoso sui fogli
+    sprite, dove si tiene pro=False). Ritorna (ok, verdetto)."""
+    maxq = maxq or MAX_QC
     cur, last = prompt, None
-    for att in range(1, MAX_QC + 1):
-        m = model if att < MAX_QC else PRO_MODEL          # ultimo colpo: modello pro
+    for att in range(1, maxq + 1):
+        m = PRO_MODEL if (pro and maxq > 1 and att == maxq) else model
         if not gen(m, key, cur, dest, aspect=aspect, ref=ref):
             last = {'ok': False, 'stato': 'errore',
                     'difetti': ['immagine non generata (contenuto vietato o errore API)']}
-            if att < MAX_QC:
+            if att < maxq:
                 continue
-            print(f'    ⚠ {qckind or "asset"}: immagine non generata dopo {MAX_QC} tentativi — segnalato')
+            print(f'    ⚠ {qckind or "asset"}: immagine non generata dopo {maxq} tentativi — segnalato')
             return False, last
         if not qckind:
             return True, None
         v = qc.judge(qckind, dest, key, ref_path=qcref, **(qcfmt or {}))
         last = v
         if v['ok']:
-            print(f'    ✓ qc {qckind} (tentativo {att}/{MAX_QC}, {m.split("-")[-2]})')
+            print(f'    ✓ qc {qckind} (tentativo {att}/{maxq}, {m.split("-")[-2]})')
             return True, v
         if v.get('stato') == 'errore':        # QC indisponibile: non sprecare rigenerazioni
             print(f'    ⚠ qc {qckind}: {v["difetti"][0]} → asset segnalato per revisione umana')
             return False, v
         dif = '; '.join(v['difetti'])[:200]
-        print(f'    ✗ qc {qckind} [{att}/{MAX_QC}]: {dif}')
+        print(f'    ✗ qc {qckind} [{att}/{maxq}]: {dif}')
         corr = v.get('correzione') or 'Fix all listed defects.'
         cur = (prompt + "\n\nIMPORTANT — the previous attempt was REJECTED by quality control "
                "for these defects: " + ' | '.join(v['difetti']) +
                f". You MUST correct them now: {corr}")
-    print(f'    ⚠ {qckind}: ancora imperfetto dopo {MAX_QC} tentativi — segnalato per revisione')
+    print(f'    ⚠ {qckind}: ancora imperfetto dopo {maxq} tentativi — segnalato per revisione')
     return False, last
 
 # ---- specifiche degli asset: come costruire il prompt e come processare ----
@@ -234,19 +235,9 @@ def build_specs(brief):
                f"remove or move anything else — every object, wall and piece of furniture stays pixel-identical "
                f"and in the exact same place, so the two frames loop without jitter. Do NOT add any creature. "
                f"Square, same framing. {NOLIVING}"))
-    # un popup per oggetto-indizio, nome neutro pop_indizio_i (N variabile).
-    # Generato CON la stanza come riferimento: il primo piano deve mostrare lo
-    # STESSO oggetto della stanza (stessi colori/forma), non una versione diversa.
-    for i, obj in enumerate(objs):
-        specs.append(dict(name=f'pop_indizio_{i+1}', kind='popup', aspect='1:1', green=False,
-            ref_room=True, qckind='popup_ref', qcfmt=dict(subj=obj),
-            prompt=f"Look at the reference room image. Make a square intimate CLOSE-UP of the SAME object "
-                   f"already present in that room: {obj}. Keep its EXACT design, shape and colours as in the "
-                   f"reference — same world and warm light, evocative atmosphere. {STYLE} No text. {NEG}"))
-    specs.append(dict(name='pop_finestra', kind='popup', aspect='1:1', green=False,
-        qckind='popup', qcfmt=dict(subj='the night view outside the window of this scene'),
-        prompt=f"{STYLE} Square close-up of the view outside the window at night for this scene, atmospheric, "
-               f"same palette as the room. No text. {NEG}"))
+    # NB: i popup NON si generano più — si RITAGLIANO dalla stanza (vedi _crop_popup
+    # in main, dopo la localizzazione): zero generazioni e allineamento garantito
+    # all'oggetto reale della scena.
     # maschera di collisione della stanza (per le collisioni pixel-accurate)
     specs.append(dict(name='mask', kind='mask', aspect='1:1', green=False, ref_room=True,
         qckind='mask', qcfmt={},
@@ -342,6 +333,22 @@ def _wire_manifest(pack_dir, produced, dims):
             amap[n] = f'popup/{n}.png'
     man['assets'] = amap
     json.dump(man, open(os.path.join(pack_dir, 'manifest.json'), 'w'), ensure_ascii=False, indent=2)
+
+
+def _crop_popup(room_png, center, out, w=0.12, h=0.16):
+    """Ritaglia il primo piano di un oggetto DALLA stanza (allineamento garantito:
+    è esattamente lo stesso oggetto), lo rende quadrato e lo porta a 340px con
+    upscale NEAREST (pixel netti). Zero generazioni."""
+    im = Image.open(room_png).convert('RGB')
+    W, H = im.size
+    cx, cy = center[0] / 100 * W, center[1] / 100 * H
+    x0 = max(0, int(cx - w * W)); y0 = max(0, int(cy - h * H))
+    x1 = min(W, int(cx + w * W)); y1 = min(H, int(cy + h * H))
+    crop = im.crop((x0, y0, x1, y1))
+    side = max(crop.size)
+    sq = Image.new('RGB', (side, side), (20, 15, 12))
+    sq.paste(crop, ((side - crop.size[0]) // 2, (side - crop.size[1]) // 2))
+    sq.resize((340, 340), Image.NEAREST).save(out)
 
 
 def _localizza(room_png, objs, key, model='gemini-2.5-flash'):
@@ -497,8 +504,9 @@ def main(slug, only=None, model=DEFAULT_MODEL):
         qk, qf = s.get('qckind'), s.get('qcfmt')
         if s['kind'] == 'char':
             raw = os.path.join(src, s['name'] + '.png')
+            # fogli sprite: cap a 2 tentativi e NIENTE pro (non aiuta, costa)
             ok, _ = gen_qc(model, key, s['prompt'], raw, s.get('aspect'),
-                           ref_prota if s.get('ref') else None, qk, qf)
+                           ref_prota if s.get('ref') else None, qk, qf, maxq=2, pro=False)
             if not ok: imperfetti.append(s['name'])
             if not os.path.exists(raw): continue      # immagine non prodotta: salta
             r = process_char(raw, s['name'], s['frames'], s['fh'], spr)
@@ -507,26 +515,18 @@ def main(slug, only=None, model=DEFAULT_MODEL):
                 sprites.pixelate(os.path.join(spr, s['name'] + '.png'), colors=64)  # palette 16-bit + caldo
         elif s['kind'] == 'room':
             out = os.path.join(rooms, s['name'] + '.png')
+            # stanza: fino a 3 tentativi, pro all'ultimo (qui il pro aiuta davvero)
             ok, _ = gen_qc(model, key, s['prompt'], out, '1:1',
                            ref_room if s.get('ref_room') else None, qk, qf,
-                           qcref=ref_room if qk == 'room_anim' else None)
+                           qcref=ref_room if qk == 'room_anim' else None, maxq=3, pro=True)
             if not ok: imperfetti.append(s['name'])
             if not os.path.exists(out): continue
             sprites.pixelate(out, target=448, colors=64)   # vero 16-bit netto + grade caldo
             produced.add(s['name'])
-        elif s['kind'] == 'popup':
-            out = os.path.join(pops, s['name'] + '.png')
-            ok, _ = gen_qc(model, key, s['prompt'], out, '1:1',
-                           ref_room if s.get('ref_room') else None, qk, qf,
-                           qcref=ref_room if qk == 'popup_ref' else None)
-            if not ok: imperfetti.append(s['name'])
-            if not os.path.exists(out): continue
-            sprites.pixelate(out, target=340, colors=48)
-            produced.add(s['name'])
         elif s['kind'] == 'mask':
             mp = os.path.join(src, 'mask.png')
             ok, _ = gen_qc(model, key, s['prompt'], mp, '1:1',
-                           ref_room if s.get('ref_room') else None, qk, qf)
+                           ref_room if s.get('ref_room') else None, qk, qf, maxq=3, pro=True)
             if not ok: imperfetti.append(s['name'])
             if os.path.exists(mp): produced.add('mask')
 
@@ -535,10 +535,18 @@ def main(slug, only=None, model=DEFAULT_MODEL):
     if 'gatto' in dims:
         _pt_gatto(spr, dims['gatto'])
     if not only:
-        # agente-vista: dove sta ogni oggetto-indizio nella stanza (per le stelline)
+        # agente-vista: dove sta ogni oggetto-indizio nella stanza (per stelline + ritagli)
         markers = _localizza(ref_room, brief.get('oggetti', []), key) if os.path.exists(ref_room) else []
         if markers:
             print(f'   📍 oggetti localizzati nella stanza: {len(markers)}')
+        # popup RITAGLIATI dalla stanza sull'oggetto localizzato: 0 generazioni,
+        # allineamento garantito (è esattamente lo stesso oggetto della scena)
+        if os.path.exists(ref_room):
+            for i, mk in enumerate(markers):
+                _crop_popup(ref_room, mk, os.path.join(pops, f'pop_indizio_{i+1}.png'))
+                produced.add(f'pop_indizio_{i+1}')
+            _crop_popup(ref_room, [50, 13], os.path.join(pops, 'pop_finestra.png'), w=0.16, h=0.13)
+            produced.add('pop_finestra')
         _wire_pack(pack_dir, dims, ncells, produced, markers)   # collisioni, posizioni, cablaggio, QA
 
     if imperfetti:
