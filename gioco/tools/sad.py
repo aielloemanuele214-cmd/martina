@@ -18,6 +18,8 @@ Comandi:
     art                       rigenera gli sprite da assets/_src/ (tools/sprites.py)
     concierge <slug>          agente Concierge: dall'intervista del cliente
                               (packs/<slug>/intervista.json|txt) al brief genera.json
+    sceneggiatore <slug>      agente Sceneggiatore: dai ricordi al copione
+                              (battute, indizi, finale) dentro config/
     genera <slug> [--assets a,b] [--modello X]
                               genera gli asset dell'ordine con Gemini (Nano Banana)
                               su verde + pipeline; legge packs/<slug>/genera.json
@@ -625,6 +627,9 @@ if __name__ == '__main__':
         sys.exit(subprocess.call([sys.executable, os.path.join(ROOT, 'tools', 'sprites.py')]))
     elif cmd == 'concierge' and len(sys.argv) == 3:
         sys.exit(subprocess.call([sys.executable, os.path.join(ROOT, 'tools', 'concierge.py'),
+                                  sys.argv[2]]))
+    elif cmd == 'sceneggiatore' and len(sys.argv) == 3:
+        sys.exit(subprocess.call([sys.executable, os.path.join(ROOT, 'tools', 'sceneggiatore.py'),
                                   sys.argv[2]]))
     elif cmd == 'genera' and len(sys.argv) >= 3:
         sys.exit(subprocess.call([sys.executable, os.path.join(ROOT, 'tools', 'genera.py'),

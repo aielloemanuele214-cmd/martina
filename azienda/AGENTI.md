@@ -27,7 +27,7 @@ editabile**. Vedi l'esempio vivo: [`../gioco/tools/agenti/qc-agente.md`](../gioc
 Non tutte le figure sono già agenti. Onestà prima di tutto:
 
 - 🟢 **Agente AI** — guidato da modello + direttiva: **Concierge (01)**,
-  **Generation (04)**, **QC (05)**.
+  **Sceneggiatore (02)**, **Generation (04)**, **QC (05)**.
 - ⚙️ **Codice deterministico** — esegue regole, non "ragiona": **Engine (06)**,
   **Pipeline (07)**, **Art Supervisor (03)**.
 - 👤 **Umano / checklist** — per ora presidiato da persone: **Concierge (01)**,
@@ -88,10 +88,12 @@ In ordine di valore/fattibilità:
 
 1. ✅ **Concierge (01)** — *acceso*: dall'intervista scrive il brief `genera.json`
    (`sad concierge <slug>`). Direttiva in `agenti/concierge-agente.md`.
-2. **Sceneggiatore (02)** — agente narrativo: adatta i template alla coppia.
-   Direttiva = tono e struttura della storia.
+2. ✅ **Sceneggiatore (02)** — *acceso*: dai ricordi scrive battute, indizi e
+   finale (`sad sceneggiatore <slug>`). Direttiva in `agenti/sceneggiatore-agente.md`.
 3. **Art Director (10)** — agente di validazione estetica: una seconda opinione
    sopra il QC tecnico. Direttiva = lo Style Bible reso operativo.
+4. **Delivery (09)** e **Audio (08)** — quando la relazione/infra saranno pronte
+   a essere guidate da direttiva.
 
 Ognuna nasce come oggi il QC: una spec editabile, un loader, e da lì si addestra
 per direttive.

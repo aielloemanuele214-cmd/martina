@@ -4,8 +4,9 @@
 
 - **Codice**: FIG-02
 - **Fase pipeline**: Storia (fase 03)
-- **Tipo**: assistito
-- **Stato**: attivo
+- **Tipo**: 🟢 **agente AI** (dai ricordi al copione)
+- **Stato**: attivo · addestrabile per direttive
+- **Cervello (direttiva editabile)**: `gioco/tools/agenti/sceneggiatore-agente.md` → modello [`AGENTI.md`](../AGENTI.md)
 
 ## Mandato
 Possiede la **struttura narrativa**: archi emotivi, dialoghi, indizi, finali.
@@ -28,9 +29,10 @@ l'estetica (FIG-03/10) né la tecnica (FIG-06): decide *cosa si racconta e come 
 - Reazione emotiva (feedback/recensioni sulla storia).
 
 ## Lista task (backlog R&D · priorità alto→basso)
+- [ ] `R&D-02-04` Ordinare gli oggetti-indizio per il ruolo-slot (1° = canzone/ballo, 3° = lettera/finale) così l'evento del template combacia col significato — *impatto:* la cutscene finale scatta sull'oggetto giusto.
 - [ ] `R&D-02-01` Libreria di template narrativi per occasione — *impatto:* consegne più rapide e coerenti.
-- [ ] `R&D-02-02` Selettore di tono (giocoso/romantico/nostalgico) applicato ai dialoghi — *impatto:* personalizzazione senza riscrittura.
 - [ ] `R&D-02-03` Varianti di finale (aperto, dichiarazione, sorpresa) — *impatto:* stessa storia, chiusure diverse.
 
 ## Log (potenziamenti e correzioni)
 - 2026-07-09 — Scheda creata.
+- 2026-07-09 — **Acceso come agente**: `tools/sceneggiatore.py` + direttiva editabile `agenti/sceneggiatore-agente.md`; CLI `sad sceneggiatore <slug>`. Dai ricordi (+ i 3 oggetti del brief) scrive battute, indizi, gatto, finestra e finale e li incastra in `dialogues/interactions/endings.json` senza toccare la logica di `story.json`; non scrive mai un copione incompleto. Chiude `R&D-02-02` (tono applicato ai dialoghi).
