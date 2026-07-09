@@ -30,7 +30,7 @@ function rebuildCache(){
   g.fillStyle=rg; g.fillRect(0,0,128,128);
   CACHE.shadow=sh;
   // glifi emoji rasterizzati una volta
-  for(const ch of ['✨','💬','❤️']){
+  for(const ch of ['✨','💬','❤️',SIM]){
     const gc=mk(64,64), cg=gc.getContext('2d');
     cg.font='50px serif'; cg.textAlign='center'; cg.textBaseline='middle';
     cg.fillText(ch,32,36);
@@ -172,7 +172,7 @@ function render(){
   }
 
   // particelle (cuori e scintille)
-  for(const p of parts) glyph(p.ch||'❤️', p.x, p.y, p.size||20, Math.max(0,p.life), 0);
+  for(const p of parts) glyph(p.ch||SIM, p.x, p.y, p.size||20, Math.max(0,p.life), 0);
 
   if(starFx) drawStar();                 // stella cadente attraverso l'oblò
 

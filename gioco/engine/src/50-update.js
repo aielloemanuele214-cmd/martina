@@ -59,7 +59,7 @@ function update(dt){
 
   // bersaglio interazione + bottone azione (DOM toccato solo quando cambia)
   target=frozen?null:nearestTarget();
-  const abIcon=target ? (target.tipo==='sorpresa'?'❤':target.icona) : '';
+  const abIcon=target ? (target.tipo==='sorpresa'?SIM:target.icona) : '';
   if(abIcon!==lastAB){
     lastAB=abIcon;
     if(abIcon){ actionEl.textContent=abIcon; actionEl.classList.add('show'); }

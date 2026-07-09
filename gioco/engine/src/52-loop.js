@@ -31,7 +31,12 @@ function begin(){
   // splash: da "caricamento" a "tocca per entrare"
   const sp=document.getElementById('splash');
   document.getElementById('spTitolo').textContent=CONFIG.titolo;
-  document.getElementById('spNomi').textContent=CONFIG.nomi.protagonista+' ❤ '+CONFIG.nomi.secondario;
+  document.getElementById('spNomi').textContent=CONFIG.nomi.protagonista+' '+SIM+' '+CONFIG.nomi.secondario;
+  // registro non romantico: neutralizza i cuori statici del guscio e nascondi il cuore-pixel dello splash
+  if(SIM!=='❤'){
+    document.querySelectorAll('#card button, #finale .resta').forEach(b=>{ b.textContent=b.textContent.replace(/❤️|❤/g, SIM); });
+    const cu=document.querySelector('.cuore8'); if(cu) cu.style.display='none';
+  }
   const entra=()=>{
     inGioco=true;
     firstGesture();                       // sblocca l'audio dentro il gesto (iOS)
@@ -54,7 +59,7 @@ function begin(){
         spStato=1;
         firstGesture();
         avviaMusicaMenu();
-        enterEl.textContent='ENTRA ❤';
+        enterEl.textContent='ENTRA '+SIM;
         enterEl.classList.add('btn');
       } else entra();
     });

@@ -367,7 +367,11 @@ def _localizza(room_png, objs, key, model='gemini-2.5-flash'):
     b = base64.b64encode(open(room_png, 'rb').read()).decode()
     prompt = ("Guarda l'immagine della stanza. Per ognuno di questi oggetti indica il CENTRO come "
               "percentuali x,y (0-100; x=da sinistra a destra, y=dall'alto in basso), NELLO STESSO "
-              f"ORDINE e stesso numero:\n{numbered}\nRitorna 'posizioni' con un {{x,y}} per oggetto.")
+              f"ORDINE e stesso numero:\n{numbered}\n"
+              "IMPORTANTE: punta al centro dell'OGGETTO PROTAGONISTA descritto (es. le maschere, "
+              "il trofeo, il poster, la TV), NON al mobile o alla mensola su cui è appoggiato: se un "
+              "oggetto è 'su un comò/mensola', il centro è sull'oggetto stesso, tipicamente più in alto "
+              "del piano d'appoggio.\nRitorna 'posizioni' con un {x,y} per oggetto.")
     body = json.dumps({'contents': [{'parts': [{'inlineData': {'mimeType': 'image/png', 'data': b}},
         {'text': prompt}]}], 'generationConfig': {'responseMimeType': 'application/json',
         'responseSchema': schema, 'temperature': 0.1}}).encode()

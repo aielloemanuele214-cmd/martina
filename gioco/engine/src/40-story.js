@@ -174,7 +174,7 @@ function renderDocumento(doc){
     h.push('<div class="meta">'+doc.meta.map(m=>`<p>${m}</p>`).join('')+'</div>');
   if(doc.firma) h.push(`<div class="firma">${doc.firma}</div>`);
   contrattoEl.querySelector('.contenuto').innerHTML=h.join('\n');
-  contrattoEl.querySelector('.chiudi').textContent=doc.bottone||'Chiudi ❤';
+  contrattoEl.querySelector('.chiudi').textContent=doc.bottone||('Chiudi '+SIM);
 }
 
 /* ---------- segreti a tocco diretto (nessun indicatore) ---------- */

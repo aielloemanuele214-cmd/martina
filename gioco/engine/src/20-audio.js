@@ -1,4 +1,8 @@
 
+/* Glifo del legame: ❤ per gli ordini romantici (default), simbolo neutro
+   (es. ✦) per i registri fraterni/amicali. Da settings.json → simbolo. */
+const SIM = (typeof CONFIG !== 'undefined' && CONFIG.simbolo) ? CONFIG.simbolo : '❤';
+
 /* ============================================================
    AUDIO — synth chiptune Web Audio (nessun file audio)
    ============================================================ */

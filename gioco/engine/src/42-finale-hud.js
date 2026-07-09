@@ -30,7 +30,7 @@ function showFinale(regola){
   // pioggia di cuori: solo a partita davvero completa (altrimenti sembrerebbe un finale)
   if(completo) for(let i=0;i<26;i++){
     const h=document.createElement('div');
-    h.className='fh'; h.textContent=['❤️','💕','💗','✨'][i%4];
+    h.className='fh'; h.textContent=(SIM!=='❤'?[SIM,'✨','⭐','✨']:['❤️','💕','💗','✨'])[i%4];
     h.style.left=Math.random()*100+'%';
     h.style.animationDuration=(4+Math.random()*5)+'s';
     h.style.animationDelay=(Math.random()*4)+'s';
@@ -67,7 +67,7 @@ function resetRun(){
 /* ---------- HUD: un cuore per sorpresa + le ricompense dei segreti ---------- */
 function updateHearts(){
   const el=document.getElementById('hearts');
-  el.innerHTML=CONFIG.sorprese.map(s=>`<span class="${flag('trovato.'+s.id)?'':'off'}">❤️</span>`).join('')
+  el.innerHTML=CONFIG.sorprese.map(s=>`<span class="${flag('trovato.'+s.id)?'':'off'}">${SIM}</span>`).join('')
     + STORY.segreti.filter(s=>s.hud && flag(s.flag)).map(s=>`<span class="oro">${s.hud}</span>`).join('');
 }
 // un tocco sul contatore apre sempre lo stato di partita: il vero finale se
