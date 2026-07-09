@@ -197,18 +197,22 @@ def build_specs(brief):
         # momento speciale: di default un ballo lento a 5 pose; personalizzabile
         # (es. i due fratelli che esultano). Il numero di pose è configurabile:
         # per gesti statici (esultanza) 2 pose sono più affidabili di 5.
+        # momento speciale: di default un ballo lento a 5 pose; personalizzabile
+        # (es. i fratelli che esultano). momento_frames=0 → nessuno sprite coppia
+        # (la scena speciale è testuale, es. il gol): non si genera ballo5.
         momento = brief.get('momento_speciale',
                             'embracing in a slow romantic dance, tender micro-movements')
         nm = int(brief.get('momento_frames', 5))
         num = {2: 'two', 3: 'three', 4: 'four', 5: 'five'}.get(nm, 'five')
-        specs.append(dict(name='ballo5', kind='char', frames=nm, fh=312, aspect='16:9', green=True, ref=True,
-            qckind='sheet', qcfmt=dict(n=nm, desc=f"{num} poses of the SAME two characters TOGETHER in ONE "
-                     "single row, one two-figure group per cell, the special moment"),
-            prompt=f"{STYLE} Sprite SHEET, ONE SINGLE HORIZONTAL ROW of EXACTLY {num} cells side by side (NOT a "
-                   f"grid, NOT two rows): in EACH cell the SAME two people, {P} and {S}, TOGETHER {momento}. "
-                   f"The {num} cells are {num} slightly different frames of that same two-person pose (small "
-                   f"movement between them). WIDE vertical green gap between cells; cells never overlap. NO "
-                   f"ground line, NO connecting shadow. Consistent design. {GREEN} {NEG}"))
+        if nm >= 2:
+            specs.append(dict(name='ballo5', kind='char', frames=nm, fh=312, aspect='16:9', green=True, ref=True,
+                qckind='sheet', qcfmt=dict(n=nm, desc=f"{num} poses of the SAME two characters TOGETHER in ONE "
+                         "single row, one two-figure group per cell, the special moment"),
+                prompt=f"{STYLE} Sprite SHEET, ONE SINGLE HORIZONTAL ROW of EXACTLY {num} cells side by side (NOT a "
+                       f"grid, NOT two rows): in EACH cell the SAME two people, {P} and {S}, TOGETHER {momento}. "
+                       f"The {num} cells are {num} slightly different frames of that same two-person pose (small "
+                       f"movement between them). WIDE vertical green gap between cells; cells never overlap. NO "
+                       f"ground line, NO connecting shadow. Consistent design. {GREEN} {NEG}"))
     if brief.get('animale'):
         specs.append(dict(name='gatto', kind='char', frames=2, fh=240, aspect='16:9', green=True, ref=False,
             qckind='sheet', qcfmt=dict(n=2, desc="2 poses of the SAME cat: sleeping curled, then awake head "
