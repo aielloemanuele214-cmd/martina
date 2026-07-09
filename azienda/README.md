@@ -38,6 +38,10 @@ i moduli automatizzati.
 Trasversale a tutte: **R&D** — non una fase, ma il processo che alimenta le
 liste di task. → [`rnd.md`](rnd.md).
 
+> 📖 Per il dettaglio di **come ogni figura agisce e si sincronizza** con le
+> altre (passaggi a valle, loop di ritorno, contratti d'interfaccia, R&D
+> trasversale): **[`SINCRONIZZAZIONE.md`](SINCRONIZZAZIONE.md)**.
+
 ## Come si legge (e si usa) una scheda
 
 Ogni scheda segue [`figure/_TEMPLATE.md`](figure/_TEMPLATE.md):
