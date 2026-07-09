@@ -117,16 +117,16 @@ def _oggetti(pack_dir):
     return []
 
 
-def _valido(c):
+def _valido(c, nind=3):
     if not isinstance(c, dict):
         return False
     dia = c.get('dialoghi')
     if not isinstance(dia, list) or len([d for d in dia if isinstance(d, str) and d.strip()]) < 6:
         return False
     ind = c.get('indizi')
-    if not isinstance(ind, list) or len(ind) < 3:
+    if not isinstance(ind, list) or len(ind) < nind:
         return False
-    for i in ind[:3]:
+    for i in ind[:nind]:
         if not (isinstance(i, dict) and i.get('titolo', '').strip() and i.get('testo', '').strip()):
             return False
     fin = c.get('finale')
@@ -176,7 +176,7 @@ def _wire_copione(cfg, cop):
 
     ipath = os.path.join(cfg, 'interactions.json')
     it = json.load(open(ipath, encoding='utf-8'))
-    for s, ind in zip(it.get('sorprese', []), cop['indizi'][:3]):
+    for s, ind in zip(it.get('sorprese', []), cop['indizi']):
         s['titolo'] = ind['titolo'].strip()
         s['testo'] = ind['testo'].strip()
     if cop.get('finestra', '').strip():
@@ -198,22 +198,24 @@ def compila(slug):
     cfg = os.path.join(pack_dir, 'config')
     intervista = _intervista(pack_dir)
     oggetti = _oggetti(pack_dir)
+    nind = len(oggetti) or 3
     ogg_txt = ('\n'.join(f'{i+1}. {o}' for i, o in enumerate(oggetti))
                if oggetti else '(oggetti non ancora definiti: deducili dai ricordi)')
     prompt = (f"{AGENTE['direttiva']}\n\n{AGENTE['criterio']}\n\n"
               f"=== INTERVISTA DEL CLIENTE ===\n{intervista}\n\n"
-              f"=== I 3 OGGETTI-INDIZIO (in quest'ordine) ===\n{ogg_txt}\n\n"
+              f"=== I {nind} OGGETTI-INDIZIO (scrivi ESATTAMENTE {nind} indizi, in "
+              f"quest'ordine) ===\n{ogg_txt}\n\n"
               "Restituisci SOLO il copione come JSON coi campi richiesti.")
     for tent in range(1, 4):
         cop, err = _call(AGENTE['modello'], key, prompt)
         if cop is None:
             print(f'⚠ Sceneggiatore: modello non disponibile ({err}) — copione NON scritto, riprova')
             return 2
-        if _valido(cop):
+        if _valido(cop, nind):
             _wire_copione(cfg, cop)
             print(f'✅ copione pronto e incastrato nel pack "{slug}"  (agente Sceneggiatore, tentativo {tent})')
             print(f'   battute      {len(cop["dialoghi"])} · es. «{cop["dialoghi"][0][:60]}»')
-            for i, ind in enumerate(cop['indizi'][:3], 1):
+            for i, ind in enumerate(cop['indizi'], 1):
                 print(f'   indizio {i}    {ind["titolo"][:26]} — {ind["testo"].splitlines()[0][:52]}')
             if cop.get('gatto', '').strip():
                 print(f'   gatto        {cop["gatto"].splitlines()[0][:60]}')

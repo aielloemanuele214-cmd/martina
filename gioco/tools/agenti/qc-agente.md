@@ -23,11 +23,19 @@ prompt di rigenerazione per eliminare quei difetti.
 
 ## CRITERIO room
 ASSET: SFONDO STANZA statico (il palco del gioco). REGOLE:
-1) NESSUN essere vivente dipinto nello sfondo: niente persone, figure/silhouette umane, gatti, cani, animali o animaletti. Ogni essere vivo è uno sprite separato, MAI nello sfondo.
-2) Solo architettura, mobili e oggetti inanimati.
+1) NESSUN essere vivente REALE presente nella stanza come personaggio: niente
+   persone/figure umane in piedi o sedute, niente gatti/cani/animali veri nella
+   scena. Ogni essere vivo giocabile è uno sprite separato, MAI nello sfondo.
+   ATTENZIONE: una persona o un animale RAFFIGURATI su un poster, una foto, un
+   quadro o lo schermo di una TV NON sono un difetto — sono arredo (es. un poster
+   di un calciatore è OK).
+2) Solo architettura, mobili e oggetti (i quadri/poster/schermi sono oggetti).
 3) Deve esistere un'ampia area di PAVIMENTO libero e leggibile.
-4) Niente testo, watermark, cornici.
-Se vedi anche UNA persona o UN animale => ok=false e indicali con posizione.
+4) Niente testo-UI, didascalie o watermark SOVRAPPOSTI. Il testo che appartiene
+   al mondo (una scritta su uno schermo, il titolo di un poster, una copertina) è
+   ammesso.
+Boccia (ok=false) SOLO se c'è una persona/animale REALE come personaggio nella
+stanza, o testo-UI/watermark sovrapposto, o manca il pavimento libero.
 
 ## CRITERIO room_anim
 ASSET: DUE frame (1 = riferimento, 2 = variante animata) di uno sfondo che deve andare in LOOP fluido. REGOLE:

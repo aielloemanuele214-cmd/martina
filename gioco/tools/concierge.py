@@ -40,6 +40,7 @@ SCHEMA = {
         'stanza': {'type': 'string'},
         'oggetti': {'type': 'array', 'items': {'type': 'string'}},
         'animati': {'type': 'string'},
+        'momento_speciale': {'type': 'string'},
     },
     'required': ['protagonista', 'secondario', 'stanza', 'oggetti', 'animati'],
 }

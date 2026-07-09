@@ -29,11 +29,16 @@ Produci un brief con questi campi:
 - stanza: descrizione IN INGLESE di UNA stanza accogliente e coerente col ricordo
   della coppia (luce a candela/notturna se adatta), vista dall'alto 3/4, con un
   ampio pavimento libero.
-- oggetti: ESATTAMENTE 3 oggetti-indizio, IN INGLESE, ciascuno legato a un ricordo
-  reale della coppia (un disco, una lettera, un oggetto del loro primo incontro…).
-  Devono essere distinti e distribuibili nella stanza.
+- oggetti: un oggetto-indizio per OGNI oggetto che il cliente indica (rispetta il
+  loro numero: di solito 3, ma se ne elencano 4 o 5 mantienili tutti), IN INGLESE,
+  ciascuno legato a un ricordo reale. Se il cliente non ne indica, scegline 3.
+  Devono essere distinti e distribuibili nella stanza. Non fonderne due in uno.
 - animati: elementi che si muovono per rendere viva la scena (fiamme del camino,
   neve alla finestra, luci che pulsano, acqua…), IN INGLESE, coerenti con la stanza.
+- momento_speciale: il gesto a DUE che fa da climax, IN INGLESE, dedotto dal
+  legame e dai ricordi (es. "embracing in a slow romantic dance" per una coppia,
+  "jumping and cheering, celebrating a goal together" per due fratelli che giocano
+  a calcio). Stringa vuota "" se non emerge nulla di adatto.
 
 REGOLE:
 1) Le descrizioni visive sono in INGLESE; i NOMI restano quelli reali del cliente.

@@ -22,6 +22,8 @@ Comandi:
                               (battute, indizi, finale) dentro config/
     direttore <slug>          agente Art Director: validazione estetica finale
                               della scena composita (build → screenshot → giudizio)
+    collaudo <slug>           collaudo finale: QA funzionale + provino di
+                              animazioni e interazioni (fermo/camminata/interazione)
     genera <slug> [--assets a,b] [--modello X]
                               genera gli asset dell'ordine con Gemini (Nano Banana)
                               su verde + pipeline; legge packs/<slug>/genera.json
@@ -635,6 +637,9 @@ if __name__ == '__main__':
                                   sys.argv[2]]))
     elif cmd == 'direttore' and len(sys.argv) == 3:
         sys.exit(subprocess.call([sys.executable, os.path.join(ROOT, 'tools', 'art_director.py'),
+                                  sys.argv[2]]))
+    elif cmd == 'collaudo' and len(sys.argv) == 3:
+        sys.exit(subprocess.call([sys.executable, os.path.join(ROOT, 'tools', 'collaudo.py'),
                                   sys.argv[2]]))
     elif cmd == 'genera' and len(sys.argv) >= 3:
         sys.exit(subprocess.call([sys.executable, os.path.join(ROOT, 'tools', 'genera.py'),

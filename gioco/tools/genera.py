@@ -104,8 +104,11 @@ def gen(model, key, prompt, dest, aspect=None, ref=None):
     req = urllib.request.Request(
         f'https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent',
         data=body, headers={'x-goog-api-key': key, 'Content-Type': 'application/json'})
-    with urllib.request.urlopen(req, context=CTX, timeout=240) as r:
-        d = json.load(r)
+    try:
+        with urllib.request.urlopen(req, context=CTX, timeout=240) as r:
+            d = json.load(r)
+    except Exception as e:
+        print(f'    ⚠ generazione fallita ({e})'); return False
     for p in d.get('candidates', [{}])[0].get('content', {}).get('parts', []):
         if 'inlineData' in p:
             raw = base64.b64decode(p['inlineData']['data'])
@@ -115,7 +118,12 @@ def gen(model, key, prompt, dest, aspect=None, ref=None):
             os.remove(dest + '.raw')
             _log(model, 1)
             return True
-    raise SystemExit('nessuna immagine: ' + json.dumps(d)[:300])
+    # nessuna immagine (spesso contenuto vietato: es. marchi/personaggi protetti):
+    # NON far crashare l'intera produzione — segnala e vai avanti.
+    fr = d.get('candidates', [{}])[0].get('finishReason', '')
+    print(f'    ⚠ nessuna immagine ({fr or "sconosciuto"})'
+          + ('  ← contenuto vietato dal modello' if fr == 'PROHIBITED_CONTENT' else ''))
+    return False
 
 def gen_qc(model, key, prompt, dest, aspect, ref, qckind, qcfmt, qcref=None):
     """Genera CON controllo qualità: genera → giudica → se bocciato rigenera con i
@@ -125,7 +133,13 @@ def gen_qc(model, key, prompt, dest, aspect, ref, qckind, qcfmt, qcref=None):
     cur, last = prompt, None
     for att in range(1, MAX_QC + 1):
         m = model if att < MAX_QC else PRO_MODEL          # ultimo colpo: modello pro
-        gen(m, key, cur, dest, aspect=aspect, ref=ref)
+        if not gen(m, key, cur, dest, aspect=aspect, ref=ref):
+            last = {'ok': False, 'stato': 'errore',
+                    'difetti': ['immagine non generata (contenuto vietato o errore API)']}
+            if att < MAX_QC:
+                continue
+            print(f'    ⚠ {qckind or "asset"}: immagine non generata dopo {MAX_QC} tentativi — segnalato')
+            return False, last
         if not qckind:
             return True, None
         v = qc.judge(qckind, dest, key, ref_path=qcref, **(qcfmt or {}))
@@ -179,14 +193,18 @@ def build_specs(brief):
             prompt=f"{STYLE} Front-view acting SHEET of {S}, 5 frames in one row, stands still. Order: "
                    f"1) idle warm smile; 2) bashful hand behind neck; 3) speaking open-hand gesture; "
                    f"4) thoughtful hand on chin; 5) amused arms crossed. Expressive on-model face. {GREEN} {NEG}"))
+        # momento speciale: di default un ballo lento; personalizzabile (es. i due
+        # fratelli che esultano per un gol). Riusa la stessa meccanica "coppia".
+        momento = brief.get('momento_speciale',
+                            'embracing in a slow romantic dance, tender micro-movements')
         specs.append(dict(name='ballo5', kind='char', frames=5, fh=312, aspect='16:9', green=True, ref=True,
-            qckind='sheet', qcfmt=dict(n=5, desc="5 dancing poses of the SAME couple embracing, "
-                     "one couple-figure per cell, chained tender micro-movements"),
-            prompt=f"{STYLE} Sprite SHEET of EXACTLY five dancing poses in one horizontal row: {P} and {S} "
-                   f"embracing in a slow dance, tender micro-movements that chain smoothly. Each of the five "
-                   f"poses is a SEPARATE couple-figure with a WIDE vertical green gap between poses — poses "
-                   f"never overlap or touch horizontally. NO ground line, NO connecting shadow. Same two "
-                   f"characters, consistent design. {GREEN} {NEG}"))
+            qckind='sheet', qcfmt=dict(n=5, desc="5 poses of the SAME two characters in ONE single row, one "
+                     "two-figure group per cell, showing the special moment (poses may be dynamic)"),
+            prompt=f"{STYLE} Sprite SHEET, ONE SINGLE HORIZONTAL ROW of EXACTLY five poses side by side (NOT a "
+                   f"grid, NOT stacked on multiple rows): {P} and {S} {momento}. Each of the five poses is a "
+                   f"SEPARATE two-figure group with a WIDE vertical green gap between poses — poses never "
+                   f"overlap or touch horizontally. NO ground line, NO connecting shadow. Same two characters, "
+                   f"consistent design across all five. {GREEN} {NEG}"))
     if brief.get('animale'):
         specs.append(dict(name='gatto', kind='char', frames=2, fh=240, aspect='16:9', green=True, ref=False,
             qckind='sheet', qcfmt=dict(n=2, desc="2 poses of the SAME cat: sleeping curled, then awake head "
@@ -199,24 +217,26 @@ def build_specs(brief):
     room = brief.get('stanza', 'cozy candle-lit room')
     objs = brief.get('oggetti', ['a record player', 'a TV with a blanket', 'a writing desk'])
     anim = brief.get('animati', 'candle flames flicker, small reflections shift')
+    objlist = '; '.join(f'{chr(65+i)}) {o}' for i, o in enumerate(objs))
     specs.append(dict(name='stanza_bg', kind='room', aspect='1:1', green=False,
         qckind='room', qcfmt={},
         prompt=f"{STYLE} Top-down 3/4 cozy-sim view, square room, EMPTY stage, NO green screen. {room}. "
-               f"Back wall occupies the top ~20-25%; rest is warm walkable floor. Clearly separated: "
-               f"clue object A ({objs[0]}) on the UPPER-LEFT; clue object B ({objs[1]}) on the RIGHT; "
-               f"clue object C ({objs[2]}) LOWER-LEFT on furniture; an open central-bottom space; a "
-               f"window on the back wall onto the night. Readable, lived-in but UNOCCUPIED. {NOLIVING} {NEG}"))
+               f"Back wall occupies the top ~20-25%; rest is walkable floor. Place these clue objects, each "
+               f"clearly separated and readable, spread around the room (some on the walls, some on furniture, "
+               f"some on the floor): {objlist}. Keep an open central-bottom space to stand and a window on the "
+               f"back wall onto the night. Readable, lived-in but UNOCCUPIED. {NOLIVING} {NEG}"))
     specs.append(dict(name='stanza_bg2', kind='room', aspect='1:1', green=False, ref_room=True,
         qckind='room_anim', qcfmt=dict(anim=anim),
         prompt=f"Take the reference room image and change ONLY these animated elements: {anim}. Do NOT add, "
                f"remove or move anything else — every object, wall and piece of furniture stays pixel-identical "
                f"and in the exact same place, so the two frames loop without jitter. Do NOT add any creature. "
                f"Square, same framing. {NOLIVING}"))
-    for i, key in enumerate(['pop_vinile', 'pop_tv', 'pop_scrivania'][:len(objs)]):
-        specs.append(dict(name=key, kind='popup', aspect='1:1', green=False,
-            qckind='popup', qcfmt=dict(subj=objs[i]),
-            prompt=f"{STYLE} Square intimate close-up of {objs[i]}, same world and candlelight as the room, "
-                   f"cozy atmosphere. No text. {NEG}"))
+    # un popup per oggetto-indizio, nome neutro pop_indizio_i (N variabile)
+    for i, obj in enumerate(objs):
+        specs.append(dict(name=f'pop_indizio_{i+1}', kind='popup', aspect='1:1', green=False,
+            qckind='popup', qcfmt=dict(subj=obj),
+            prompt=f"{STYLE} Square intimate close-up of {obj}, same world and light as the room, "
+                   f"evocative atmosphere. No text. {NEG}"))
     specs.append(dict(name='pop_finestra', kind='popup', aspect='1:1', green=False,
         qckind='popup', qcfmt=dict(subj='the night view outside the window of this scene'),
         prompt=f"{STYLE} Square close-up of the view outside the window at night for this scene, atmospheric, "
@@ -311,8 +331,9 @@ def _wire_manifest(pack_dir, produced, dims):
         amap.update({f'pt_secondario_{i}': f'sprites/pt_secondario_{i}.png' for i in range(5)})
     if 'gatto' in dims: amap['pt_gatto'] = 'sprites/pt_gatto.png'
     amap['bg'] = 'rooms/stanza_bg.png'; amap['bg2'] = 'rooms/stanza_bg2.png'
-    for n in ('pop_vinile', 'pop_tv', 'pop_scrivania', 'pop_finestra'):
-        if n in produced: amap[n] = f'popup/{n}.png'
+    for n in sorted(produced):
+        if n.startswith('pop_'):
+            amap[n] = f'popup/{n}.png'
     man['assets'] = amap
     json.dump(man, open(os.path.join(pack_dir, 'manifest.json'), 'w'), ensure_ascii=False, indent=2)
 
@@ -350,16 +371,19 @@ def _wire_pack(pack_dir, dims, ncells, produced):
                     and collmask.engine_reachable(grid, B, spawn, [p], obstacle=p)[0]), None)
     if npc_pos is None:
         npc_pos = next((p for p in cand if collmask.engine_reachable(grid, B, spawn, [p], obstacle=p)[0]), spawn)
+    # quanti indizi vuole il pack (N variabile): lo dice interactions.json
+    it = json.load(open(os.path.join(cfg, 'interactions.json'), encoding='utf-8'))
+    nclue = max(1, len(it.get('sorprese', [])))
     # indizi: punti raggiungibili col secondario piazzato, distanziati tra loro
     okc = collmask.engine_reachable(grid, B, spawn, cand, obstacle=npc_pos)
     pool = [p for p, o in zip(cand, okc) if o and p[1] >= yfloor and _lontano(p, spawn)]
     clues = []
     for p in pool:
-        if all(_lontano(p, c, 10) for c in clues) and _lontano(p, npc_pos, 8) and _lontano(p, cat_pos, 8):
+        if all(_lontano(p, c, 9) for c in clues) and _lontano(p, npc_pos, 8) and _lontano(p, cat_pos, 8):
             clues.append(p)
-        if len(clues) == 3:
+        if len(clues) == nclue:
             break
-    clues = (clues + pool + cand)[:3]
+    clues = (clues + pool + cand)[:nclue]
     # tutti i punti sono già centro-cella dentro `reach`: nessun clamp che li sposti fuori
     # room.json: collisioni dalla maschera. bounds allargati di ~1 cella così il
     # limite duro non blocca mai una cella calpestabile di bordo.
@@ -376,10 +400,12 @@ def _wire_pack(pack_dir, dims, ncells, produced):
     if 'gatto' in dims:
         ch.setdefault('gatto', {}); ch['gatto']['x'] = cat_pos[0]; ch['gatto']['y'] = cat_pos[1]
     json.dump(ch, open(os.path.join(cfg, 'characters.json'), 'w'), ensure_ascii=False, indent=2)
-    # interactions.json: i 3 indizi su punti calpestabili distanziati
-    it = json.load(open(os.path.join(cfg, 'interactions.json'), encoding='utf-8'))
-    for s, (x, y) in zip(it.get('sorprese', []), clues):
+    # interactions.json: gli N indizi su punti calpestabili distanziati; ogni
+    # sorpresa punta al proprio popup generato (pop_indizio_i), in ordine.
+    for i, (s, (x, y)) in enumerate(zip(it.get('sorprese', []), clues)):
         s['x'] = x; s['y'] = y; s['ax'] = x; s['ay'] = y; s['ri'] = 6
+        if f'pop_indizio_{i+1}' in produced:
+            s['img'] = f'{{{{B64:pop_indizio_{i+1}}}}}'
     json.dump(it, open(os.path.join(cfg, 'interactions.json'), 'w'), ensure_ascii=False, indent=2)
     _wire_sprites(cfg, dims, ncells, produced)
     _wire_manifest(pack_dir, produced, dims)
@@ -424,6 +450,7 @@ def main(slug, only=None, model=DEFAULT_MODEL):
             ok, _ = gen_qc(model, key, s['prompt'], raw, s.get('aspect'),
                            ref_prota if s.get('ref') else None, qk, qf)
             if not ok: imperfetti.append(s['name'])
+            if not os.path.exists(raw): continue      # immagine non prodotta: salta
             r = process_char(raw, s['name'], s['frames'], s['fh'], spr)
             if r: dims[s['name']] = r[0]; ncells[s['name']] = r[1]; produced.add(s['name'])
         elif s['kind'] == 'room':
@@ -432,17 +459,20 @@ def main(slug, only=None, model=DEFAULT_MODEL):
                            ref_room if s.get('ref_room') else None, qk, qf,
                            qcref=ref_room if qk == 'room_anim' else None)
             if not ok: imperfetti.append(s['name'])
+            if not os.path.exists(out): continue
             Image.open(out).convert('RGB').resize((1024, 1024), Image.LANCZOS).save(out); produced.add(s['name'])
         elif s['kind'] == 'popup':
             out = os.path.join(pops, s['name'] + '.png')
             ok, _ = gen_qc(model, key, s['prompt'], out, '1:1', None, qk, qf)
             if not ok: imperfetti.append(s['name'])
+            if not os.path.exists(out): continue
             Image.open(out).convert('RGB').resize((512, 512), Image.LANCZOS).save(out); produced.add(s['name'])
         elif s['kind'] == 'mask':
-            ok, _ = gen_qc(model, key, s['prompt'], os.path.join(src, 'mask.png'), '1:1',
+            mp = os.path.join(src, 'mask.png')
+            ok, _ = gen_qc(model, key, s['prompt'], mp, '1:1',
                            ref_room if s.get('ref_room') else None, qk, qf)
             if not ok: imperfetti.append(s['name'])
-            produced.add('mask')
+            if os.path.exists(mp): produced.add('mask')
 
     if 'secondario_emo' in dims:
         _ritratti(spr, dims['secondario_emo'])
