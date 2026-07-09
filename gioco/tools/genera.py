@@ -193,18 +193,21 @@ def build_specs(brief):
             prompt=f"{STYLE} Front-view acting SHEET of {S}, 5 frames in one row, stands still. Order: "
                    f"1) idle warm smile; 2) bashful hand behind neck; 3) speaking open-hand gesture; "
                    f"4) thoughtful hand on chin; 5) amused arms crossed. Expressive on-model face. {GREEN} {NEG}"))
-        # momento speciale: di default un ballo lento; personalizzabile (es. i due
-        # fratelli che esultano per un gol). Riusa la stessa meccanica "coppia".
+        # momento speciale: di default un ballo lento a 5 pose; personalizzabile
+        # (es. i due fratelli che esultano). Il numero di pose è configurabile:
+        # per gesti statici (esultanza) 2 pose sono più affidabili di 5.
         momento = brief.get('momento_speciale',
                             'embracing in a slow romantic dance, tender micro-movements')
-        specs.append(dict(name='ballo5', kind='char', frames=5, fh=312, aspect='16:9', green=True, ref=True,
-            qckind='sheet', qcfmt=dict(n=5, desc="5 poses of the SAME two characters in ONE single row, one "
-                     "two-figure group per cell, showing the special moment (poses may be dynamic)"),
-            prompt=f"{STYLE} Sprite SHEET, ONE SINGLE HORIZONTAL ROW of EXACTLY five poses side by side (NOT a "
-                   f"grid, NOT stacked on multiple rows): {P} and {S} {momento}. Each of the five poses is a "
-                   f"SEPARATE two-figure group with a WIDE vertical green gap between poses — poses never "
-                   f"overlap or touch horizontally. NO ground line, NO connecting shadow. Same two characters, "
-                   f"consistent design across all five. {GREEN} {NEG}"))
+        nm = int(brief.get('momento_frames', 5))
+        num = {2: 'two', 3: 'three', 4: 'four', 5: 'five'}.get(nm, 'five')
+        specs.append(dict(name='ballo5', kind='char', frames=nm, fh=312, aspect='16:9', green=True, ref=True,
+            qckind='sheet', qcfmt=dict(n=nm, desc=f"{num} poses of the SAME two characters TOGETHER in ONE "
+                     "single row, one two-figure group per cell, the special moment"),
+            prompt=f"{STYLE} Sprite SHEET, ONE SINGLE HORIZONTAL ROW of EXACTLY {num} cells side by side (NOT a "
+                   f"grid, NOT two rows): in EACH cell the SAME two people, {P} and {S}, TOGETHER {momento}. "
+                   f"The {num} cells are {num} slightly different frames of that same two-person pose (small "
+                   f"movement between them). WIDE vertical green gap between cells; cells never overlap. NO "
+                   f"ground line, NO connecting shadow. Consistent design. {GREEN} {NEG}"))
     if brief.get('animale'):
         specs.append(dict(name='gatto', kind='char', frames=2, fh=240, aspect='16:9', green=True, ref=False,
             qckind='sheet', qcfmt=dict(n=2, desc="2 poses of the SAME cat: sleeping curled, then awake head "
