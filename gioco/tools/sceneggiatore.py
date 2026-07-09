@@ -203,15 +203,22 @@ def compila(slug):
                if oggetti else '(oggetti non ancora definiti: deducili dai ricordi)')
     prompt = (f"{AGENTE['direttiva']}\n\n{AGENTE['criterio']}\n\n"
               f"=== INTERVISTA DEL CLIENTE ===\n{intervista}\n\n"
-              f"=== I {nind} OGGETTI-INDIZIO (scrivi ESATTAMENTE {nind} indizi, in "
-              f"quest'ordine) ===\n{ogg_txt}\n\n"
+              f"=== I {nind} OGGETTI-INDIZIO ===\nDevi scrivere il campo 'indizi' con "
+              f"ESATTAMENTE {nind} elementi, UNO per ciascun oggetto qui sotto e nello "
+              f"stesso ordine. NON unirne due, NON saltarne nessuno (inclusa "
+              f"l'eventuale TV/videogioco, che è un indizio come gli altri):\n{ogg_txt}\n\n"
               "Restituisci SOLO il copione come JSON coi campi richiesti.")
     for tent in range(1, 4):
         cop, err = _call(AGENTE['modello'], key, prompt)
         if cop is None:
             print(f'⚠ Sceneggiatore: modello non disponibile ({err}) — copione NON scritto, riprova')
             return 2
-        if _valido(cop, nind):
+        got = len(cop.get('indizi', [])) if isinstance(cop, dict) else 0
+        if not _valido(cop, nind):
+            prompt += (f"\n\nATTENZIONE: hai prodotto {got} indizi ma ne servono ESATTAMENTE "
+                       f"{nind} (uno per oggetto, TV/videogioco compreso), più ≥10 battute e il finale. Riprova completo.")
+            continue
+        if True:
             _wire_copione(cfg, cop)
             print(f'✅ copione pronto e incastrato nel pack "{slug}"  (agente Sceneggiatore, tentativo {tent})')
             print(f'   battute      {len(cop["dialoghi"])} · es. «{cop["dialoghi"][0][:60]}»')

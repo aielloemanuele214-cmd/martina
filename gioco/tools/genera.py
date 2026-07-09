@@ -231,12 +231,15 @@ def build_specs(brief):
                f"remove or move anything else — every object, wall and piece of furniture stays pixel-identical "
                f"and in the exact same place, so the two frames loop without jitter. Do NOT add any creature. "
                f"Square, same framing. {NOLIVING}"))
-    # un popup per oggetto-indizio, nome neutro pop_indizio_i (N variabile)
+    # un popup per oggetto-indizio, nome neutro pop_indizio_i (N variabile).
+    # Generato CON la stanza come riferimento: il primo piano deve mostrare lo
+    # STESSO oggetto della stanza (stessi colori/forma), non una versione diversa.
     for i, obj in enumerate(objs):
         specs.append(dict(name=f'pop_indizio_{i+1}', kind='popup', aspect='1:1', green=False,
-            qckind='popup', qcfmt=dict(subj=obj),
-            prompt=f"{STYLE} Square intimate close-up of {obj}, same world and light as the room, "
-                   f"evocative atmosphere. No text. {NEG}"))
+            ref_room=True, qckind='popup_ref', qcfmt=dict(subj=obj),
+            prompt=f"Look at the reference room image. Make a square intimate CLOSE-UP of the SAME object "
+                   f"already present in that room: {obj}. Keep its EXACT design, shape and colours as in the "
+                   f"reference — same world and warm light, evocative atmosphere. {STYLE} No text. {NEG}"))
     specs.append(dict(name='pop_finestra', kind='popup', aspect='1:1', green=False,
         qckind='popup', qcfmt=dict(subj='the night view outside the window of this scene'),
         prompt=f"{STYLE} Square close-up of the view outside the window at night for this scene, atmospheric, "
@@ -338,6 +341,37 @@ def _wire_manifest(pack_dir, produced, dims):
     json.dump(man, open(os.path.join(pack_dir, 'manifest.json'), 'w'), ensure_ascii=False, indent=2)
 
 
+def _localizza(room_png, objs, key, model='gemini-2.5-flash'):
+    """Agente-vista: trova nella stanza il CENTRO di ogni oggetto-indizio (x%,y%),
+    così la stellina va SULL'oggetto (non su un punto vuoto del pavimento). In caso
+    di errore ritorna [] e il piazzamento ripiega sui punti calpestabili."""
+    import ssl as _ssl
+    numbered = '\n'.join(f'{i+1}. {o}' for i, o in enumerate(objs))
+    schema = {'type': 'object', 'properties': {'posizioni': {'type': 'array', 'items': {
+        'type': 'object', 'properties': {'x': {'type': 'number'}, 'y': {'type': 'number'}},
+        'required': ['x', 'y']}}}, 'required': ['posizioni']}
+    b = base64.b64encode(open(room_png, 'rb').read()).decode()
+    prompt = ("Guarda l'immagine della stanza. Per ognuno di questi oggetti indica il CENTRO come "
+              "percentuali x,y (0-100; x=da sinistra a destra, y=dall'alto in basso), NELLO STESSO "
+              f"ORDINE e stesso numero:\n{numbered}\nRitorna 'posizioni' con un {{x,y}} per oggetto.")
+    body = json.dumps({'contents': [{'parts': [{'inlineData': {'mimeType': 'image/png', 'data': b}},
+        {'text': prompt}]}], 'generationConfig': {'responseMimeType': 'application/json',
+        'responseSchema': schema, 'temperature': 0.1}}).encode()
+    for m in (model, 'gemini-flash-latest'):
+        try:
+            req = urllib.request.Request(
+                f'https://generativelanguage.googleapis.com/v1beta/models/{m}:generateContent',
+                data=body, headers={'x-goog-api-key': key, 'Content-Type': 'application/json'})
+            with urllib.request.urlopen(req, context=CTX, timeout=90) as r:
+                d = json.load(r)
+            pos = json.loads(d['candidates'][0]['content']['parts'][0]['text'])['posizioni']
+            _log(m + ' (localizza)', 0)
+            return [[max(0, min(100, float(p['x']))), max(0, min(100, float(p['y'])))] for p in pos]
+        except Exception:
+            continue
+    return []
+
+
 def _lontano(a, b, m=14):
     return (a[0] - b[0]) ** 2 + (a[1] - b[1]) ** 2 >= m * m
 
@@ -349,7 +383,7 @@ def _clamp(p, B, m=1.0):
             min(max(p[1], B['yMin'] + m), B['yMax'] - m)]
 
 
-def _wire_pack(pack_dir, dims, ncells, produced):
+def _wire_pack(pack_dir, dims, ncells, produced, markers=None):
     cfg = os.path.join(pack_dir, 'config')
     # wall_top: fascia alta forzata a muro (i personaggi non fluttuano sulla parete)
     info = collmask.derive(os.path.join(pack_dir, 'assets', '_src', 'mask.png'), wall_top=0.15)
@@ -400,10 +434,21 @@ def _wire_pack(pack_dir, dims, ncells, produced):
     if 'gatto' in dims:
         ch.setdefault('gatto', {}); ch['gatto']['x'] = cat_pos[0]; ch['gatto']['y'] = cat_pos[1]
     json.dump(ch, open(os.path.join(cfg, 'characters.json'), 'w'), ensure_ascii=False, indent=2)
-    # interactions.json: gli N indizi su punti calpestabili distanziati; ogni
-    # sorpresa punta al proprio popup generato (pop_indizio_i), in ordine.
-    for i, (s, (x, y)) in enumerate(zip(it.get('sorprese', []), clues)):
-        s['x'] = x; s['y'] = y; s['ax'] = x; s['ay'] = y; s['ri'] = 6
+    # interactions.json: la STELLINA (x,y) va SULL'oggetto localizzato nella
+    # stanza; il punto d'ARRIVO (ax,ay) è il pavimento raggiungibile più vicino
+    # (il protagonista ci cammina e apre lì). Ogni sorpresa punta al proprio popup.
+    sorprese = it.get('sorprese', [])
+    arrivi = []
+    for i, s in enumerate(sorprese):
+        mk = markers[i] if (markers and i < len(markers)) else None
+        if mk:
+            arr = collmask.nearest(reach, mk)          # pavimento raggiungibile vicino all'oggetto
+            s['x'] = round(mk[0], 1); s['y'] = round(mk[1], 1)      # stellina sull'oggetto
+        else:
+            arr = clues[i] if i < len(clues) else spawn
+            s['x'] = arr[0]; s['y'] = arr[1]
+        s['ax'] = arr[0]; s['ay'] = arr[1]; s['ri'] = 6
+        arrivi.append(arr)
         if f'pop_indizio_{i+1}' in produced:
             s['img'] = f'{{{{B64:pop_indizio_{i+1}}}}}'
     json.dump(it, open(os.path.join(cfg, 'interactions.json'), 'w'), ensure_ascii=False, indent=2)
@@ -411,8 +456,8 @@ def _wire_pack(pack_dir, dims, ncells, produced):
     _wire_manifest(pack_dir, produced, dims)
     # QA raggiungibilità col MODELLO DEL MOTORE (indizi + eventuale gatto senza
     # ostacolo, NPC col proprio corpo presente)
-    targets = list(clues) + ([cat_pos] if 'gatto' in dims else [])
-    labels = [f'indizio {i+1}' for i in range(len(clues))] + (['gatto'] if 'gatto' in dims else [])
+    targets = list(arrivi) + ([cat_pos] if 'gatto' in dims else [])
+    labels = [f'indizio {i+1}' for i in range(len(arrivi))] + (['gatto'] if 'gatto' in dims else [])
     reach = collmask.engine_reachable(grid, bb, spawn, targets)
     reach.append(collmask.engine_reachable(grid, bb, spawn, [npc_pos], obstacle=npc_pos)[0])
     labels.append('NPC')
@@ -453,7 +498,9 @@ def main(slug, only=None, model=DEFAULT_MODEL):
             if not ok: imperfetti.append(s['name'])
             if not os.path.exists(raw): continue      # immagine non prodotta: salta
             r = process_char(raw, s['name'], s['frames'], s['fh'], spr)
-            if r: dims[s['name']] = r[0]; ncells[s['name']] = r[1]; produced.add(s['name'])
+            if r:
+                dims[s['name']] = r[0]; ncells[s['name']] = r[1]; produced.add(s['name'])
+                sprites.pixelate(os.path.join(spr, s['name'] + '.png'), colors=64)  # palette 16-bit + caldo
         elif s['kind'] == 'room':
             out = os.path.join(rooms, s['name'] + '.png')
             ok, _ = gen_qc(model, key, s['prompt'], out, '1:1',
@@ -461,13 +508,17 @@ def main(slug, only=None, model=DEFAULT_MODEL):
                            qcref=ref_room if qk == 'room_anim' else None)
             if not ok: imperfetti.append(s['name'])
             if not os.path.exists(out): continue
-            Image.open(out).convert('RGB').resize((1024, 1024), Image.LANCZOS).save(out); produced.add(s['name'])
+            sprites.pixelate(out, target=448, colors=64)   # vero 16-bit netto + grade caldo
+            produced.add(s['name'])
         elif s['kind'] == 'popup':
             out = os.path.join(pops, s['name'] + '.png')
-            ok, _ = gen_qc(model, key, s['prompt'], out, '1:1', None, qk, qf)
+            ok, _ = gen_qc(model, key, s['prompt'], out, '1:1',
+                           ref_room if s.get('ref_room') else None, qk, qf,
+                           qcref=ref_room if qk == 'popup_ref' else None)
             if not ok: imperfetti.append(s['name'])
             if not os.path.exists(out): continue
-            Image.open(out).convert('RGB').resize((512, 512), Image.LANCZOS).save(out); produced.add(s['name'])
+            sprites.pixelate(out, target=340, colors=48)
+            produced.add(s['name'])
         elif s['kind'] == 'mask':
             mp = os.path.join(src, 'mask.png')
             ok, _ = gen_qc(model, key, s['prompt'], mp, '1:1',
@@ -480,7 +531,11 @@ def main(slug, only=None, model=DEFAULT_MODEL):
     if 'gatto' in dims:
         _pt_gatto(spr, dims['gatto'])
     if not only:
-        _wire_pack(pack_dir, dims, ncells, produced)   # collisioni, posizioni, cablaggio, QA
+        # agente-vista: dove sta ogni oggetto-indizio nella stanza (per le stelline)
+        markers = _localizza(ref_room, brief.get('oggetti', []), key) if os.path.exists(ref_room) else []
+        if markers:
+            print(f'   📍 oggetti localizzati nella stanza: {len(markers)}')
+        _wire_pack(pack_dir, dims, ncells, produced, markers)   # collisioni, posizioni, cablaggio, QA
 
     if imperfetti:
         print(f'\n⚠ asset ancora imperfetti dopo il QC ({MAX_QC} tentativi): {", ".join(imperfetti)}')

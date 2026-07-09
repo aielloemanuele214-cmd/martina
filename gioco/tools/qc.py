@@ -162,6 +162,9 @@ def judge(kind, image_path, key, ref_path=None, model=None, **fmt):
     if kind == 'room_anim' and ref_path:
         parts += [{'text': 'FRAME 1 (riferimento):'}, _img_part(ref_path),
                   {'text': 'FRAME 2 (variante animata):'}, _img_part(image_path)]
+    elif kind == 'popup_ref' and ref_path:
+        parts += [{'text': 'IMMAGINE 1 (la STANZA di riferimento):'}, _img_part(ref_path),
+                  {'text': 'IMMAGINE 2 (il PRIMO PIANO da verificare):'}, _img_part(image_path)]
     else:
         parts.append(_img_part(image_path))
     parts.append({'text': AGENTE['direttiva'] + '\n\n' + rubrica})

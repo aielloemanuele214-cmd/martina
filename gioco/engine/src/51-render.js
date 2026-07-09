@@ -8,7 +8,8 @@ function rebuildCache(){
   // sfondi pre-scalati alla risoluzione di disegno
   for(const k of ['bg','bg2']){
     const c=mk(W*PS, W*PS);
-    c.getContext('2d').drawImage(IMG[k],0,0,c.width,c.height);
+    const cx=c.getContext('2d'); cx.imageSmoothingEnabled=false;  // pixel netti (16-bit)
+    cx.drawImage(IMG[k],0,0,c.width,c.height);
     CACHE[k]=c;
   }
   // spritesheet pre-scalati alla loro altezza in scena (tutte le direzioni di lei = stessa altezza)

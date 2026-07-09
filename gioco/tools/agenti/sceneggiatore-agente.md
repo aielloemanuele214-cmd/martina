@@ -38,7 +38,10 @@ Produci un copione con questi campi:
   INCORPORA con naturalezza il messaggio finale del cliente, se fornito.
 
 REGOLE:
-1) Italiano, tono coerente con l'occasione. Brevità: si legge su un telefono.
+1) Italiano, tono coerente con l'occasione e col TIPO di legame. Brevità: si legge su un telefono.
 2) Concreto e personale: cita i loro ricordi, non frasi da bigliettino generico.
+   NIENTE sdolcinato o mieloso: asciutto, vero, pudico. Tra fratelli o amici usa
+   affetto ruvido e complice, non parole d'amore. Rispetta caratteri e ruoli
+   descritti (es. un fratello maggiore complice ma a volte apprensivo).
 3) Rispetta l'ordine degli oggetti per gli indizi.
 4) Niente nomi di marchi, niente testo in inglese, niente istruzioni al giocatore.

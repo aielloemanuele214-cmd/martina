@@ -20,6 +20,7 @@ const DEBUG = _params.has('debug') || EDITOR;
 
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d', {alpha:false});
+ctx.imageSmoothingEnabled = false;         // rendering nearest: pixel 16-bit netti
 const isTouch = matchMedia('(pointer:coarse)').matches;
 
 /* ---------- caricamento immagini ---------- */

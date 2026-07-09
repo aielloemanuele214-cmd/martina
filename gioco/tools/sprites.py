@@ -114,6 +114,32 @@ def cells_grid(rgba, expect=None):
         out.append(Image.fromarray(rgba[y0+ys.min():y0+ys.max()+1, x0+xs.min():x0+xs.max()+1]))
     return out
 
+def pixelate(path, target=None, colors=64, warm=True):
+    """Rende l'asset "vero 16-bit": riduce a una risoluzione bassa (pixel netti,
+    non spalmati), applica un leggero grade caldo e quantizza la palette. Preserva
+    l'alpha se presente. Opera in place. Il display del motore è già nearest
+    (image-rendering:pixelated), quindi i pixel restano croccanti."""
+    im = Image.open(path)
+    has_a = im.mode in ('RGBA', 'LA') or (im.mode == 'P' and 'transparency' in im.info)
+    im = im.convert('RGBA' if has_a else 'RGB')
+    if target and max(im.size) > target:
+        w, h = im.size
+        s = target / max(w, h)
+        im = im.resize((max(1, round(w * s)), max(1, round(h * s))), Image.LANCZOS)
+    a = None
+    if has_a:
+        a = im.getchannel('A'); im = im.convert('RGB')
+    if warm:                                   # grade caldo/accogliente lo-fi
+        r, g, b = im.split()
+        r = r.point(lambda v: min(255, int(v * 1.06 + 6)))
+        b = b.point(lambda v: int(v * 0.93))
+        im = Image.merge('RGB', (r, g, b))
+    im = im.quantize(colors=colors, method=Image.FASTOCTREE, dither=Image.Dither.NONE).convert('RGB')
+    if a is not None:
+        im = im.convert('RGBA'); im.putalpha(a)
+    im.save(path)
+
+
 def n_bands(rgba):
     """Numero di BANDE orizzontali di pixel opachi (righe di uno sheet a griglia)."""
     rows = np.where((rgba[:, :, 3] > 0).any(axis=1))[0]

@@ -61,5 +61,17 @@ ASSET: MASCHERA DI COLLISIONE della stanza. REGOLE:
 4) NESSUna silhouette di persona o animale nella maschera.
 Se la parete in alto è bianca, o c'è una sagoma di personaggio, o ci sono più di due toni => ok=false.
 
+## CRITERIO popup_ref
+ASSET: DUE immagini — (1 = la STANZA di riferimento, 2 = un PRIMO PIANO). Il primo
+piano deve mostrare lo STESSO oggetto già presente nella stanza: {subj}. REGOLE:
+1) È lo stesso identico oggetto della stanza: stessa forma, stessi colori, stesso
+   design (es. il poster/quadro deve raffigurare lo stesso soggetto con gli stessi
+   colori; una TV la stessa immagine). Se il primo piano mostra un oggetto DIVERSO
+   o molto ridisegnato rispetto alla stanza => ok=false.
+2) Coerente col mondo e la luce calda della stanza; nessun testo-UI/watermark
+   sovrapposto (il testo del mondo va bene). Persone/animali raffigurati su
+   poster/schermi sono ammessi (sono l'oggetto stesso).
+Se non combacia con l'oggetto nella stanza => ok=false, di' in cosa differisce.
+
 ## CRITERIO popup
 ASSET: illustrazione quadrata primo piano ambientata, soggetto principale: {subj}. È NORMALE e DESIDERABILE che intorno ci sia l'atmosfera della stanza (mobili, candele, luci): NON è un difetto. Boccia (ok=false) SOLO se: c'è testo o watermark; oppure compare una PERSONA o un ANIMALE (che non sia il soggetto richiesto); oppure il soggetto principale {subj} non è riconoscibile. La scrittura a mano ILLEGGIBILE su un oggetto del mondo (una lettera, un libro) NON è un difetto: è testo-UI/didascalie/watermark sovrapposti a essere vietati. Altrimenti ok=true.

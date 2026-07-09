@@ -20,7 +20,7 @@ gemini-3.1-flash-image
 gemini-3-pro-image
 
 ## STYLE
-Cohesive hand-crafted 16-bit pixel art, cozy-JRPG / life-sim quality (Stardew Valley / Eastward feel). Hand-placed pixels, crisp clean 1px outlines, limited harmonious warm palette (amber, terracotta, candle-gold) with cool night accents. Soft warm rim-light, subtle ordered dithering, no smooth blur. Readable silhouette. Premium, intimate.
+Authentic SNES-era 16-bit pixel art, cozy lo-fi bedroom mood (Stardew Valley / Eastward feel). TRUE low-resolution pixel grid: crisp HARD-EDGED pixels, clean 1px outlines, absolutely NO anti-aliasing, NO soft gradients, NO blur, NO smeared or painterly look. Warm cozy inviting palette — amber, terracotta, candle-gold, warm browns — with gentle warm lamp light and only soft cool accents at the night window. Subtle ordered dithering for shading. Readable silhouette. Premium, intimate, nostalgic.
 
 ## GREEN
 Placed on a SOLID PURE #00FF00 GREEN SCREEN, perfectly flat, hard-edged and uniform, no gradient, no green light spilling on the subject.
