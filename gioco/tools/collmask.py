@@ -136,6 +136,21 @@ def flood(grid, start):
     return seen
 
 
+def floor_body(grid, min_clear=2.0):
+    """Maschera del CORPO navigabile principale: pavimento eroso del raggio del
+    personaggio, componente connessa più grande. Le celle qui sono davvero
+    raggiungibili dal motore (niente bordi sottili o angoli marginali)."""
+    dist = ndimage.distance_transform_edt(grid)
+    body = dist >= min_clear
+    if not body.any():
+        return grid
+    lbl, n = ndimage.label(body)
+    if n > 1:
+        sz = ndimage.sum(np.ones_like(lbl), lbl, range(1, n + 1))
+        body = (lbl == int(np.argmax(sz)) + 1)
+    return body
+
+
 def nearest(grid, p):
     """Cella calpestabile più vicina al punto p (x%,y%), in % 0-100."""
     G = grid.shape[0]

@@ -24,9 +24,10 @@ Verifica:
    camminata è una posa in piedi credibile, NON seduta/accovacciata/spezzata, e il
    personaggio è rivolto/coerente col camminare verso sinistra (il mirroring non
    deve produrre mostri o arti doppi).
-3) L'INTERAZIONE (fotogramma 3) mostra un popup/scena leggibile e UNA sola figura
-   del personaggio: nessun accavallamento di due pose (es. in piedi + accovacciato
-   sovrapposti), nessun doppione.
+3) L'INTERAZIONE (fotogramma 3) mostra un popup/scena leggibile. È NORMALE che il
+   popup copra la scena e quindi il personaggio non si veda: NON è un difetto.
+   Boccia solo se un personaggio VISIBILE è rotto (due pose accavallate, in piedi
+   + accovacciato sovrapposti, doppione).
 4) In generale nessuna figura che fluttua, sprofonda o è tagliata.
 Restituisci:
 - ok: true solo se animazioni e interazioni sono coerenti.

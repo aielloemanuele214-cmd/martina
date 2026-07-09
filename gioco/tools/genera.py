@@ -441,11 +441,12 @@ def _wire_pack(pack_dir, dims, ncells, produced, markers=None):
     # stanza; il punto d'ARRIVO (ax,ay) è il pavimento raggiungibile più vicino
     # (il protagonista ci cammina e apre lì). Ogni sorpresa punta al proprio popup.
     sorprese = it.get('sorprese', [])
+    body = collmask.floor_body(reach, 2.0)             # corpo navigabile (arrivi sempre raggiungibili)
     arrivi = []
     for i, s in enumerate(sorprese):
         mk = markers[i] if (markers and i < len(markers)) else None
         if mk:
-            arr = collmask.nearest(reach, mk)          # pavimento raggiungibile vicino all'oggetto
+            arr = collmask.nearest(body, mk)           # pavimento NAVIGABILE più vicino all'oggetto
             s['x'] = round(mk[0], 1); s['y'] = round(mk[1], 1)      # stellina sull'oggetto
         else:
             arr = clues[i] if i < len(clues) else spawn
