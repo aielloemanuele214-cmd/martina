@@ -27,7 +27,7 @@ editabile**. Vedi l'esempio vivo: [`../gioco/tools/agenti/qc-agente.md`](../gioc
 Non tutte le figure sono già agenti. Onestà prima di tutto:
 
 - 🟢 **Agente AI** — guidato da modello + direttiva: **Concierge (01)**,
-  **Sceneggiatore (02)**, **Generation (04)**, **QC (05)**.
+  **Sceneggiatore (02)**, **Generation (04)**, **QC (05)**, **Art Director (10)**.
 - ⚙️🟢 **Deterministico ma addestrabile per direttive** — assembla in modo
   costante, ma il suo DNA vive in una spec editabile: **Art Supervisor (03)**.
   Non tutto ciò che è addestrabile deve essere un LLM: qui la *coerenza* dei
@@ -95,10 +95,12 @@ In ordine di valore/fattibilità:
    (`sad concierge <slug>`). Direttiva in `agenti/concierge-agente.md`.
 2. ✅ **Sceneggiatore (02)** — *acceso*: dai ricordi scrive battute, indizi e
    finale (`sad sceneggiatore <slug>`). Direttiva in `agenti/sceneggiatore-agente.md`.
-3. **Art Director (10)** — agente di validazione estetica: una seconda opinione
-   sopra il QC tecnico. Direttiva = lo Style Bible reso operativo.
-4. **Delivery (09)** e **Audio (08)** — quando la relazione/infra saranno pronte
-   a essere guidate da direttiva.
+3. ✅ **Art Director (10)** — *acceso*: fotografa la scena composita e la valida
+   in modo olistico (`sad direttore <slug>`), col cast atteso per cogliere i
+   doppioni. Direttiva in `agenti/art-director-agente.md`.
+4. **Audio (08)** — quando la libreria musicale sarà pronta a essere guidata da
+   direttiva. **Delivery (09)** ed **Engine/Pipeline (06/07)** restano
+   giustamente non-LLM (infra e codice).
 
 Ognuna nasce come oggi il QC: una spec editabile, un loader, e da lì si addestra
 per direttive.

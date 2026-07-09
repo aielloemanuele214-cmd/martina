@@ -20,6 +20,8 @@ Comandi:
                               (packs/<slug>/intervista.json|txt) al brief genera.json
     sceneggiatore <slug>      agente Sceneggiatore: dai ricordi al copione
                               (battute, indizi, finale) dentro config/
+    direttore <slug>          agente Art Director: validazione estetica finale
+                              della scena composita (build → screenshot → giudizio)
     genera <slug> [--assets a,b] [--modello X]
                               genera gli asset dell'ordine con Gemini (Nano Banana)
                               su verde + pipeline; legge packs/<slug>/genera.json
@@ -630,6 +632,9 @@ if __name__ == '__main__':
                                   sys.argv[2]]))
     elif cmd == 'sceneggiatore' and len(sys.argv) == 3:
         sys.exit(subprocess.call([sys.executable, os.path.join(ROOT, 'tools', 'sceneggiatore.py'),
+                                  sys.argv[2]]))
+    elif cmd == 'direttore' and len(sys.argv) == 3:
+        sys.exit(subprocess.call([sys.executable, os.path.join(ROOT, 'tools', 'art_director.py'),
                                   sys.argv[2]]))
     elif cmd == 'genera' and len(sys.argv) >= 3:
         sys.exit(subprocess.call([sys.executable, os.path.join(ROOT, 'tools', 'genera.py'),
