@@ -35,6 +35,14 @@ I giochi finiti dei clienti (con foto e messaggi reali) vivono in una repository
 Caroselli, post, bio, hashtag, kit di branding e i generatori delle grafiche.
 → Guida: **`social/README.md`**
 
+### 🧭 AZIENDA — modello operativo a figure → cartella **`azienda/`**
+Come è organizzata la produzione: **una sola figura per ruolo**, ognuna con la sua
+**lista di task**. Per migliorare un aspetto si apre la scheda della figura che lo
+possiede e le si aggiunge un task (ciclo R&D). Dieci figure lungo la catena di
+produzione (brief → storia → prompt → generazione → QC → motore → build → audio →
+consegna → validazione).
+→ Guida: **`azienda/README.md`** · ciclo di miglioramento: **`azienda/rnd.md`**
+
 ---
 
 ## 📚 Documenti — cartella `docs/`
