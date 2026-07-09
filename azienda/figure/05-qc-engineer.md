@@ -4,8 +4,9 @@
 
 - **Codice**: FIG-05
 - **Fase pipeline**: Controllo qualità (fase 06)
-- **Tipo**: modulo automatizzato (art director AI)
-- **Stato**: attivo
+- **Tipo**: 🟢 **agente AI** (art director visivo)
+- **Stato**: attivo · addestrabile per direttive
+- **Cervello (direttiva editabile)**: `gioco/tools/agenti/qc-agente.md` → modello [`AGENTI.md`](../AGENTI.md)
 
 ## Mandato
 Possiede il **controllo qualità visivo**: un modello con visione ispeziona ogni
@@ -36,3 +37,4 @@ il ciclo genera→giudica→rigenera. È l'unica figura che può **bocciare** un
 
 ## Log (potenziamenti e correzioni)
 - 2026-07-09 — Scheda creata. Aggiunto check «foglio = una riga di N figure»; rubrica popup ammorbidita (contesto e scrittura in-world ammessi).
+- 2026-07-09 — Diventato **agente addestrabile per direttive**: direttiva e criteri spostati in `agenti/qc-agente.md` (caricati da `qc.py`). Robustezza: retry sugli errori API; se il giudizio è indisponibile l'asset è **segnalato per revisione**, non promosso in silenzio.

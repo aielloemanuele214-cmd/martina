@@ -10,13 +10,15 @@ spostano tra i due frame o frame di animazione incoerenti.
 Il giudizio costa pochissimo (poco testo, 1-2 immagini) e viene annotato nel
 registro consumi come le generazioni.
 """
-import base64, json, os, ssl, urllib.request
+import base64, json, os, ssl, time, urllib.request, urllib.error
 
 CA = '/root/.ccr/ca-bundle.crt'
 CTX = ssl.create_default_context(cafile=CA) if os.path.exists(CA) else ssl.create_default_context()
 USAGE = os.path.expanduser('~/.config/sempreaddue/gemini-usage.tsv')
+SPEC = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'agenti', 'qc-agente.md')
 JUDGE_MODEL = 'gemini-2.5-flash'      # visione capace ed economica; override da genera
 JUDGE_COST = 0.004                    # stima prudente per giudizio (testo+1-2 img)
+TRANSIENT = {429, 500, 502, 503, 504}  # errori API da riprovare con backoff
 
 # Schema della risposta: JSON rigido, niente parsing fragile.
 SCHEMA = {
@@ -98,6 +100,39 @@ RUBRICHE = {
 }
 
 
+# La DIRETTIVA e i CRITERI dell'agente vivono in un file editabile (SPEC): il
+# codice li carica da lì. Addestrare l'agente = modificare quel file. I valori
+# qui sopra restano solo come rete di sicurezza se la spec manca o è illeggibile.
+def _load_agent():
+    prof = {'modello': JUDGE_MODEL, 'direttiva': _ART, 'rubriche': dict(RUBRICHE)}
+    try:
+        cur, buf, sez = None, [], {}
+        for line in open(SPEC, encoding='utf-8'):
+            if line.startswith('## '):
+                if cur:
+                    sez[cur] = '\n'.join(buf).strip()
+                cur, buf = line[3:].strip(), []
+            elif cur:
+                buf.append(line.rstrip('\n'))
+        if cur:
+            sez[cur] = '\n'.join(buf).strip()
+        if sez.get('MODELLO'):
+            prof['modello'] = sez['MODELLO'].splitlines()[0].strip()
+        if sez.get('DIRETTIVA'):
+            prof['direttiva'] = sez['DIRETTIVA']
+        for k, v in sez.items():
+            if k.startswith('CRITERIO '):
+                prof['rubriche'][k.split(' ', 1)[1].strip()] = v
+    except FileNotFoundError:
+        pass
+    except Exception as e:
+        print(f'⚠ QC: spec agente non caricata ({e}); uso i valori interni')
+    return prof
+
+
+AGENTE = _load_agent()
+
+
 def _img_part(path):
     b = base64.b64encode(open(path, 'rb').read()).decode()
     return {'inlineData': {'mimeType': 'image/png', 'data': b}}
@@ -114,36 +149,54 @@ def _log(model):
         pass
 
 
-def judge(kind, image_path, key, ref_path=None, model=JUDGE_MODEL, **fmt):
-    """Giudica un asset. `kind` in RUBRICHE; `fmt` riempie {n}/{desc}/{anim}/{subj}.
-    Ritorna dict {ok, difetti[], correzione}. In caso di errore API => ok=True
-    (non blocca la produzione) con difetto diagnostico."""
-    rubrica = RUBRICHE[kind].format(**fmt) if fmt else RUBRICHE[kind]
+def judge(kind, image_path, key, ref_path=None, model=None, **fmt):
+    """Giudica un asset con la DIRETTIVA e i CRITERI dell'agente (spec editabile).
+    Ritorna {ok, difetti[], correzione, stato}. `stato`: 'giudicato' oppure
+    'errore'. Su errore API riprova con backoff; se il giudizio resta
+    indisponibile ritorna ok=False + stato='errore' — così un asset NON passa mai
+    in silenzio: viene segnalato per revisione umana (mai auto-promosso al buio)."""
+    rubrica = AGENTE['rubriche'][kind]
+    rubrica = rubrica.format(**fmt) if fmt else rubrica
+    model = model or AGENTE['modello']
     parts = []
     if kind == 'room_anim' and ref_path:
         parts += [{'text': 'FRAME 1 (riferimento):'}, _img_part(ref_path),
                   {'text': 'FRAME 2 (variante animata):'}, _img_part(image_path)]
     else:
         parts.append(_img_part(image_path))
-    parts.append({'text': _ART + '\n\n' + rubrica})
+    parts.append({'text': AGENTE['direttiva'] + '\n\n' + rubrica})
     body = json.dumps({
         'contents': [{'parts': parts}],
         'generationConfig': {'responseMimeType': 'application/json',
                              'responseSchema': SCHEMA, 'temperature': 0.1},
     }).encode()
-    req = urllib.request.Request(
-        f'https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent',
-        data=body, headers={'x-goog-api-key': key, 'Content-Type': 'application/json'})
-    try:
-        with urllib.request.urlopen(req, context=CTX, timeout=120) as r:
-            d = json.load(r)
-        txt = d['candidates'][0]['content']['parts'][0]['text']
-        out = json.loads(txt)
-        _log(model)
-        out.setdefault('difetti', []); out.setdefault('correzione', '')
-        return out
-    except Exception as e:
-        return {'ok': True, 'difetti': [f'(giudizio non disponibile: {e})'], 'correzione': ''}
+    url = f'https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent'
+    req = urllib.request.Request(url, data=body,
+        headers={'x-goog-api-key': key, 'Content-Type': 'application/json'})
+    err = None
+    for att in range(4):                       # 1 tentativo + 3 retry (2s,4s,8s)
+        try:
+            with urllib.request.urlopen(req, context=CTX, timeout=120) as r:
+                d = json.load(r)
+            out = json.loads(d['candidates'][0]['content']['parts'][0]['text'])
+            _log(model)
+            out.setdefault('difetti', []); out.setdefault('correzione', '')
+            out['stato'] = 'giudicato'
+            return out
+        except urllib.error.HTTPError as e:
+            err = f'HTTP {e.code}'
+            if e.code in TRANSIENT and att < 3:
+                time.sleep(2 ** att); continue
+            break
+        except (urllib.error.URLError, TimeoutError, OSError) as e:
+            err = str(e)
+            if att < 3:
+                time.sleep(2 ** att); continue
+            break
+        except Exception as e:                 # risposta malformata: non riprovare
+            err = str(e); break
+    return {'ok': False, 'difetti': [f'giudizio non disponibile: {err}'],
+            'correzione': '', 'stato': 'errore'}
 
 
 if __name__ == '__main__':

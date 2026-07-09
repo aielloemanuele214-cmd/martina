@@ -108,6 +108,9 @@ def gen_qc(model, key, prompt, dest, aspect, ref, qckind, qcfmt, qcref=None):
         if v['ok']:
             print(f'    ✓ qc {qckind} (tentativo {att}/{MAX_QC}, {m.split("-")[-2]})')
             return True, v
+        if v.get('stato') == 'errore':        # QC indisponibile: non sprecare rigenerazioni
+            print(f'    ⚠ qc {qckind}: {v["difetti"][0]} → asset segnalato per revisione umana')
+            return False, v
         dif = '; '.join(v['difetti'])[:200]
         print(f'    ✗ qc {qckind} [{att}/{MAX_QC}]: {dif}')
         corr = v.get('correzione') or 'Fix all listed defects.'
