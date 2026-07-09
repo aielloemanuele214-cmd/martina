@@ -26,7 +26,8 @@ editabile**. Vedi l'esempio vivo: [`../gioco/tools/agenti/qc-agente.md`](../gioc
 
 Non tutte le figure sono già agenti. Onestà prima di tutto:
 
-- 🟢 **Agente AI** — guidato da modello + direttiva: **QC (05)**, **Generation (04)**.
+- 🟢 **Agente AI** — guidato da modello + direttiva: **Concierge (01)**,
+  **Generation (04)**, **QC (05)**.
 - ⚙️ **Codice deterministico** — esegue regole, non "ragiona": **Engine (06)**,
   **Pipeline (07)**, **Art Supervisor (03)**.
 - 👤 **Umano / checklist** — per ora presidiato da persone: **Concierge (01)**,
@@ -85,8 +86,8 @@ competenza della figura **Research/ML** (area R&D). Regola pratica: si prova
 
 In ordine di valore/fattibilità:
 
-1. **Concierge (01)** — agente d'intervista: raccoglie il brief e compila
-   `genera.json` guidando il cliente. Direttiva = lo stile dell'intervista.
+1. ✅ **Concierge (01)** — *acceso*: dall'intervista scrive il brief `genera.json`
+   (`sad concierge <slug>`). Direttiva in `agenti/concierge-agente.md`.
 2. **Sceneggiatore (02)** — agente narrativo: adatta i template alla coppia.
    Direttiva = tono e struttura della storia.
 3. **Art Director (10)** — agente di validazione estetica: una seconda opinione

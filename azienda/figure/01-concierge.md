@@ -4,8 +4,9 @@
 
 - **Codice**: FIG-01
 - **Fase pipeline**: Brief (fase 01–02)
-- **Tipo**: assistito (umano + modulo di raccolta)
-- **Stato**: attivo
+- **Tipo**: 🟢 **agente AI** (dall'intervista al brief) + relazione umana
+- **Stato**: attivo · addestrabile per direttive
+- **Cervello (direttiva editabile)**: `gioco/tools/agenti/concierge-agente.md` → modello [`AGENTI.md`](../AGENTI.md)
 
 ## Mandato
 È l'unica figura che parla col committente prima della produzione. Possiede
@@ -19,6 +20,10 @@ pronto: nessuna decisione creativa o tecnica resta implicita.
 2. Traduce i ricordi in requisiti concreti (oggetti-indizio, ambientazione, dialoghi chiave).
 3. Compila il brief `packs/<slug>/genera.json` e valida che i campi obbligatori ci siano.
 4. Gestisce preventivo, codice founder e conferma di pagamento; apre la commessa.
+
+L'**agente** automatizza il passo 2–3: legge `packs/<slug>/intervista.json|txt` e
+scrive un `genera.json` valido con `python3 tools/sad.py concierge <slug>`. La
+relazione col cliente (passi 1 e 4) resta umana.
 
 ## Interfacce
 - **Riceve da**: cliente — richiesta e materiali.
@@ -38,3 +43,4 @@ pronto: nessuna decisione creativa o tecnica resta implicita.
 
 ## Log (potenziamenti e correzioni)
 - 2026-07-09 — Scheda creata.
+- 2026-07-09 — **Acceso come agente**: `tools/concierge.py` + direttiva editabile `agenti/concierge-agente.md`; CLI `sad concierge <slug>`. Dall'intervista scrive un `genera.json` valido (3 oggetti-indizio dai ricordi reali); non scrive mai un brief incompleto (valida + ritenta + segnala). Chiude `R&D-01-01` (modulo d'intervista) e `R&D-01-02` (validatore brief).
