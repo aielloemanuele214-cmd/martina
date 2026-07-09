@@ -35,7 +35,7 @@ PRO_MODEL = 'gemini-3-pro-image'      # escalation quando flash non convince il 
 MAX_QC = int(os.environ.get('SAD_QC_RETRY', '3'))   # tentativi per asset prima di arrendersi
 COST = {'gemini-3.1-flash-image': 0.04, 'gemini-2.5-flash-image': 0.04, 'gemini-3-pro-image': 0.13}
 
-# ---- Style Bible (invariato: il DNA visivo SempreAddue) ----
+# ---- Style Bible (rete di sicurezza: il DNA vero è in agenti/art-supervisor-agente.md) ----
 STYLE = ("Cohesive hand-crafted 16-bit pixel art, cozy-JRPG / life-sim quality (Stardew Valley / "
   "Eastward feel). Hand-placed pixels, crisp clean 1px outlines, limited harmonious warm palette "
   "(amber, terracotta, candle-gold) with cool night accents. Soft warm rim-light, subtle ordered "
@@ -46,9 +46,34 @@ NEG = ("Avoid: blur, anti-aliased fuzzy edges, glow, 3D render look, text, water
   "feet cut off, inconsistent proportions between frames.")
 # Gli sfondi sono un PALCO vuoto: ogni essere vivo è uno sprite separato, mai dipinto qui.
 NOLIVING = ("CRITICAL: the scene is completely EMPTY of any living being — absolutely NO people, "
-  "NO human figures or silhouettes, NO cats, NO dogs, NO animals or pets anywhere. Only "
+  "NO human figures or silhouettes, NO cats, NO dogs, NO animals or pets anywhere. Only "  # (segue)
   "architecture, furniture and inanimate objects. Living things are separate sprites, never "
   "painted into this image.")
+
+# --- Agente Art Supervisor (FIG-03): il DNA visivo vive in una spec editabile.
+# genera.py la carica e la inietta in ogni prompt. Addestrarlo = editare quel
+# file. I valori qui sopra restano solo come rete di sicurezza. ---
+SPEC_ART = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'agenti', 'art-supervisor-agente.md')
+def _load_art():
+    global STYLE, GREEN, NEG, NOLIVING, DEFAULT_MODEL, PRO_MODEL
+    try:
+        cur, buf, sez = None, [], {}
+        for line in open(SPEC_ART, encoding='utf-8'):
+            if line.startswith('## '):
+                if cur: sez[cur] = '\n'.join(buf).strip()
+                cur, buf = line[3:].strip(), []
+            elif cur:
+                buf.append(line.rstrip('\n'))
+        if cur: sez[cur] = '\n'.join(buf).strip()
+        STYLE = sez.get('STYLE', STYLE); GREEN = sez.get('GREEN', GREEN)
+        NEG = sez.get('NEG', NEG); NOLIVING = sez.get('NOLIVING', NOLIVING)
+        if sez.get('MODELLO_DEFAULT'): DEFAULT_MODEL = sez['MODELLO_DEFAULT'].splitlines()[0].strip()
+        if sez.get('MODELLO_PRO'): PRO_MODEL = sez['MODELLO_PRO'].splitlines()[0].strip()
+    except FileNotFoundError:
+        pass
+    except Exception as e:
+        print(f'⚠ Art Supervisor: spec agente non caricata ({e}); uso i valori interni')
+_load_art()
 
 def _key():
     if os.environ.get('GEMINI_API_KEY'): return os.environ['GEMINI_API_KEY']

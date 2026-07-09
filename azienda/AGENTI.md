@@ -28,10 +28,15 @@ Non tutte le figure sono già agenti. Onestà prima di tutto:
 
 - 🟢 **Agente AI** — guidato da modello + direttiva: **Concierge (01)**,
   **Sceneggiatore (02)**, **Generation (04)**, **QC (05)**.
+- ⚙️🟢 **Deterministico ma addestrabile per direttive** — assembla in modo
+  costante, ma il suo DNA vive in una spec editabile: **Art Supervisor (03)**.
+  Non tutto ciò che è addestrabile deve essere un LLM: qui la *coerenza* dei
+  prompt è ciò che rende affidabile la produzione, quindi si tiene il
+  determinismo e si rende editabile la direttiva.
 - ⚙️ **Codice deterministico** — esegue regole, non "ragiona": **Engine (06)**,
-  **Pipeline (07)**, **Art Supervisor (03)**.
-- 👤 **Umano / checklist** — per ora presidiato da persone: **Concierge (01)**,
-  **Sceneggiatore (02)**, **Audio (08)**, **Art Director (10)**, **Delivery (09)**.
+  **Pipeline (07)**.
+- 👤 **Umano / checklist** — per ora presidiato da persone: **Audio (08)**,
+  **Art Director (10)**, **Delivery (09)** (la relazione col cliente resta umana).
 
 L'architettura è fatta perché ognuna possa **diventare** un agente quando ha
 senso: la scheda è già la sua specifica.

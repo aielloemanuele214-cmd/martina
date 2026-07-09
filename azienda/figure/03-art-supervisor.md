@@ -4,8 +4,9 @@
 
 - **Codice**: FIG-03
 - **Fase pipeline**: Prompt (fase 04)
-- **Tipo**: assistito (umano + `build_specs`)
+- **Tipo**: ⚙️→🟢 **deterministico ma addestrabile per direttive** (assembla prompt costanti; NON un LLM a mano libera — la coerenza è ciò che rende affidabile la produzione)
 - **Stato**: attivo
+- **Cervello (DNA editabile)**: `gioco/tools/agenti/art-supervisor-agente.md` → modello [`AGENTI.md`](../AGENTI.md)
 
 ## Mandato
 Possiede il **linguaggio dei prompt**: come si descrive un ambiente, un
@@ -37,3 +38,4 @@ decide *cosa chiedere e come chiederlo*.
 
 ## Log (potenziamenti e correzioni)
 - 2026-07-09 — Scheda creata. Standard attivi: chroma verde, `NOLIVING`, foglio a una riga.
+- 2026-07-09 — **Reso addestrabile per direttive**: il DNA visivo (Style Bible, chroma, divieti, modelli, regola d'escalation) spostato in `agenti/art-supervisor-agente.md`, caricato da `genera.py` e iniettato in ogni prompt. Resta deterministico (coerenza), ma ora si ri-tara editando un testo versionato. Chiude parte di `R&D-03-02` (escalation documentata nella spec).
