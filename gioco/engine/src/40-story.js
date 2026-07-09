@@ -195,6 +195,7 @@ function catVisibile(){
   return Math.hypot(player.x-cat.x, player.y-cat.y) < cat.rivelaVicino;
 }
 function tryCat(cssX,cssY){
+  if(typeof SPR==='undefined' || !SPR.gatto) return false;   // ordini senza gatto
   if(!catVisibile()) return false;
   const wx=(cssX/S+camX)/PCT, wy=(cssY/S+camY)/PCT;
   const w=cat.larghezza, h=w*ASSETS.gatto.fh/ASSETS.gatto.fw;

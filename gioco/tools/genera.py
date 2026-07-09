@@ -409,12 +409,13 @@ def _wire_pack(pack_dir, dims, ncells, produced):
     json.dump(it, open(os.path.join(cfg, 'interactions.json'), 'w'), ensure_ascii=False, indent=2)
     _wire_sprites(cfg, dims, ncells, produced)
     _wire_manifest(pack_dir, produced, dims)
-    # QA raggiungibilità col MODELLO DEL MOTORE (indizi + gatto senza ostacolo,
-    # NPC col proprio corpo presente)
-    rc = collmask.engine_reachable(grid, bb, spawn, clues + [cat_pos])
-    rn = collmask.engine_reachable(grid, bb, spawn, [npc_pos], obstacle=npc_pos)[0]
-    reach = rc + [rn]
-    labels = ['indizio 1', 'indizio 2', 'indizio 3', 'gatto', 'NPC']
+    # QA raggiungibilità col MODELLO DEL MOTORE (indizi + eventuale gatto senza
+    # ostacolo, NPC col proprio corpo presente)
+    targets = list(clues) + ([cat_pos] if 'gatto' in dims else [])
+    labels = [f'indizio {i+1}' for i in range(len(clues))] + (['gatto'] if 'gatto' in dims else [])
+    reach = collmask.engine_reachable(grid, bb, spawn, targets)
+    reach.append(collmask.engine_reachable(grid, bb, spawn, [npc_pos], obstacle=npc_pos)[0])
+    labels.append('NPC')
     print('\n🧭 QA raggiungibilità nel gioco (dallo spawn):')
     allok = True
     for lab, ok in zip(labels, reach):

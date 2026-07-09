@@ -41,8 +41,7 @@
       "type": "object",
       "required": [
         "player",
-        "npc",
-        "gatto"
+        "npc"
       ],
       "properties": {
         "player": {

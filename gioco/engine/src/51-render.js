@@ -14,7 +14,8 @@ function rebuildCache(){
   // spritesheet pre-scalati alla loro altezza in scena (tutte le direzioni di lei = stessa altezza)
   const alt={};
   for(const k in ASSETS) if(ASSETS[k].alt) alt[k]=ASSETS[k].alt*PCT;
-  alt[SPR.gatto.foglio]=ASSETS[SPR.gatto.foglio].fh*(cat.larghezza*PCT/ASSETS[SPR.gatto.foglio].fw);
+  if(SPR.gatto && ASSETS[SPR.gatto.foglio])   // il gatto è opzionale (ordini senza animale)
+    alt[SPR.gatto.foglio]=ASSETS[SPR.gatto.foglio].fh*(cat.larghezza*PCT/ASSETS[SPR.gatto.foglio].fw);
   for(const k in alt){
     const sp=ASSETS[k], f=alt[k]*PS/sp.fh;
     const c=mk(sp.fw*sp.n*f, sp.fh*f);
@@ -134,7 +135,7 @@ function render(){
     const d=Math.hypot(player.x-cat.x, player.y-cat.y);
     catA=Math.max(0, Math.min(1, (cat.rivelaVicino - d)/2.5));
   }
-  const ents = catA>0.01 ? [
+  const ents = (SPR.gatto && catA>0.01) ? [
     {y:cat.y, draw(){          // gatto: elemento decorativo (eventuale fade di rivelazione)
       blitShadow(cat.x, cat.y, cat.larghezza*PCT*.8, .8*catA);
       blit(SPR.gatto.foglio, catFrame, cat.x, cat.y, false, catA, 0);
