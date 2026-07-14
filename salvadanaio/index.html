@@ -1,0 +1,405 @@
+<!doctype html>
+<html lang="it" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0e1220">
+<title>Salvadanaio — Obiettivo Risparmi</title>
+<style>
+  :root{
+    --radius:18px; --shadow:0 12px 34px rgba(0,0,0,.30);
+    --brand:#6ea8ff; --brand2:#4f7dff;
+    --green:#1fbf7c; --red:#ff5c72;
+  }
+  [data-theme="dark"]{
+    --bg1:#1a2340; --bg2:#0e1220; --card:#171d2e; --card2:#1e263b; --line:#2a3350;
+    --txt:#eef2ff; --muted:#93a0c4; --ring-track:#273052;
+    --green-bg:rgba(31,191,124,.15); --red-bg:rgba(255,92,114,.15);
+    --menu:#161d30;
+  }
+  [data-theme="light"]{
+    --bg1:#eaf1ff; --bg2:#f5f7fc; --card:#ffffff; --card2:#f2f5fb; --line:#e2e8f4;
+    --txt:#15203a; --muted:#6b7794; --ring-track:#e4eaf6;
+    --green-bg:rgba(31,191,124,.13); --red-bg:rgba(255,92,114,.12);
+    --menu:#ffffff; --shadow:0 12px 30px rgba(60,80,140,.14);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:radial-gradient(1200px 620px at 50% -12%,var(--bg1) 0%,var(--bg2) 58%) fixed;
+    color:var(--txt); min-height:100dvh; -webkit-font-smoothing:antialiased;
+    padding:16px 16px calc(30px + env(safe-area-inset-bottom));
+    transition:background .3s,color .3s;
+  }
+  .wrap{max-width:640px;margin:0 auto}
+
+  header.top{display:flex;align-items:center;gap:11px;margin:2px 0 18px}
+  header.top .logo{font-size:27px}
+  header.top .ttl{flex:1;min-width:0}
+  header.top h1{font-size:19px;margin:0;font-weight:800;letter-spacing:.2px}
+  header.top .sub{color:var(--muted);font-size:12px;margin-top:1px}
+  .iconbtn{width:40px;height:40px;border-radius:12px;border:1px solid var(--line);
+    background:var(--card);color:var(--txt);font-size:18px;cursor:pointer;display:grid;
+    place-items:center;transition:transform .05s,background .15s;position:relative}
+  .iconbtn:active{transform:scale(.94)}
+  .menuwrap{position:relative}
+  .menu{position:absolute;right:0;top:46px;background:var(--menu);border:1px solid var(--line);
+    border-radius:14px;box-shadow:var(--shadow);padding:6px;min-width:190px;z-index:40}
+  .menu button{display:flex;align-items:center;gap:10px;width:100%;background:none;border:none;
+    color:var(--txt);font-size:14px;padding:11px 12px;border-radius:10px;cursor:pointer;text-align:left}
+  .menu button:hover{background:var(--card2)}
+
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+    padding:18px;box-shadow:var(--shadow);margin-bottom:16px}
+  label{display:block;font-size:13px;color:var(--muted);margin:0 0 6px;font-weight:600}
+  .opt{font-weight:500;font-size:11.5px;opacity:.85}
+  input,button,select{font-family:inherit}
+  input[type=text],input[type=number],select{
+    width:100%;background:var(--card2);border:1px solid var(--line);color:var(--txt);
+    padding:13px 14px;border-radius:12px;font-size:16px;outline:none;transition:border-color .15s}
+  input:focus,select:focus{border-color:var(--brand)}
+  .row{display:flex;gap:12px}.row>div{flex:1}
+  .btn{border:none;border-radius:12px;padding:14px 16px;font-size:15px;font-weight:700;cursor:pointer;
+    color:#fff;background:linear-gradient(180deg,var(--brand),var(--brand2));width:100%;
+    transition:transform .05s,filter .15s;box-shadow:0 6px 16px rgba(79,125,255,.28)}
+  .btn:active{transform:translateY(1px)}
+  .btn.ghost{background:transparent;border:1px solid var(--line);color:var(--muted);box-shadow:none}
+  .hint{color:var(--muted);font-size:12.5px;margin-top:12px;line-height:1.55}
+
+  .hero{display:flex;align-items:center;gap:18px}
+  .ring{--p:0;flex:0 0 auto;width:120px;height:120px;border-radius:50%;
+    background:conic-gradient(var(--rc,var(--brand)) calc(var(--p)*1%),var(--ring-track) 0);
+    display:grid;place-items:center;transition:--p .7s ease}
+  @property --p{syntax:'<number>';inherits:false;initial-value:0}
+  .ring .inner{width:94px;height:94px;border-radius:50%;background:var(--card);display:grid;place-items:center;text-align:center}
+  .ring .pct{font-size:24px;font-weight:800;line-height:1}
+  .ring .plab{font-size:10.5px;color:var(--muted);margin-top:3px;letter-spacing:.3px}
+  .hero .info{flex:1;min-width:0}
+  .hero .gname{font-size:16px;font-weight:800;margin:0 0 4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .big{font-size:25px;font-weight:800;letter-spacing:.3px}
+  .big small{font-size:14px;color:var(--muted);font-weight:600}
+
+  .status{display:flex;align-items:center;gap:11px;padding:13px 15px;border-radius:14px;margin-top:16px;font-weight:700;font-size:14.5px;line-height:1.35}
+  .status.ok{background:var(--green-bg);color:var(--green);border:1px solid rgba(31,191,124,.35)}
+  .status.no{background:var(--red-bg);color:var(--red);border:1px solid rgba(255,92,114,.35)}
+  .status .dot{font-size:19px}
+
+  .stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
+  .stat{background:var(--card2);border:1px solid var(--line);border-radius:14px;padding:12px 14px}
+  .stat .k{font-size:11.5px;color:var(--muted);font-weight:600}
+  .stat .v{font-size:18px;font-weight:800;margin-top:3px}
+
+  h2.sec{font-size:12.5px;color:var(--muted);text-transform:uppercase;letter-spacing:1.2px;margin:22px 4px 12px;font-weight:800}
+
+  .month{background:var(--card);border:1px solid var(--line);border-left:5px solid var(--line);border-radius:14px;padding:14px;margin-bottom:12px;transition:border-color .2s}
+  .month.ok{border-left-color:var(--green)}
+  .month.no{border-left-color:var(--red)}
+  .month.future{opacity:.5}
+  .mhead{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+  .mname{font-weight:700;font-size:15px}
+  .mtot{font-weight:800;font-size:16px}
+  .mtot.ok{color:var(--green)}.mtot.no{color:var(--red)}
+  .mmeta{font-size:12px;color:var(--muted);margin-top:5px;line-height:1.5}
+  .madd{display:flex;gap:8px;margin-top:11px}
+  .madd input{flex:1}
+  .madd .btn{width:auto;padding:0 20px;font-size:22px;line-height:1;display:grid;place-items:center;box-shadow:none}
+  .mbadge{font-size:10.5px;font-weight:800;padding:2px 9px;border-radius:20px;vertical-align:middle}
+  .mbadge.ok{background:var(--green-bg);color:var(--green)}
+  .mbadge.no{background:var(--red-bg);color:var(--red)}
+  .mundo{background:none;border:none;color:var(--muted);font-size:12px;cursor:pointer;text-decoration:underline;padding:8px 0 0;margin-left:2px}
+
+  .footer-actions{display:flex;gap:10px;margin-top:8px}
+  .hidden{display:none!important}
+  .toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);background:var(--card);border:1px solid var(--line);color:var(--txt);padding:12px 20px;border-radius:30px;font-size:14px;font-weight:600;box-shadow:var(--shadow);opacity:0;pointer-events:none;transition:.25s;z-index:60}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  .done-banner{background:var(--green-bg);border:1px solid rgba(31,191,124,.4);color:var(--green);text-align:center;padding:16px;border-radius:14px;font-weight:800;margin-top:16px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <span class="logo">🐷</span>
+    <div class="ttl">
+      <h1>Salvadanaio</h1>
+      <div class="sub">Fissa un obiettivo e mettilo da parte, mese dopo mese</div>
+    </div>
+    <button class="iconbtn" id="themeBtn" title="Cambia tema">🌙</button>
+    <div class="menuwrap">
+      <button class="iconbtn" id="menuBtn" title="Menu">⋯</button>
+      <div class="menu hidden" id="menu">
+        <button id="mExport">💾 Esporta backup</button>
+        <button id="mImport">📥 Importa backup</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===== SETUP ===== -->
+  <section id="setup" class="card hidden">
+    <label for="gname">Nome dell'obiettivo</label>
+    <input type="text" id="gname" placeholder="Es. Vacanza estate, Auto nuova…" maxlength="40">
+    <div style="height:14px"></div>
+    <div class="row">
+      <div>
+        <label for="gtot">Obiettivo da raggiungere (€)</label>
+        <input type="number" id="gtot" inputmode="decimal" placeholder="1200" min="1" step="1">
+      </div>
+      <div>
+        <label for="gmonths">In quanti mesi?</label>
+        <input type="number" id="gmonths" inputmode="numeric" placeholder="12" min="1" max="120" step="1">
+      </div>
+    </div>
+    <div style="height:14px"></div>
+    <label for="ginit">Capitale iniziale <span class="opt">(quanto hai già da parte — facoltativo)</span></label>
+    <input type="number" id="ginit" inputmode="decimal" placeholder="0" min="0" step="1">
+    <div style="height:14px"></div>
+    <label for="gmese">Mese di partenza</label>
+    <div class="row">
+      <div><select id="gmese"></select></div>
+      <div><select id="ganno"></select></div>
+    </div>
+    <div style="height:18px"></div>
+    <button class="btn" id="createBtn">Crea il piano di risparmio</button>
+    <div class="hint" id="quotaPreview"></div>
+  </section>
+
+  <!-- ===== DASHBOARD ===== -->
+  <section id="dash" class="hidden">
+    <div class="card">
+      <div class="hero">
+        <div class="ring" id="ring"><div class="inner">
+          <div><div class="pct" id="ringPct">0%</div><div class="plab">completato</div></div>
+        </div></div>
+        <div class="info">
+          <p class="gname" id="dName">Obiettivo</p>
+          <div class="big"><span id="dSaved">€0</span> <small>/ <span id="dGoal">€0</span></small></div>
+          <div class="hint" id="dQuota" style="margin-top:6px"></div>
+        </div>
+      </div>
+
+      <div class="status" id="statusBox"><span class="dot">●</span><span id="statusTxt"></span></div>
+
+      <div class="stats">
+        <div class="stat"><div class="k">Dovresti avere ora</div><div class="v" id="sExpected">€0</div></div>
+        <div class="stat"><div class="k" id="sDiffK">Differenza</div><div class="v" id="sDiff">€0</div></div>
+        <div class="stat"><div class="k">Mesi rimanenti</div><div class="v" id="sLeft">0</div></div>
+        <div class="stat"><div class="k">Ti manca in media / mese</div><div class="v" id="sNeed">€0</div></div>
+      </div>
+
+      <div id="doneBanner" class="done-banner hidden">🎉 Obiettivo raggiunto! Complimenti!</div>
+    </div>
+
+    <h2 class="sec">I tuoi mesi</h2>
+    <div id="monthsList"></div>
+
+    <div class="footer-actions">
+      <button class="btn ghost" id="editBtn">Modifica obiettivo</button>
+      <button class="btn ghost" id="resetBtn">Ricomincia</button>
+    </div>
+  </section>
+</div>
+
+<input type="file" id="importFile" accept="application/json,.json" class="hidden">
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  "use strict";
+  var KEY="salvadanaio.v1", TKEY="salvadanaio.theme";
+  var MESI=["Gennaio","Febbraio","Marzo","Aprile","Maggio","Giugno","Luglio","Agosto","Settembre","Ottobre","Novembre","Dicembre"];
+  var state=null;
+
+  function eur(n){
+    n=Math.round((n+Number.EPSILON)*100)/100;
+    return "€"+n.toLocaleString("it-IT",{minimumFractionDigits:(n%1?2:0),maximumFractionDigits:2});
+  }
+  function load(){ try{ var s=JSON.parse(localStorage.getItem(KEY)); if(s&&typeof s.initial!=="number")s.initial=0; return s; }catch(e){ return null; } }
+  function save(){ localStorage.setItem(KEY,JSON.stringify(state)); }
+  function el(id){ return document.getElementById(id); }
+  var toastTimer;
+  function toast(msg){ var t=el("toast"); t.textContent=msg; t.classList.add("show"); clearTimeout(toastTimer); toastTimer=setTimeout(function(){t.classList.remove("show");},1700); }
+
+  /* ---- tema ---- */
+  function applyTheme(t){
+    document.documentElement.setAttribute("data-theme",t);
+    el("themeBtn").textContent = t==="dark" ? "🌙" : "☀️";
+    document.querySelector('meta[name=theme-color]').setAttribute("content", t==="dark"?"#0e1220":"#f5f7fc");
+    localStorage.setItem(TKEY,t);
+  }
+  (function initTheme(){
+    var saved=localStorage.getItem(TKEY);
+    if(!saved){ saved = (window.matchMedia && matchMedia("(prefers-color-scheme: light)").matches) ? "light":"dark"; }
+    applyTheme(saved);
+  })();
+  el("themeBtn").addEventListener("click",function(){ applyTheme(document.documentElement.getAttribute("data-theme")==="dark"?"light":"dark"); });
+
+  /* ---- menu ---- */
+  el("menuBtn").addEventListener("click",function(e){ e.stopPropagation(); el("menu").classList.toggle("hidden"); });
+  document.addEventListener("click",function(){ el("menu").classList.add("hidden"); });
+
+  /* ---- calcoli ---- */
+  function currentMonthIndex(){
+    var now=new Date();
+    var diff=(now.getFullYear()-state.startYear)*12+(now.getMonth()-state.startMonth)+1;
+    return Math.max(1,Math.min(state.months,diff));
+  }
+  function monthLabel(i){ var m=(state.startMonth+i)%12, y=state.startYear+Math.floor((state.startMonth+i)/12); return MESI[m]+" "+y; }
+  function quota(){ return Math.max(0,(state.total-state.initial)/state.months); }
+  function depositsCum(upto){ var s=0; for(var i=0;i<upto&&i<state.entries.length;i++) s+=state.entries[i]; return s; }
+  function savedTotal(){ return state.initial+depositsCum(state.months); }
+
+  /* ---- SETUP ---- */
+  function initSelectors(){
+    var mSel=el("gmese"),ySel=el("ganno"); mSel.innerHTML="";ySel.innerHTML="";
+    var now=new Date();
+    MESI.forEach(function(name,i){ var o=document.createElement("option");o.value=i;o.textContent=name;if(i===now.getMonth())o.selected=true;mSel.appendChild(o); });
+    for(var y=now.getFullYear();y<=now.getFullYear()+6;y++){ var o=document.createElement("option");o.value=y;o.textContent=y;ySel.appendChild(o); }
+  }
+  function updateQuotaPreview(){
+    var tot=parseFloat(el("gtot").value), m=parseInt(el("gmonths").value,10), init=parseFloat(el("ginit").value)||0;
+    var box=el("quotaPreview");
+    if(tot>0&&m>0){
+      var q=Math.max(0,(tot-init)/m);
+      var head = init>0 ? "Parti da <b>"+eur(init)+"</b> già da parte. " : "";
+      box.innerHTML="👉 "+head+"Dovrai mettere da parte circa <b>"+eur(q)+"</b> al mese per raggiungere <b>"+eur(tot)+"</b> in "+m+" mesi.";
+    } else box.textContent="Inserisci obiettivo e mesi per vedere la quota mensile.";
+  }
+  function showSetup(prefill){
+    el("dash").classList.add("hidden"); el("setup").classList.remove("hidden");
+    initSelectors();
+    if(prefill&&state){ el("gname").value=state.name;el("gtot").value=state.total;el("gmonths").value=state.months;el("ginit").value=state.initial||"";el("gmese").value=state.startMonth;el("ganno").value=state.startYear; }
+    updateQuotaPreview();
+  }
+  function createPlan(){
+    var name=el("gname").value.trim()||"Il mio obiettivo";
+    var tot=parseFloat(el("gtot").value), m=parseInt(el("gmonths").value,10), init=parseFloat(el("ginit").value)||0;
+    if(!(tot>0)){ toast("Inserisci un obiettivo valido"); el("gtot").focus(); return; }
+    if(!(m>0)){ toast("Inserisci il numero di mesi"); el("gmonths").focus(); return; }
+    if(init<0)init=0;
+    if(init>tot){ toast("Il capitale iniziale supera l'obiettivo"); el("ginit").focus(); return; }
+    var editing = el("setup").dataset.editing==="1";
+    var oldEntries = editing&&state ? state.entries : null;
+    state={ name:name, total:tot, months:m, initial:init, startMonth:parseInt(el("gmese").value,10), startYear:parseInt(el("ganno").value,10), entries:[] };
+    for(var i=0;i<m;i++) state.entries.push(oldEntries&&oldEntries[i]?oldEntries[i]:0);
+    el("setup").dataset.editing="0"; save(); showDash();
+  }
+
+  /* ---- DASHBOARD ---- */
+  function showDash(){ el("setup").classList.add("hidden"); el("dash").classList.remove("hidden"); render(); }
+  function render(){
+    var q=quota(), saved=savedTotal(), cur=currentMonthIndex();
+    var pct=Math.min(100, state.total>0?(saved/state.total*100):0);
+    var expectedNow=Math.min(state.total, state.initial + q*cur);
+    var diff=saved-expectedNow, onTrack=saved>=expectedNow-0.005;
+
+    el("dName").textContent=state.name;
+    el("dSaved").textContent=eur(saved);
+    el("dGoal").textContent=eur(state.total);
+    var initTxt = state.initial>0 ? " · Iniziale "+eur(state.initial) : "";
+    el("dQuota").innerHTML="Quota mensile: <b>"+eur(q)+"</b> · Mese "+cur+" di "+state.months+initTxt;
+
+    var ring=el("ring");
+    ring.style.setProperty("--p",pct.toFixed(1));
+    ring.style.setProperty("--rc", onTrack?"var(--green)":"var(--red)");
+    el("ringPct").textContent=Math.round(pct)+"%";
+
+    var sBox=el("statusBox"),sTxt=el("statusTxt"); sBox.classList.remove("ok","no");
+    if(onTrack){ sBox.classList.add("ok"); sTxt.textContent = diff>=0.005 ? "In verde! Sei avanti di "+eur(diff)+" sul piano." : "In verde! Sei in linea con il piano."; }
+    else { sBox.classList.add("no"); sTxt.textContent = "In rosso. Ti mancano "+eur(-diff)+" per essere in pari a questo mese."; }
+
+    el("sExpected").textContent=eur(expectedNow);
+    el("sDiffK").textContent = diff>=0 ? "Sei avanti di" : "Sei indietro di";
+    el("sDiff").textContent=eur(Math.abs(diff));
+    el("sDiff").style.color = onTrack?"var(--green)":"var(--red)";
+
+    var monthsLeft=Math.max(0,state.months-cur);
+    el("sLeft").textContent=monthsLeft;
+    var remaining=Math.max(0,state.total-saved);
+    el("sNeed").textContent = remaining<=0 ? "—" : eur(monthsLeft>0?remaining/monthsLeft:remaining);
+
+    el("doneBanner").classList.toggle("hidden", saved<state.total);
+    renderMonths(cur,q);
+  }
+  function renderMonths(cur,q){
+    var list=el("monthsList"); list.innerHTML="";
+    for(var i=0;i<state.months;i++){
+      var idx=i+1, mTot=state.entries[i]||0;
+      var savedCum=state.initial+depositsCum(idx);
+      var expCum=Math.min(state.total, state.initial+q*idx);
+      var ok=savedCum>=expCum-0.005;
+      var isFuture=idx>cur&&mTot===0;
+      var div=document.createElement("div");
+      div.className="month "+(mTot>0?(ok?"ok":"no"):"")+(isFuture?" future":"");
+      var badge = mTot>0 ? '<span class="mbadge '+(ok?"ok":"no")+'">'+(ok?"✓ in pari":"✗ sotto")+'</span>' : (idx===cur?'<span class="mbadge no">da versare</span>':"");
+      div.innerHTML=
+        '<div class="mhead"><span class="mname">'+monthLabel(i)+' '+badge+'</span>'+
+        '<span class="mtot '+(mTot>0?(ok?"ok":"no"):"")+'">'+eur(mTot)+'</span></div>'+
+        '<div class="mmeta">Totale a questo mese: <b>'+eur(savedCum)+'</b> · obiettivo cumulato: '+eur(expCum)+'</div>'+
+        '<div class="madd"><input type="number" inputmode="decimal" placeholder="Aggiungi risparmio…" step="0.01" min="0" data-add="'+i+'">'+
+        '<button class="btn" data-plus="'+i+'">+</button></div>'+
+        (mTot>0?'<button class="mundo" data-clear="'+i+'">azzera questo mese</button>':'');
+      list.appendChild(div);
+    }
+    list.querySelectorAll("[data-plus]").forEach(function(btn){
+      btn.addEventListener("click",function(){
+        var i=+btn.dataset.plus, inp=list.querySelector('input[data-add="'+i+'"]'), v=parseFloat(inp.value);
+        if(!(v>0)){ toast("Inserisci un importo"); inp.focus(); return; }
+        state.entries[i]=(state.entries[i]||0)+v; save(); render();
+        toast("Aggiunti "+eur(v)+" a "+monthLabel(i).split(" ")[0]);
+      });
+    });
+    list.querySelectorAll("input[data-add]").forEach(function(inp){
+      inp.addEventListener("keydown",function(e){ if(e.key==="Enter") list.querySelector('[data-plus="'+inp.dataset.add+'"]').click(); });
+    });
+    list.querySelectorAll("[data-clear]").forEach(function(btn){
+      btn.addEventListener("click",function(){ var i=+btn.dataset.clear; if(confirm("Azzerare i risparmi di "+monthLabel(i)+"?")){ state.entries[i]=0; save(); render(); } });
+    });
+  }
+
+  /* ---- backup ---- */
+  function exportBackup(){
+    if(!state){ toast("Nessun dato da esportare"); return; }
+    var blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"});
+    var url=URL.createObjectURL(blob), a=document.createElement("a");
+    a.href=url; a.download="salvadanaio-backup.json"; document.body.appendChild(a); a.click();
+    document.body.removeChild(a); URL.revokeObjectURL(url);
+    toast("Backup scaricato 💾");
+  }
+  el("mExport").addEventListener("click",exportBackup);
+  el("mImport").addEventListener("click",function(){ el("importFile").click(); });
+  el("importFile").addEventListener("change",function(e){
+    var f=e.target.files[0]; if(!f) return;
+    var r=new FileReader();
+    r.onload=function(){
+      try{
+        var s=JSON.parse(r.result);
+        if(!s||typeof s.total!=="number"||!Array.isArray(s.entries)) throw new Error("bad");
+        if(typeof s.initial!=="number") s.initial=0;
+        state=s; save(); showDash(); toast("Backup importato ✓");
+      }catch(err){ toast("File non valido"); }
+      el("importFile").value="";
+    };
+    r.readAsText(f);
+  });
+
+  /* ---- eventi ---- */
+  el("gtot").addEventListener("input",updateQuotaPreview);
+  el("gmonths").addEventListener("input",updateQuotaPreview);
+  el("ginit").addEventListener("input",updateQuotaPreview);
+  el("createBtn").addEventListener("click",createPlan);
+  el("editBtn").addEventListener("click",function(){ el("setup").dataset.editing="1"; showSetup(true); });
+  el("resetBtn").addEventListener("click",function(){
+    if(confirm("Vuoi cancellare tutto e ricominciare da capo?")){
+      localStorage.removeItem(KEY); state=null; el("setup").dataset.editing="0";
+      el("gname").value="";el("gtot").value="";el("gmonths").value="";el("ginit").value="";
+      showSetup(false);
+    }
+  });
+
+  /* ---- avvio ---- */
+  state=load();
+  if(state&&state.total) showDash(); else showSetup(false);
+})();
+</script>
+</body>
+</html>
