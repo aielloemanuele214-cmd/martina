@@ -6,6 +6,9 @@ dist/
 package.json
 package-lock.json
 
+# Cache locale di wrangler/Cloudflare (rigenerabile, non va versionata)
+.wrangler/
+
 # Privacy: i dati reali dei clienti non entrano MAI nella repo pubblica.
 # I giochi consegnati vivono nella repo privata sempreaddue-giochi (Cloudflare).
 # Qui restano versionati solo i due file d'esempio.
